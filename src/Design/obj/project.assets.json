@@ -185,11 +185,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Design\\Design.csproj",
+      "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Design\\Design.csproj",
       "projectName": "Design",
-      "projectPath": "C:\\VSProjects\\ChatGPT\\Design\\Design.csproj",
+      "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Design\\Design.csproj",
       "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-      "outputPath": "C:\\VSProjects\\ChatGPT\\Design\\obj\\",
+      "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Design\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",

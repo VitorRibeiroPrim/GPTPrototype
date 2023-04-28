@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Primavera.Lithium.ChatGPT.Server.Host.Tests
-build_property.ProjectDir = C:\VSProjects\ChatGPT\Tests\Host.Tests\
+build_property.ProjectDir = C:\GitHub Repository\GPTPrototype\src\Tests\Host.Tests\

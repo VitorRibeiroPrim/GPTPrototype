@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\VSProjects\\ChatGPT\\Tests\\Integration.Tests\\Integration.Tests.csproj": {}
+    "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Integration.Tests\\Integration.Tests.csproj": {}
   },
   "projects": {
-    "C:\\VSProjects\\ChatGPT\\Client.Rest\\Client.Rest.csproj": {
+    "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\Client.Rest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Client.Rest\\Client.Rest.csproj",
+        "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\Client.Rest.csproj",
         "projectName": "Primavera.Lithium.ChatGPT.Client.Rest",
-        "projectPath": "C:\\VSProjects\\ChatGPT\\Client.Rest\\Client.Rest.csproj",
+        "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\Client.Rest.csproj",
         "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-        "outputPath": "C:\\VSProjects\\ChatGPT\\Client.Rest\\obj\\",
+        "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -89,14 +89,14 @@
         }
       }
     },
-    "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {
+    "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj",
+        "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj",
         "projectName": "Primavera.Lithium.ChatGPT.Server.Common",
-        "projectPath": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj",
+        "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj",
         "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-        "outputPath": "C:\\VSProjects\\ChatGPT\\Common\\obj\\",
+        "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -177,14 +177,14 @@
         }
       }
     },
-    "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj": {
+    "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\Host.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj",
+        "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\Host.csproj",
         "projectName": "Primavera.Lithium.ChatGPT.Server.Host",
-        "projectPath": "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj",
+        "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\Host.csproj",
         "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-        "outputPath": "C:\\VSProjects\\ChatGPT\\Host\\obj\\",
+        "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -204,11 +204,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {
-                "projectPath": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj"
+              "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj": {
+                "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj"
               },
-              "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj": {
-                "projectPath": "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj"
+              "C:\\GitHub Repository\\GPTPrototype\\src\\RestApi\\RestApi.csproj": {
+                "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\RestApi\\RestApi.csproj"
               }
             }
           }
@@ -267,14 +267,14 @@
         }
       }
     },
-    "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj": {
+    "C:\\GitHub Repository\\GPTPrototype\\src\\RestApi\\RestApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj",
+        "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\RestApi\\RestApi.csproj",
         "projectName": "Primavera.Lithium.ChatGPT.Server.RestApi",
-        "projectPath": "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj",
+        "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\RestApi\\RestApi.csproj",
         "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-        "outputPath": "C:\\VSProjects\\ChatGPT\\RestApi\\obj\\",
+        "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\RestApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -294,8 +294,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {
-                "projectPath": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj"
+              "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj": {
+                "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj"
               }
             }
           }
@@ -351,14 +351,14 @@
         }
       }
     },
-    "C:\\VSProjects\\ChatGPT\\Tests\\Integration.Tests\\Integration.Tests.csproj": {
+    "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Integration.Tests\\Integration.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Tests\\Integration.Tests\\Integration.Tests.csproj",
+        "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Integration.Tests\\Integration.Tests.csproj",
         "projectName": "Primavera.Lithium.ChatGPT.Server.Integration.Tests",
-        "projectPath": "C:\\VSProjects\\ChatGPT\\Tests\\Integration.Tests\\Integration.Tests.csproj",
+        "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Integration.Tests\\Integration.Tests.csproj",
         "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-        "outputPath": "C:\\VSProjects\\ChatGPT\\Tests\\Integration.Tests\\obj\\",
+        "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Integration.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -378,11 +378,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\VSProjects\\ChatGPT\\Client.Rest\\Client.Rest.csproj": {
-                "projectPath": "C:\\VSProjects\\ChatGPT\\Client.Rest\\Client.Rest.csproj"
+              "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\Client.Rest.csproj": {
+                "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\Client.Rest.csproj"
               },
-              "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj": {
-                "projectPath": "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj"
+              "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\Host.csproj": {
+                "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\Host.csproj"
               }
             }
           }

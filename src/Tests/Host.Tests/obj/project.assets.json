@@ -14072,11 +14072,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\Host.Tests.csproj",
+      "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Host.Tests\\Host.Tests.csproj",
       "projectName": "Primavera.Lithium.ChatGPT.Server.Host.Tests",
-      "projectPath": "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\Host.Tests.csproj",
+      "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Host.Tests\\Host.Tests.csproj",
       "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-      "outputPath": "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\obj\\",
+      "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Host.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -14096,8 +14096,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj": {
-              "projectPath": "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj"
+            "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\Host.csproj": {
+              "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\Host.csproj"
             }
           }
         }

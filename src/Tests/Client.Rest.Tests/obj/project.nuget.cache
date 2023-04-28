@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jynOOif2KcwQCt7vuXm+AOOLeRfoii3pukLOIvldjRTFO+82iY/XzDGLmNnip4I0c+5N6PntFoDxIk+dxJSXag==",
+  "dgSpecHash": "mhe6YDzK8drDYxsDWEJhdj56BvcJ/RX5qHUb0BOTaJvaIYJuoQoTelQGErAiukbwofuq8KB25kZHAp11ZP21iw==",
   "success": true,
-  "projectFilePath": "C:\\VSProjects\\ChatGPT\\Tests\\Client.Rest.Tests\\Client.Rest.Tests.csproj",
+  "projectFilePath": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Client.Rest.Tests\\Client.Rest.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\asyncfixer\\1.6.0\\asyncfixer.1.6.0.nupkg.sha512",
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",

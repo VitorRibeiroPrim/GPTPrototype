@@ -4421,11 +4421,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Client.Rest\\Client.Rest.csproj",
+      "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\Client.Rest.csproj",
       "projectName": "Primavera.Lithium.ChatGPT.Client.Rest",
-      "projectPath": "C:\\VSProjects\\ChatGPT\\Client.Rest\\Client.Rest.csproj",
+      "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\Client.Rest.csproj",
       "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-      "outputPath": "C:\\VSProjects\\ChatGPT\\Client.Rest\\obj\\",
+      "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Client.Rest\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",

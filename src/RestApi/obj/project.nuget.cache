@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9/9rJ8jJACA/pwmYZMzqNom7+th8fJzLsqWyd9i8YeWoDNxCTmqYViP9PdTXzAnvfUYhhaNuw5lnn562H/XsXQ==",
+  "dgSpecHash": "TaYjqTUkMPeIit90MBnkf1IL5wZrHhoZJqHQVADsjDuo+Q+oyBqOFLINXqZgP20uoWNeueqBcGKedSGGTZ9CJw==",
   "success": true,
-  "projectFilePath": "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj",
+  "projectFilePath": "C:\\GitHub Repository\\GPTPrototype\\src\\RestApi\\RestApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\asyncfixer\\1.6.0\\asyncfixer.1.6.0.nupkg.sha512",
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",

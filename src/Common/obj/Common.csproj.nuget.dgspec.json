@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {}
+    "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj": {}
   },
   "projects": {
-    "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {
+    "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj",
+        "projectUniqueName": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj",
         "projectName": "Primavera.Lithium.ChatGPT.Server.Common",
-        "projectPath": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj",
+        "projectPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\Common.csproj",
         "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
-        "outputPath": "C:\\VSProjects\\ChatGPT\\Common\\obj\\",
+        "outputPath": "C:\\GitHub Repository\\GPTPrototype\\src\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "e7Bk9A97GsX8onEBh/mSA1Iky/cHx7qCuHOalcABcZvoyVS0fbpcKobKfUS58Yu7Kc2KqOUGO4uVJS7d0zfTXw==",
+  "dgSpecHash": "qurD6PkCT+YTJaWR2bApOD0qYneTwbQ9WsItoh+ecgK/I03Me9riuwxdyvepPcghLhQXrKR4W/yUvL4QSGEWCA==",
   "success": true,
-  "projectFilePath": "C:\\VSProjects\\ChatGPT\\Design\\Design.csproj",
+  "projectFilePath": "C:\\GitHub Repository\\GPTPrototype\\src\\Design\\Design.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"

@@ -9,11 +9,11 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Primavera.Lithium.ChatGPT.Server.Host
 build_property.RootNamespace = Primavera.Lithium.ChatGPT.Server.Host
-build_property.ProjectDir = C:\VSProjects\ChatGPT\Host\
+build_property.ProjectDir = C:\GitHub Repository\GPTPrototype\src\Host\
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\VSProjects\ChatGPT\Host
+build_property.MSBuildProjectDirectory = C:\GitHub Repository\GPTPrototype\src\Host
 build_property._RazorSourceGeneratorDebug = 
 
 [C:/Users/Vitor.Ribeiro/.nuget/packages/microsoft.visualstudio.threading.analyzers/17.5.22/build/AdditionalFiles/vs-threading.LegacyThreadSwitchingMembers.txt]
@@ -32,22 +32,22 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = 
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/VSProjects/ChatGPT/Host/CustomCode/Views/Index.cshtml]
+[C:/GitHub Repository/GPTPrototype/src/Host/CustomCode/Views/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Q3VzdG9tQ29kZVxWaWV3c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/VSProjects/ChatGPT/Host/GeneratedCode/ClientLibDocView.gen.cshtml]
+[C:/GitHub Repository/GPTPrototype/src/Host/GeneratedCode/ClientLibDocView.gen.cshtml]
 build_metadata.AdditionalFiles.TargetPath = R2VuZXJhdGVkQ29kZVxDbGllbnRMaWJEb2NWaWV3Lmdlbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/VSProjects/ChatGPT/Host/GeneratedCode/CopyrightPartialView.gen.cshtml]
+[C:/GitHub Repository/GPTPrototype/src/Host/GeneratedCode/CopyrightPartialView.gen.cshtml]
 build_metadata.AdditionalFiles.TargetPath = R2VuZXJhdGVkQ29kZVxDb3B5cmlnaHRQYXJ0aWFsVmlldy5nZW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/VSProjects/ChatGPT/Host/GeneratedCode/ErrorView.gen.cshtml]
+[C:/GitHub Repository/GPTPrototype/src/Host/GeneratedCode/ErrorView.gen.cshtml]
 build_metadata.AdditionalFiles.TargetPath = R2VuZXJhdGVkQ29kZVxFcnJvclZpZXcuZ2VuLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/VSProjects/ChatGPT/Host/GeneratedCode/HomeView.gen.cshtml]
+[C:/GitHub Repository/GPTPrototype/src/Host/GeneratedCode/HomeView.gen.cshtml]
 build_metadata.AdditionalFiles.TargetPath = R2VuZXJhdGVkQ29kZVxIb21lVmlldy5nZW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

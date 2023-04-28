@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NUMJHbA6tSDcuc0RtK0sxqJyVUw/JjcM+ESGd0ZNZdg7qFSruSJYo1K9l4AwsBk78zk8WFEFOUw3gh31sS5SxQ==",
+  "dgSpecHash": "2EtFz0avY10F4B7p8wU3l6+g6VRFVLKnnrqFw44An53keFy4tx4bBgTvrjojWo2FcATXmFIRpsXKXRXySWYPig==",
   "success": true,
-  "projectFilePath": "C:\\VSProjects\\ChatGPT\\Tests\\Common.Tests\\Common.Tests.csproj",
+  "projectFilePath": "C:\\GitHub Repository\\GPTPrototype\\src\\Tests\\Common.Tests\\Common.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\asyncfixer\\1.6.0\\asyncfixer.1.6.0.nupkg.sha512",
     "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
