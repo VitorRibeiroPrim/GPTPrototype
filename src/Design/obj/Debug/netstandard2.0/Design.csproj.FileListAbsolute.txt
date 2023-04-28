@@ -9,3 +9,14 @@ C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.AssemblyInfo.cs
 C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.csproj.CoreCompileInputs.cache
 C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.dll
 C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.pdb
+C:\GitHub Repository\GPTPrototype\src\Design\bin\Debug\netstandard2.0\GeneratedCode\Service.gen.lsspec.json
+C:\GitHub Repository\GPTPrototype\src\Design\bin\Debug\netstandard2.0\Design.deps.json
+C:\GitHub Repository\GPTPrototype\src\Design\bin\Debug\netstandard2.0\Design.dll
+C:\GitHub Repository\GPTPrototype\src\Design\bin\Debug\netstandard2.0\Design.pdb
+C:\GitHub Repository\GPTPrototype\src\Design\obj\Debug\netstandard2.0\Design.csproj.AssemblyReference.cache
+C:\GitHub Repository\GPTPrototype\src\Design\obj\Debug\netstandard2.0\Design.GeneratedMSBuildEditorConfig.editorconfig
+C:\GitHub Repository\GPTPrototype\src\Design\obj\Debug\netstandard2.0\Design.AssemblyInfoInputs.cache
+C:\GitHub Repository\GPTPrototype\src\Design\obj\Debug\netstandard2.0\Design.AssemblyInfo.cs
+C:\GitHub Repository\GPTPrototype\src\Design\obj\Debug\netstandard2.0\Design.csproj.CoreCompileInputs.cache
+C:\GitHub Repository\GPTPrototype\src\Design\obj\Debug\netstandard2.0\Design.dll
+C:\GitHub Repository\GPTPrototype\src\Design\obj\Debug\netstandard2.0\Design.pdb

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "P5doQiBWG9zsL21s1obPJ/Si17Oi/yzcXD6AoZdKMYI=",
+  "Hash": "yf9aqk9uVXmcYuR8Vc5BVSDCL7sWpRowTS0E2Qp1J5M=",
   "Source": "Primavera.Lithium.ChatGPT.Server.Host",
   "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "Primavera.Lithium.ChatGPT.Server.Host\\wwwroot",
       "Source": "Primavera.Lithium.ChatGPT.Server.Host",
-      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "ContentRoot": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\",
       "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\chat.js",
+      "Identity": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\js\\chat.js",
       "SourceId": "Primavera.Lithium.ChatGPT.Server.Host",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "ContentRoot": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\",
       "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
       "RelativePath": "js/chat.js",
       "AssetKind": "All",
@@ -34,10 +34,10 @@
       "OriginalItemSpec": "wwwroot\\js\\chat.js"
     },
     {
-      "Identity": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.js",
+      "Identity": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.js",
       "SourceId": "Primavera.Lithium.ChatGPT.Server.Host",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "ContentRoot": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\",
       "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
       "RelativePath": "js/signalr/dist/browser/signalr.js",
       "AssetKind": "All",
@@ -51,10 +51,10 @@
       "OriginalItemSpec": "wwwroot\\js\\signalr\\dist\\browser\\signalr.js"
     },
     {
-      "Identity": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js",
+      "Identity": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js",
       "SourceId": "Primavera.Lithium.ChatGPT.Server.Host",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "ContentRoot": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\",
       "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
       "RelativePath": "js/signalr/dist/browser/signalr.min.js",
       "AssetKind": "All",

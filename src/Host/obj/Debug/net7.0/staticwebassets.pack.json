@@ -1,15 +1,15 @@
 {
   "Files": [
     {
-      "Id": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\chat.js",
+      "Id": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\js\\chat.js",
       "PackagePath": "staticwebassets\\js\\chat.js"
     },
     {
-      "Id": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.js",
+      "Id": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.js",
       "PackagePath": "staticwebassets\\js\\signalr\\dist\\browser\\signalr.js"
     },
     {
-      "Id": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js",
+      "Id": "C:\\GitHub Repository\\GPTPrototype\\src\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js",
       "PackagePath": "staticwebassets\\js\\signalr\\dist\\browser\\signalr.min.js"
     },
     {
