@@ -1,0 +1,12 @@
+﻿<#+
+
+public void WriteAttributes(ModelWriter modelWriter, ServiceModel model)
+{
+    this.WriteAssemblyInfoShared(
+        modelWriter, 
+        model,
+        $"{model.Product} {model.DisplayName} REST Client Tests",
+        "Class library that provides unit tests.");
+}
+
+#>

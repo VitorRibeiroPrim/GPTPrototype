@@ -1,0 +1,694 @@
+﻿<#+
+
+// *** WriteService
+
+public void WriteService(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model == null)
+    {
+        return;
+    }
+
+    string apiVersion = VersioningHelper.GetApiVersionString(model);
+
+    bool hasWebhooks = model.Webhooks.Any();
+
+#>
+{
+    "info": {
+		"_postman_id": "<#= model.Id #>",
+		"name": "<#= model.GUID #> (<#= model.Name #>)",
+        "description": "<#= model.Summary #>",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+<#+
+
+        IList<ControllerType> controllers = model.Controllers
+            .Where(c => c.Visibility != ControllerTypeVisibility.ClientSide)
+            .OrderBy(c => c.Name)
+            .ToList();
+        
+        for (int i = 0; i < controllers.Count; i++)
+        {
+            WriteControllerType(modelWriter, controllers[i]);
+        }
+
+#>
+        {
+            "name": "Monitoring",
+            "description": "Provides operations to monitor the service.",
+            "item": [
+                {
+                    "name": "Monitoring.Probe",
+                    "request": {
+                        "description": "Probes the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/probe",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"probe"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Diagnostics",
+                    "request": {
+                        "description": "Diagnoses the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/diagnostics",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"diagnostics"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Endpoints",
+                    "request": {
+                        "description": "Analyzes the endpoints of the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/endpoints",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"endpoints"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Configuration",
+                    "request": {
+                        "description": "Analyzes the configuration of the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/configuration",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"configuration"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Information",
+                    "request": {
+                        "description": "Retrieves information about the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/info",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"info"
+							]
+                        }
+                    }
+                }
+            ]
+        }<#= !hasWebhooks ? "" : "," #>
+<#+
+
+        if (hasWebhooks)
+        {
+
+#>
+        {
+            "name": "Webhooks",
+            "description": "Provides operations to manage webhooks on the service.",
+            "item": [
+                {
+                    "name": "Webhooks.GetWebhooksMetadata",
+                    "request": {
+                        "description": "Retrieves metadata about all webhooks available.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Webhooks.CreateSubscription",
+                    "request": {
+                        "description": "Creates a new webhook subscription.",
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"clientId\": \"{{clientApplicationId}}\",\n\t\"eventNames\": [\n\t\t\"Entity_Verb\"\n\t],\n\t\"callbackUrl\": \"{{callbackUrl}}\",\n\t\"active\": true,\n\t\"secret\": \"{{secret}}\"\n}"
+						},
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Webhooks.UpdateSubscription",
+                    "request": {
+                        "description": "Updates an existing webhook subscription",
+                        "method": "PUT",
+                        "header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"clientId\": \"{{clientApplicationId}}\",\n\t\"subscriptionId\": \"{{subscriptionId}}\",\n\t\"eventNames\": [\n\t\t\"Entity_Verb\"\n\t],\n\t\"callbackUrl\": \"{{callbackUrl}}\",\n\t\"active\": true,\n\t\"secret\": \"{{secret}}\"\n}"
+						},
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Webhooks.DeleteSubscription",
+                    "request": {
+                        "description": "Deletes a webhook subscription.",
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks/{{clientApplicationId}}/{{subscriptionId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks",
+								"{{clientApplicationId}}",
+								"{{subscriptionId}}"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Webhooks.DeleteSubscriptions",
+                    "request": {
+                        "description": "Deletes all webhook subscriptions for a client application.",
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks/{{clientApplicationId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks",
+								"{{clientApplicationId}}"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Webhooks.GetSubscriptions",
+                    "request": {
+                        "description": "Retrieves all webhook subscriptions for a client application.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks/{{clientApplicationId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks",
+								"{{clientApplicationId}}"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Webhooks.GetSubscription",
+                    "request": {
+                        "description": "Retrieves a webhook subscription.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks/{{clientApplicationId}}/{{subscriptionId}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks",
+								"{{clientApplicationId}}",
+								"{{subscriptionId}}"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Webhooks.PingSubscription",
+                    "request": {
+                        "description": "Pings a webhook subscription.",
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/webhooks/{{clientApplicationId}}/{{subscriptionId}}/ping",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webhooks",
+								"{{clientApplicationId}}",
+								"{{subscriptionId}}",
+								"ping"
+							]
+                        }
+                    }
+                }
+            ]
+        }
+<#+
+
+        }
+
+#>
+    ],
+<#+
+
+    if (model.AuthorizationMode.IsOn())
+    {
+
+#>
+    "auth": {
+        "type": "oauth2",
+        "oauth2": [
+            {
+                "key": "accessToken",
+                "value": "{{accessToken}}",
+                "type": "string"
+            },
+            {
+                "key": "tokenType",
+                "value": "Bearer",
+                "type": "string"
+            },
+            {
+                "key": "addTokenTo",
+                "value": "header",
+                "type": "string"
+            }
+        ]
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "id": "<#= UniqueIdentifiers.NewDeterministicGuid(model.Id.ToString() + "event") #>",
+                "type": "text/javascript",
+                "exec": [
+                    "let tokenUrl = pm.variables.get('tokenUrl');",
+                    "let clientId = pm.variables.get('clientId');",
+                    "let clientSecret = pm.variables.get('clientSecret');",
+                    "",
+                    "let getTokenRequest = {",
+                    "    method: 'POST',",
+                    "    url: tokenUrl,",
+                    "    body: {",
+                    "        mode: 'urlencoded',",
+                    "        urlencoded: [",
+                    "            { key: 'grant_type', value: 'client_credentials' },",
+                    "            { key: 'client_id', value: clientId },",
+                    "            { key: 'client_secret', value: clientSecret }",
+                    "        ]",
+                    "    }",
+                    "};",
+                    "",
+                    "pm.sendRequest(getTokenRequest, (err, response) => {",
+                    "    let jsonResponse = response.json(),",
+                    "        newAccessToken = jsonResponse.access_token;",
+                    "",
+                    "    console.log({ err, jsonResponse, newAccessToken })",
+                    "",
+                    "    pm.variables.set('accessToken', newAccessToken);",
+                    "});"
+                ]
+            }
+        }
+    ],
+<#+
+
+    }
+
+#>
+    "variable": [
+<#+
+
+    if (model.AuthorizationMode.IsOn())
+    {
+        OAuthClient oauthClient = model.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.ClientCredentials);
+
+#>
+        {
+            "id": "<#= UniqueIdentifiers.NewDeterministicGuid(model.Id.ToString() + "tokenUrl") #>",
+			"key": "tokenUrl",
+			"value": "https://stg-identity.primaverabss.com/connect/token",
+			"type": "string"
+        },
+        {
+            "id": "<#= UniqueIdentifiers.NewDeterministicGuid(model.Id.ToString() + "clientId") #>",
+			"key": "clientId",
+			"value": "<#= oauthClient.Name #>",
+			"type": "string"
+        },
+        {
+            "id": "<#= UniqueIdentifiers.NewDeterministicGuid(model.Id.ToString() + "clientSecret") #>",
+			"key": "clientSecret",
+			"value": "<#= oauthClient.Secret #>",
+			"type": "string"
+        },
+<#+
+
+    }
+
+#>
+        {
+            "id": "<#= UniqueIdentifiers.NewDeterministicGuid(model.Id.ToString() + "server") #>",
+			"key": "server",
+			"value": "https://localhost:20001",
+			"type": "string"
+        },
+        {
+            "id": "<#= UniqueIdentifiers.NewDeterministicGuid(model.Id.ToString() + "apiVersion") #>",
+			"key": "apiVersion",
+			"value": "<#= apiVersion #>",
+			"type": "string"
+        }
+    ]
+}
+<#+
+
+}
+
+// *** WriteControllerType
+
+public void WriteControllerType(ModelWriter modelWriter, ControllerType model)
+{
+
+#>
+        {
+            "name": "<#= model.Name #>",
+            "description": "<#= model.Summary #>",
+            "item": [
+<#+
+
+    if (model.Extensions().HasODataServerSide)
+    {
+        ControllerTypeAction oneAction = model.ChildActions.FirstOrDefault(i => i.ODataEnabled && i.Extensions().IsVisibleServerSide);
+
+        string route = new ActionRouteBuilder(oneAction)
+            .Build();
+
+        string[] parts = route.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        route = string.Join("/", parts.Take(parts.Length - 1));
+
+        route = route.Replace("{", "{{");
+        route = route.Replace("}", "}}");
+        route = route.Replace("{{version:apiVersion}}", "{{apiVersion}}");
+
+#>
+                {
+                    "name": "<#= model.Name #>.OData",
+                    "request": {
+                        "description": "Retrieves the OData service document.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}<#= route #>",
+							"host": [
+								"{{server}}"
+							],
+<#+
+
+    WritePath(modelWriter, route);
+
+#>
+                        }
+                    }
+                },
+                {
+                    "name": "<#= model.Name #>.OData.Metadata",
+                    "request": {
+                        "description": "Retrieves the OData metadata.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}<#= route #>/$metadata",
+							"host": [
+								"{{server}}"
+							],
+<#+
+
+    WritePath(modelWriter, route + "/$metadata");
+
+#>
+                        }
+                    }
+                },
+<#+
+
+    }
+
+    IList<ControllerTypeAction> actions = model.ChildActions
+        .Where(a => a.Visibility != ControllerTypeActionVisibility.ClientSide)
+        .OrderBy(a => a.Name)
+        .ToList();
+    
+    for (int i = 0; i < actions.Count; i++)
+    {
+        WriteControllerTypeAction(modelWriter, actions[i], i == actions.Count - 1);
+    }
+
+#>
+            ]
+        },
+<#+
+
+}
+
+// *** WriteControllerTypeAction
+
+public void WriteControllerTypeAction(ModelWriter modelWriter, ControllerTypeAction model, bool last)
+{
+    ActionRouteBuilder routeBuilder = new ActionRouteBuilder(model);
+
+    string route = routeBuilder.Build(true, false, false);
+    route = route.Replace("{", "{{");
+    route = route.Replace("}", "}}");
+    route = route.Replace("{{version:apiVersion}}", "{{apiVersion}}");
+
+    if (!model.IsApiVersionInUse(model.ServiceModel.Version))
+    {
+        string oldVersion = model.GetApiVersionsInUse().OrderByDescending(i => i).FirstOrDefault() ?? "???";
+        route = route.Replace("{{apiVersion}}", oldVersion);
+    }
+
+#>
+                {
+                    "name": "<#= model.ParentController.Name #>.<#= model.Name2 #>",
+                    "request": {
+                        "description": "<#= model.Summary #>",
+                        "method": "<#= model.HttpMethod.ToString().Transform().ToUpperCase() #>",
+<#+
+
+    WriteHeader(modelWriter, model);
+    WriteBody(modelWriter, model);
+
+#>
+                        "url": {
+                            "raw": "{{serverBaseAddress}}<#= route #>",
+							"host": [
+								"{{server}}"
+							],
+<#+
+
+    WritePath(modelWriter, route);
+
+#>
+                        }
+                    },
+                    "response": []
+                }<#= last ? "" : "," #>
+<#+
+
+}
+
+// *** WritePath
+
+public void WritePath(ModelWriter modelWriter, string route)
+{
+    string[] parts = route.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+#>
+							"path": [
+<#+
+
+    for (int i = 0; i < parts.Length; i++)
+    {
+        if (i < parts.Length - 1)
+        {
+
+#>
+								"<#= parts[i] #>",
+<#+
+        }
+        else
+        {
+
+#>
+								"<#= parts[i] #>"
+<#+
+
+        }
+    }
+
+#>
+							]
+<#+
+
+}
+
+// *** WriteHeader
+
+public void WriteHeader(ModelWriter modelWriter, ControllerTypeAction model)
+{
+    if (model.HttpMethod == ControllerTypeActionHttpMethodKind.Post || model.HttpMethod == ControllerTypeActionHttpMethodKind.Put)
+    {
+
+#>
+                        "header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+<#+
+
+    }
+    else
+    {
+
+#>
+                        "header": [],
+<#+
+
+    }
+}
+
+// *** WriteBody
+
+public void WriteBody(ModelWriter modelWriter, ControllerTypeAction model)
+{
+    // NOTES:
+    // Body is allowed for a single parameter
+    // if it is a model or if it is scalar or enumeration as long the cardinality is not single
+
+    string prototype = null;
+
+    ControllerTypeActionScalarParameter scalarParameter = model.ChildParameters?.OfType<ControllerTypeActionScalarParameter>().FirstOrDefault();
+    if (scalarParameter != null)
+    {
+        prototype = scalarParameter.GetJsonPrototype(true);
+    }
+
+    ControllerTypeActionEnumParameter enumParameter = model.ChildParameters?.OfType<ControllerTypeActionEnumParameter>().FirstOrDefault();
+    if (enumParameter != null)
+    {
+        prototype = enumParameter.GetJsonPrototype(true);
+    }
+
+    ControllerTypeActionModelParameter modelParameter = model.ChildParameters?.OfType<ControllerTypeActionModelParameter>().FirstOrDefault();
+    if (modelParameter != null)
+    {
+        prototype = modelParameter.GetJsonPrototype(true);
+    }
+
+    if (!string.IsNullOrWhiteSpace(prototype))
+    {
+        prototype = EscapeJson(prototype);
+
+#>
+                        "body": {
+                            "mode": "raw",
+							"raw": "<#= prototype #>"
+                        },
+<#+
+
+    }
+}
+
+// *** EscapseJson
+
+public string EscapeJson(string json)
+{
+    return json
+        .Replace("\"", "\\\"")
+        .Replace("\r", "")
+        .Replace("\n", "\\n")
+        .Replace("  ", "\\t");
+}
+
+#>

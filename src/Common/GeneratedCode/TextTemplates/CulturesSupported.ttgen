@@ -1,0 +1,457 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    (s, t) =>
+    {
+        ServiceModel source = s as ServiceModel;
+        
+        if (source == null)
+        {
+            return;
+        }
+
+        t.Namespace = new NamespaceModel(source.Namespace + ".Server.Common.Localization");
+
+        ClassModel dataClass = t.Namespace
+            .AddClass(new ClassModel("ExtendedCultureInfo")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Provides extended information about a culture.")
+            })
+                .AddProperty(new PropertyModel("BaseCulture", "string")
+                {
+                    Modifiers = PropertyModifiers.Internal,
+                    Documentation = new DocumentationModel("Gets the base culture (e.g. 'pt')."),
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel()
+                })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .ParentModelAs<ClassModel>()
+                .AddProperty(new PropertyModel("DefaultInstance", "string")
+                {
+                    Modifiers = PropertyModifiers.Internal,
+                    Documentation = new DocumentationModel("Gets the default culture instance (e.g. 'pt-PT')."),
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel()
+                })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .ParentModelAs<ClassModel>()
+                .AddProperty(new PropertyModel("Instances", "System.Collections.Generic.IEnumerable<string>")
+                {
+                    Modifiers = PropertyModifiers.Internal,
+                    Documentation = new DocumentationModel("Gets the culture instances (e.g. 'pt-PT', 'pt-AO', etc.)."),
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel()
+                })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .ParentModelAs<ClassModel>()
+            ;
+
+        t
+            .WithComment("Ignore Spelling: ao")
+            .WithComment("Ignore Spelling: cv")
+            .WithComment("Ignore Spelling: mz")
+            .WithComment("Ignore Spelling: ie")
+            .WithComment("Ignore Spelling: gb")
+            .WithComment("Ignore Spelling: ar")
+            .WithComment("Ignore Spelling: mx")
+            .WithComment("Ignore Spelling: ro")
+            .WithComment("Ignore Spelling: lu");
+
+        ClassModel culturesClass = t.Namespace
+            .AddClass(new ClassModel("CulturesSupported")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Static | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the cultures supported by the service.")
+            })
+                .WithField(new FieldModel("instance", "CulturesInstance", "new CulturesInstance()")
+                {
+                    Modifiers = FieldModifiers.Static
+                })
+                .WithConstant(new ConstantModel("PortugueseBaseCulture", "string", "\"pt\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Portuguese base culture.")
+                })
+                .WithConstant(new ConstantModel("PortugueseDefaultCulture", "string", "PortugueseFromPortugalCulture")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Portuguese culture.")
+                })
+                .WithConstant(new ConstantModel("PortugueseFromAngolaCulture", "string", "\"pt-ao\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Portuguese (Angola) culture.")
+                })
+                .WithConstant(new ConstantModel("PortugueseFromCapeVerdeCulture", "string", "\"pt-cv\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Portuguese (Cape Verde) culture.")
+                })
+                .WithConstant(new ConstantModel("PortugueseFromMozambiqueCulture", "string", "\"pt-mz\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Portuguese (Mozambique) culture.")
+                })
+                .WithConstant(new ConstantModel("PortugueseFromPortugalCulture", "string", "\"pt-pt\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Portuguese (Portugal) culture.")
+                })
+                .WithConstant(new ConstantModel("EnglishBaseCulture", "string", "\"en\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The English base culture.")
+                })
+                .WithConstant(new ConstantModel("EnglishDefaultCulture", "string", "EnglishFromUnitedStatesCulture")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The English default culture.")
+                })
+                .WithConstant(new ConstantModel("EnglishFromIrelandCulture", "string", "\"en-ie\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The English (Ireland) culture.")
+                })
+                .WithConstant(new ConstantModel("EnglishFromGreatBritainCulture", "string", "\"en-gb\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The English (G.B.) culture.")
+                })
+                .WithConstant(new ConstantModel("EnglishFromUnitedStatesCulture", "string", "\"en-us\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The English (U.S.) culture.")
+                })
+                .WithConstant(new ConstantModel("EnglishFromCanadaCulture", "string", "\"en-ca\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The English (Canada) culture.")
+                })
+                .WithConstant(new ConstantModel("SpanishBaseCulture", "string", "\"es\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Spanish base culture.")
+                })
+                .WithConstant(new ConstantModel("SpanishDefaultCulture", "string", "SpanishFromSpainCulture")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Spanish default culture.")
+                })
+                .WithConstant(new ConstantModel("SpanishFromArgentinaCulture", "string", "\"es-ar\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Spanish (Argentina) culture.")
+                })
+                .WithConstant(new ConstantModel("SpanishFromChileCulture", "string", "\"es-cl\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Spanish (Chile) culture.")
+                })
+                .WithConstant(new ConstantModel("SpanishFromMexicoCulture", "string", "\"es-mx\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Spanish (Mexico) culture.")
+                })
+                .WithConstant(new ConstantModel("SpanishFromSpainCulture", "string", "\"es-es\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Spanish (Spain) culture.")
+                })
+                .WithConstant(new ConstantModel("CatalanBaseCulture", "string", "\"ca\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Catalan base culture.")
+                })
+                .WithConstant(new ConstantModel("CatalanDefaultCulture", "string", "CatalanFromSpainCulture")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Catalan default culture.")
+                })
+                .WithConstant(new ConstantModel("CatalanFromSpainCulture", "string", "\"ca-es\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Catalan (Spain) culture.")
+                })
+                .WithConstant(new ConstantModel("ItalianBaseCulture", "string", "\"it\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Italian base culture.")
+                })
+                .WithConstant(new ConstantModel("ItalianDefaultCulture", "string", "ItalianFromItalyCulture")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Italian default culture.")
+                })
+                .WithConstant(new ConstantModel("ItalianFromItalyCulture", "string", "\"it-it\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Italian (Italy) culture.")
+                })
+                .WithConstant(new ConstantModel("ItalianFromSwitzerlandCulture", "string", "\"it-ch\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Italian (Switzerland) culture.")
+                })
+                .WithConstant(new ConstantModel("RomanianBaseCulture", "string", "\"ro\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Romanian base culture.")
+                })
+                .WithConstant(new ConstantModel("RomanianDefaultCulture", "string", "RomanianFromRomaniaCulture")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Romanian default culture.")
+                })
+                .WithConstant(new ConstantModel("RomanianFromRomaniaCulture", "string", "\"ro-ro\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The Romanian (Romania) culture.")
+                })
+                .WithConstant(new ConstantModel("FrenchBaseCulture", "string", "\"fr\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The French base culture.")
+                })
+                .WithConstant(new ConstantModel("FrenchDefaultCulture", "string", "FrenchFromFranceCulture")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The French default culture.")
+                })
+                .WithConstant(new ConstantModel("FrenchFromFranceCulture", "string", "\"fr-fr\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The French (France) culture.")
+                })
+                .WithConstant(new ConstantModel("FrenchFromBelgiumCulture", "string", "\"fr-be\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The French (Belgium) culture.")
+                })
+                .WithConstant(new ConstantModel("FrenchFromCanadaCulture", "string", "\"fr-ca\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The French (Canada) culture.")
+                })
+                .WithConstant(new ConstantModel("FrenchFromLuxembourgCulture", "string", "\"fr-lu\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The French (Switzerland) culture.")
+                })
+                .WithConstant(new ConstantModel("FrenchFromSwitzerlandCulture", "string", "\"fr-ch\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("The French (Luxembourg) culture.")
+                })
+                .WithProperty(new PropertyModel("DefaultCulture", "string", "Instance.DefaultCulture.DefaultInstance!")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Static,
+                    Documentation = new DocumentationModel("Gets the default culture.")
+                })
+                .WithProperty(new PropertyModel("Instance", "CulturesInstance", "instance")
+                {
+                    Modifiers = PropertyModifiers.Private | PropertyModifiers.Static,
+                    Documentation = new DocumentationModel("Gets the instance"),
+                })
+                .AddMethod(new MethodModel("Get", "System.Collections.Generic.IEnumerable<string>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel("Gets the supported cultures.")
+                    {
+                        Returns = "The supported cultures."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("includeBaseCultures", "bool")
+                    {
+                        DefaultValue = "true",
+                        Documentation = new DocumentationModel("A value indicating whether the base cultures should be included in the result.")
+                    })
+                    .WithParameter(new MethodParameterModel("includeInstanceCultures", "bool")
+                    {
+                        DefaultValue = "true",
+                        Documentation = new DocumentationModel("A value indicating whether the instance cultures should be included in the result.")
+                    })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("ToBaseCulture", "string")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel("Get the base culture for the specified culture.")
+                    {
+                        Returns = "The base culture."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("culture", "string?")
+                    {
+                        Documentation = new DocumentationModel("The culture.")
+                    })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("ToDefaultCulture", "string")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel("Get the default culture for the specified culture.")
+                    {
+                        Returns = "The default culture."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("culture", "string?")
+                    {
+                        Documentation = new DocumentationModel("The culture.")
+                    })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("ToSupportedCulture", "string")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel("Converts the specified culture to one of the supported cultures.")
+                    {
+                        Returns = "The supported culture."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("culture", "string?")
+                    {
+                        Documentation = new DocumentationModel("The culture.")
+                    })
+                    .WithParameter(new MethodParameterModel("includeBaseCultures", "bool")
+                    {
+                        DefaultValue = "true",
+                        Documentation = new DocumentationModel("A value indicating whether the base cultures should be considered.")
+                    })
+                    .WithParameter(new MethodParameterModel("includeInstanceCultures", "bool")
+                    {
+                        DefaultValue = "true",
+                        Documentation = new DocumentationModel("A value indicating whether the instance cultures should be considered.")
+                    })
+                    .ParentModelAs<ClassModel>();
+
+        ClassModel instanceBaseClass = t.Namespace
+            .AddClass(new ClassModel("CulturesInstanceBase")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the base class of the instance class that allows overriding the behavior of <see cref=\"CulturesSupported\"/>.")
+            })
+                .WithProperty(new PropertyModel("SupportedCultures", "System.Collections.Generic.IEnumerable<ExtendedCultureInfo>")
+                {
+                    Modifiers = PropertyModifiers.Internal | PropertyModifiers.Virtual,
+                    Documentation = new DocumentationModel("Gets the list of the supported cultures."),
+                    GetAccessor = new PropertyGetAccessorModel()
+                })
+                .WithProperty(new PropertyModel("DefaultCulture", "ExtendedCultureInfo")
+                {
+                    Modifiers = PropertyModifiers.Internal | PropertyModifiers.Virtual,
+                    Documentation = new DocumentationModel("Gets the default culture."),
+                    GetAccessor = new PropertyGetAccessorModel()
+                })
+                .WithConstructor(new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"CulturesInstanceBase\"/> class.")
+                });
+
+        ClassModel instanceClass = t.Namespace
+            .AddClass(new ClassModel("CulturesInstance")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the instance class that allows overriding the behavior of <see cref=\"CulturesSupported\"/>."),
+                Inheritance = "CulturesInstanceBase"
+            })
+                .WithConstructor(new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Internal,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"CulturesInstance\"/> class.")
+                });
+    });
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel();
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Add writers
+
+controller.AddModelWriter<PropertyGetAccessorModel>(
+    (w, m) =>
+    {
+        PropertyModel parentProperty = m.ParentModelAs<PropertyModel>();
+        ClassModel parentClass = parentProperty.ParentModelAs<ClassModel>();
+
+        return parentClass.Name.EqualsNoCase("CulturesInstanceBase") && parentProperty.Name.EqualsNoCase("DefaultCulture");
+    }, 
+    this.WriteGetDefaultCultureInstance);
+
+controller.AddModelWriter<PropertyGetAccessorModel>(
+    (w, m) =>
+    {
+        PropertyModel parentProperty = m.ParentModelAs<PropertyModel>();
+        ClassModel parentClass = parentProperty.ParentModelAs<ClassModel>();
+
+        return parentClass.Name.EqualsNoCase("CulturesSupported") && parentProperty.Name.EqualsNoCase("DefaultCulture");
+    }, 
+    this.WriteGetDefaultCulture);
+
+controller.AddModelWriter<PropertyGetAccessorModel>(
+    (w, m) =>
+    {
+        PropertyModel parentProperty = m.ParentModelAs<PropertyModel>();
+        ClassModel parentClass = parentProperty.ParentModelAs<ClassModel>();
+
+        return parentClass.Name.EqualsNoCase("CulturesInstanceBase") && parentProperty.Name.EqualsNoCase("SupportedCultures");
+    }, 
+    this.WriteGetSupportedCulturesInstance);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentModel = m.ParentModelAs<MethodModel>();
+        ClassModel parentClass = parentModel.ParentModelAs<ClassModel>();
+
+        return parentClass.Name.EqualsNoCase("CulturesSupported") && parentModel.Name.EqualsNoCase("Get");
+    }, 
+    this.WriteGet);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentModel = m.ParentModelAs<MethodModel>();
+        ClassModel parentClass = parentModel.ParentModelAs<ClassModel>();
+
+        return parentClass.Name.EqualsNoCase("CulturesSupported") && parentModel.Name.EqualsNoCase("ToBaseCulture");
+    }, 
+    this.WriteToBaseCulture);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentModel = m.ParentModelAs<MethodModel>();
+        ClassModel parentClass = parentModel.ParentModelAs<ClassModel>();
+
+        return parentClass.Name.EqualsNoCase("CulturesSupported") && parentModel.Name.EqualsNoCase("ToDefaultCulture");
+    }, 
+    this.WriteToDefaultCulture);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentModel = m.ParentModelAs<MethodModel>();
+        ClassModel parentClass = parentModel.ParentModelAs<ClassModel>();
+
+        return parentClass.Name.EqualsNoCase("CulturesSupported") && parentModel.Name.EqualsNoCase("ToSupportedCulture");
+    }, 
+    this.WriteToSupportedCulture);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

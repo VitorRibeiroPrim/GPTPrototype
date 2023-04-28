@@ -1,0 +1,523 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Services.Extensions</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.RES_Exception_AddressMustBeBaseAddress">
+            <summary>
+              Looks up a localized string similar to The address field must be a base address..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.RES_Exception_ApiVersionRequired">
+            <summary>
+              Looks up a localized string similar to The service catalog API version field is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.RES_Exception_RegistrationEndpointInvalid">
+            <summary>
+              Looks up a localized string similar to The registration endpoint field is invalid..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.RES_Exception_RegistrationEndpointRequired">
+            <summary>
+              Looks up a localized string similar to The registration endpoint field is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.RES_Exception_ServiceIdRequired">
+            <summary>
+              Looks up a localized string similar to The service identifier is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.RES_Exception_ServiceNameRequired">
+            <summary>
+              Looks up a localized string similar to The service name is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.Properties.Resources.RES_Exception_ServiceVersionRequired">
+            <summary>
+              Looks up a localized string similar to The service version is required..
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService">
+            <summary>
+            Defines a background service that registers at startup and periodically to
+            keep the registration alive.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Hosting.TimedBackgroundService" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.Enabled">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.WaitPeriod">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.HandleExceptions">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.UseLocking">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.DelayedExecutionTime">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.#ctor(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.Initialize(System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.BackgroundServices.RegistrationService.ExecuteWorkAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.EndpointsOptions">
+            <summary>
+            Defines the options used to configure the service catalog endpoints.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.EndpointsOptions.Version">
+            <summary>
+            Gets or sets the API version.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.EndpointsOptions.RegistrationEndpoint">
+            <summary>
+            Gets or sets the registration endpoint.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.EndpointsOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.EndpointsOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationOptions">
+            <summary>
+            Defines the options used to configure the service registration.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationOptions.KeepAliveInterval">
+            <summary>
+            Gets or sets the interval (in hours) between service registrations.
+            </summary>
+            <remarks>
+            The service will register itself with the catalog at startup and, after that,
+            periodically, according to this interval.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions">
+            <summary>
+            Defines the options used to configure the service catalog services.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions.Address">
+            <summary>
+            Gets or sets the service catalog address.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions.Endpoints">
+            <summary>
+            Gets or sets the service endpoints configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions.Registration">
+            <summary>
+            Gets or sets the service registration configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions.ServiceDescription">
+            <summary>
+            Gets or sets the service description configuration options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type
+            that allows configuring the service catalog.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogServiceCollectionExtensions.AddServiceCatalog(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the services that allow microservices to use the service catalog, using configuration defined
+            by <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions"/>.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogServiceCollectionExtensions.AddServiceCatalog(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogOptions})">
+            <summary>
+            Adds the services that allow microservices to use the service catalog, using the
+            specified configuration options.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions">
+            <summary>
+            Defines the options used to configure the description of the service for registration.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions.Id">
+            <summary>
+            Gets or sets the service identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions.Name">
+            <summary>
+            Gets or sets the service name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions.Version">
+            <summary>
+            Gets or sets the service version.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions.Properties">
+            <summary>
+            Gets or sets the service properties.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.IRegistrationClient">
+            <summary>
+            Defines the interface of a registration client.
+            This client allows registering a service in the service catalog.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.IRegistrationClient.RegisterServiceAsync(Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest,System.Threading.CancellationToken)">
+            <summary>
+            Registers a service with the service catalog.
+            </summary>
+            <param name="request">The registration request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The registration response.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationClient">
+             <summary>
+             Defines a client that allows registering a service in the service catalog.
+             </summary>
+             <seealso cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.IRegistrationClient" />
+             <example>
+             <code>
+             <![CDATA[
+             RegistrationClient client = new RegistrationClient(
+                 new Uri("https://servicecatalg.com"));
+             
+             RegistrationResponse response = await client.RegisterServiceAsync(
+                 new RegistrationRequest()
+                 {
+                     Id = "",
+                     Name = "",
+                     Version = "",
+                     Properties = new Dictionary<string, string>()
+                     {
+                         ["Property1"] = "value"
+                     }
+                 })
+                 .ConfigureAwait(false);
+             
+             if (response.IsError)
+             {
+                 // (...)
+             }
+            
+             // service is registered...
+             ]]>
+             </code>
+             </example>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationClient.#ctor(System.Uri,Primavera.Hydrogen.Services.Extensions.ServiceCatalog.EndpointsOptions,System.Net.Http.HttpMessageHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationClient"/> class.
+            </summary>
+            <param name="address">The service catalog base address.</param>
+            <param name="endpointsOptions">The service catalog endpoints options.</param>
+            <param name="handler">The <see cref="T:System.Net.Http.HttpMessageHandler"/> that should be used.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationClient.RegisterServiceAsync(Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest">
+            <summary>
+            Defines a request to register a service with the service catalog.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest.Id">
+            <summary>
+            Gets or sets the service identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest.Name">
+            <summary>
+            Gets or sets the service name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest.Version">
+            <summary>
+            Gets or sets the service version.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest.Properties">
+            <summary>
+            Gets or sets the service properties.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest.FromServiceDescription(Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions)">
+            <summary>
+            Returns a <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest"/> instance equivalent to the specified
+            <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions"/> instance.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions"/> instance.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationRequest"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse">
+            <summary>
+            Defines a response to a request to register a service with the service catalog.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse.IsError">
+            <summary>
+            Gets a value indicating whether the response describes an error.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse.ErrorType">
+            <summary>
+            Gets the type of the error (if <see cref="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse.IsError"/> is true).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse.HttpStatusCode">
+            <summary>
+            Gets the HTTP status code returned by the endpoint.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse.HttpReasonPhrase">
+            <summary>
+            Gets the HTTP reason phrase (if any) returned by the endpoint.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse.ProtocolError">
+            <summary>
+            Gets the protocol error received (if <see cref="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponse.ErrorType"/> is <see cref="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponseErrorType.Protocol"/>.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponseErrorType">
+            <summary>
+            Defines the type of error received from the registration endpoint.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponseErrorType.None">
+            <summary>
+            No error.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponseErrorType.Protocol">
+            <summary>
+            The endpoint returned an error.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.RegistrationResponseErrorType.Http">
+            <summary>
+            The endpoint returned an HTTP error.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext">
+            <summary>
+            Defines a <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> that uses the source
+            generator to speed up serialization.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.IDictionaryStringString">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.RegistrationRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.SerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants">
+            <summary>
+            Defines constants used by the Service Catalog.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Endpoints">
+            <summary>
+            Defines constants concerning endpoints.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Endpoints.Version">
+            <summary>
+            The Service Catalog API version.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Endpoints.Registration">
+            <summary>
+            The registration endpoint.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration">
+            <summary>
+            Defines constants concerning registration.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties">
+            <summary>
+            Defines constants concerning that identify well-known properties.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.FrameworkVersion">
+            <summary>
+            The property that holds the Lithium Framework version in use.
+            </summary>
+            <remarks>
+            Example: "4".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.BinariesVersion">
+            <summary>
+            The property that holds the service binaries version.
+            </summary>
+            <remarks>
+            Example: "4.0.123".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.InformationalVersion">
+            <summary>
+            The property that holds the service informational version.
+            </summary>
+            <remarks>
+            Example: "18-05-2022 14:05".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.Copyright">
+            <summary>
+            The property that holds the service informational version.
+            </summary>
+            <remarks>
+            Example: "Copyright © 2018-2022 PRIMAVERA. All rights reserved.".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.ApiVersions">
+            <summary>
+            The property that holds the API versions supported by the service.
+            </summary>
+            <remarks>
+            Example: "4.0;3.0;2.0;1.0".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.ApiScopes">
+            <summary>
+            The property that holds the API scopes supported by the service.
+            </summary>
+            <remarks>
+            Example: "scope1;scope2".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.AuthorizationPolicies">
+            <summary>
+            The property that holds the authorization policies defined in the service.
+            </summary>
+            <remarks>
+            Example: "policy1:Scope;policy2:Custom".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.Webhooks">
+            <summary>
+            The property that holds the webhooks defined in the service.
+            </summary>
+            <remarks>
+            Example: "Customer_Created;Customer_Deleted".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.Dependencies">
+            <summary>
+            The property that holds the dependencies of the service.
+            </summary>
+            <remarks>
+            Example: "TableStorage;BlobStorage".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.ServiceDependencies">
+            <summary>
+            The property that holds the service dependencies of the service.
+            </summary>
+            <remarks>
+            Example: "Certificates;Notifications".
+            </remarks>
+        </member>
+        <member name="F:Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.BackgroundServices">
+            <summary>
+            The property that holds the background services used by the service.
+            </summary>
+            <remarks>
+            Example: "Service1:Timed;Service2:Queued;Service3:Normal".
+            </remarks>
+        </member>
+    </members>
+</doc>

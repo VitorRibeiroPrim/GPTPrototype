@@ -1,0 +1,71 @@
+﻿<#+
+
+// *** WriteClientControllerProperty
+
+public void WriteClientControllerProperty(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+    PropertyModel parentProperty = model.ParentModelAs<PropertyModel>();
+
+#>
+        get
+        {
+            if (this.<#= parentProperty.Name.Transform().ToCamelCase() #> == null)
+            {
+                this.<#= parentProperty.Name.Transform().ToCamelCase() #> = new <#= parentProperty.Name #>ClientController(this);
+            }
+
+            return this.<#= parentProperty.Name.Transform().ToCamelCase() #>;
+        }
+<#+
+
+}
+
+// *** WriteConstructor
+
+public void WriteConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.Initialize(clientOptions);
+<#+
+
+}
+
+// *** WriteIsRetriable
+
+public void WriteIsRetriable(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+            bool retry = base.IsRetriable(context);
+
+            // NOTES:
+            // Do not retry the probe and diagnostics endpoints when failing with 503
+
+            if (retry && context.Response.StatusCode == 503)
+            {
+                string? requestUri = context.Request.Uri?.AbsoluteUri;
+
+                if (requestUri.ContainsNoCase(Metadata.Routes.Monitoring.Probe) || requestUri.ContainsNoCase(Metadata.Routes.Monitoring.Diagnostics))
+                {
+                    return false;
+                }
+            }
+
+            return retry;
+<#+
+
+}
+
+// *** WriteGetResponseClassifier
+
+public void WriteGetResponseClassifier(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return new ResponseClassifier();
+<#+
+
+}
+
+#>

@@ -1,0 +1,80 @@
+﻿<#+
+
+internal class ModelsResourcesTransformation : ServiceModelTransformation<ResourcesFileModel>
+{
+    #region Public Properties
+
+    // NOTES:
+    // This property indicates that the transformation is being used to generate client-side code
+    // Otherwise it is server-side
+
+    public bool ClientSide
+    {
+        get;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public ModelsResourcesTransformation(bool clientSide)
+    {
+        this.ClientSide = clientSide;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, ResourcesFileModel targetModel)
+    {
+        ModelType modelType = sourceElement as ModelType;
+        if (modelType != null)
+        {
+            return this.ClientSide ? modelType.Extensions().IsVisibleClientSide : modelType.Extensions().IsVisibleServerSide;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public override void Transform(DomainModelElement sourceElement, ResourcesFileModel targetModel)
+    {
+        if (targetModel == null)
+        {
+            return;
+        }
+
+        if (sourceElement is ModelType modelType)
+        {
+            foreach (ModelTypeProperty modelTypeProperty in modelType.ChildProperties.OrderBy(m => m.Name))
+            {
+                this.TransformModelTypePropertyDisplay(modelTypeProperty, targetModel);
+
+                // NOTES:
+                // Validation resources are not generated and rely on the ones on Hydrogen
+                //
+                // this.TransformModelTypePropertyValidation(modelTypeProperty, targetModel);
+            }
+        }
+    }
+
+    #endregion
+
+    // *** TransformModelTypePropertyDisplay
+
+    private void TransformModelTypePropertyDisplay(ModelTypeProperty modelTypeProperty, ResourcesFileModel targetModel)
+    {
+        targetModel.
+            WithResource(new ResourceModel(
+                "RES_Display_{0}_{1}"
+                    .Format(
+                        modelTypeProperty.ParentModel.Name,
+                        modelTypeProperty.Name),
+                modelTypeProperty.DisplayName));
+    }
+
+}
+
+#>

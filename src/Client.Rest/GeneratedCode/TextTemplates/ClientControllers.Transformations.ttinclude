@@ -1,0 +1,427 @@
+﻿<#+
+
+// *** TransformController
+
+public void TransformController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ControllerType sourceModel = sourceElement as ControllerType;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (sourceModel.Visibility == ControllerTypeVisibility.ServerSide)
+    {
+        return;
+    }
+
+    if (!sourceModel.ChildActions.Any(a => a.IsApiVersionInUse(sourceModel.ServiceModel.Version)))
+    {
+        return;
+    }
+
+    ClassModifiers modifiers = ClassModifiers.Internal | ClassModifiers.Partial;
+
+    // Base class for controller
+
+    ClassModel baseClassModel = targetModel.Namespace.AddClass(new ClassModel(sourceModel.Name + "ClientControllerBase")
+    {
+        Modifiers = modifiers | ClassModifiers.Abstract,
+        Inheritance = "I{0}ClientController".Format(sourceModel.Name),
+        Documentation = new DocumentationModel(sourceModel.Summary)
+        {
+            SeeAlso = new List<string>(new string[] { "I{0}ClientController".Format(sourceModel.Name) })
+        }
+    })
+        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+        .WithField(new FieldModel("client", "{0}ClientBase".Format(sourceModel.ServiceModel.Name))
+        {
+            Modifiers = FieldModifiers.Protected,
+            Documentation = new DocumentationModel("The service client instance.")
+        })
+        .AddConstructor(new ConstructorModel()
+        {
+            Modifiers = ConstructorModifiers.Protected,
+            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ClientControllerBase\" /> class.".Format(sourceModel.Name))
+        })
+            .WithParameter(new MethodParameterModel("client", "{0}ClientBase".Format(sourceModel.ServiceModel.Name))
+            {
+                Documentation = new DocumentationModel("The service client.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("Initialize", "void")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Performs additional initialization.")
+        })
+            .ParentModelAs<ClassModel>();
+
+    if (!string.IsNullOrEmpty(sourceModel.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = sourceModel.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            baseClassModel.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+
+    // Class for controller
+
+    ClassModel classModel = targetModel.Namespace.AddClass(new ClassModel(sourceModel.Name + "ClientController")
+    {
+        Modifiers = modifiers,
+        Inheritance = "{0}ClientControllerBase".Format(sourceModel.Name),
+        Documentation = new DocumentationModel(sourceModel.Summary)
+        {
+            SeeAlso = new List<string>(new string[] { "{0}ClientControllerBase".Format(sourceModel.Name) })
+        }
+    })
+        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+        .AddConstructor(new ConstructorModel()
+        {
+            Modifiers = ConstructorModifiers.Public,
+            Inheritance = "base(client)",
+            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ClientController\" /> class.".Format(sourceModel.Name))
+        })
+            .WithParameter(new MethodParameterModel("client", "{0}ClientBase".Format(sourceModel.ServiceModel.Name))
+            {
+                Documentation = new DocumentationModel("The service client.")
+            })
+            .ParentModelAs<ClassModel>();
+
+    // Controller actions
+
+    foreach (ControllerTypeAction action in sourceModel.ChildActions
+        .Where(a => a.ParentController.Visibility != ControllerTypeVisibility.ServerSide && a.Visibility != ControllerTypeActionVisibility.ServerSide)
+        .OrderBy(a => a.Name2))
+    {
+        this.TransformControllerAction(action, targetModel, baseClassModel);
+    }
+}
+
+// *** TransformControllerAction
+
+public void TransformControllerAction(ControllerTypeAction sourceModel, CSharpFileModel targetModel, ClassModel classModel)
+{
+    ServiceModel serviceModel = sourceModel.ServiceModel;
+
+    string returnType = sourceModel.Extensions().AsCSharpType("Client.Rest.Models", true);
+    string odataReturnType = "???";
+
+    if (sourceModel.ODataEnabled)
+    {
+        odataReturnType = sourceModel.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+        returnType = $"Primavera.Hydrogen.Rest.ODataResult<{odataReturnType}>";
+    }
+    
+    if (string.IsNullOrEmpty(returnType))
+    {
+        returnType = "Primavera.Hydrogen.Rest.Client.RestServiceResult";
+    }
+    else
+    {
+        returnType = "Primavera.Hydrogen.Rest.Client.RestServiceResult<{0}>".Format(returnType);
+    }
+
+    MethodModel method1 = classModel.AddMethod(
+        new MethodModel(sourceModel.Name2 + "Async", "System.Threading.Tasks.Task<{0}>".Format(returnType))
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        });
+
+    method1.Facets["Action"] = sourceModel;
+    method1.Facets["MethodKind"] = "Cancellation";
+
+    if (!sourceModel.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in sourceModel.ParentController.ChildParameters)
+        {
+            MethodParameterModel parameterModel = method1.AddParameter(
+                new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true)));
+
+            this.AddControllerParameterCustomAttributes(parameter, parameterModel);
+        }
+    }
+
+    foreach (ControllerTypeActionParameter parameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide))
+    {
+        MethodParameterModel parameterModel = method1.AddParameter(
+            new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true))
+            {
+                DefaultValue = NormalizeControllerActionParameterDefaultValue(parameter, "Client.Rest.Models")
+            });
+
+        this.AddControllerActionParameterCustomAttributes(parameter, parameterModel);
+    }
+
+    if (sourceModel.ODataEnabled)
+    {
+        if (sourceModel.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+        {
+            method1.AddParameter(
+                new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>")
+                {
+                    Documentation = new DocumentationModel("The OData query options.")
+                });
+        }
+        else
+        {
+            method1.AddParameter(
+                new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>?")
+                {
+                    DefaultValue = "null",
+                    Documentation = new DocumentationModel("The OData query options.")
+                });
+        }
+    }
+
+    method1.AddParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+    {
+        DefaultValue = "default"
+    });
+
+    MethodModel method2 = classModel.AddMethod(new MethodModel(sourceModel.Name2, returnType)
+    {
+        Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+        Documentation = new DocumentationModel(true)
+    });
+
+    method2.Facets["Action"] = sourceModel;
+    method2.Facets["MethodKind"] = "Sync";
+
+    if (!sourceModel.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in sourceModel.ParentController.ChildParameters)
+        {
+            MethodParameterModel parameterModel = method2.AddParameter(
+                new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true)));
+
+            this.AddControllerParameterCustomAttributes(parameter, parameterModel);
+        }
+    }
+
+    foreach (ControllerTypeActionParameter parameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide))
+    {
+        MethodParameterModel parameterModel = method2.AddParameter(
+            new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true))
+            {
+                DefaultValue = NormalizeControllerActionParameterDefaultValue(parameter, "Client.Rest.Models")
+            });
+
+        this.AddControllerActionParameterCustomAttributes(parameter, parameterModel);
+    }
+
+    if (sourceModel.ODataEnabled)
+    {
+        if (sourceModel.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+        {
+            method2.AddParameter(
+                new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>")
+                {
+                    Documentation = new DocumentationModel("The OData query options.")
+                });
+        }
+        else
+        {
+            method2.AddParameter(
+                new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>?")
+                {
+                    DefaultValue = "null",
+                    Documentation = new DocumentationModel("The OData query options.")
+                });
+        }
+    }
+
+    bool generateCore = false;
+
+    if (sourceModel.ParentController.Visibility == ControllerTypeVisibility.ClientSide && !sourceModel.ParentController.GenerateClientSideImplementation)
+    {
+        generateCore = true;
+    }
+    else if (sourceModel.Visibility == ControllerTypeActionVisibility.ClientSide && !sourceModel.GenerateClientSideImplementation)
+    {
+        generateCore = true;
+    }
+
+    if (generateCore)
+    {
+        MethodModel method3 = classModel.AddMethod(
+            new MethodModel(sourceModel.Name2 + "CoreAsync", "System.Threading.Tasks.Task<{0}>".Format(returnType))
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Abstract,
+                Documentation = new DocumentationModel(sourceModel.Summary)
+                {
+                    Returns = "The operation result."
+                }
+            });
+
+        method3.Facets["Action"] = sourceModel;
+        method3.Facets["MethodKind"] = "Cancellation";
+
+        foreach (ControllerTypeActionParameter parameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide))
+        {
+            method3.AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase() , parameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true))
+            {
+                DefaultValue = NormalizeControllerActionParameterDefaultValue(parameter, "Client.Rest.Models")
+            });
+        }
+
+        if (sourceModel.ODataEnabled)
+        {
+            if (sourceModel.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+            {
+                method3.AddParameter(
+                    new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>")
+                    {
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+            }
+            else
+            {
+                method3.AddParameter(
+                    new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>?")
+                    {
+                        DefaultValue = "null",
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+            }
+        }
+
+        method3.AddParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+        {
+            DefaultValue = "default"
+        });
+    }
+    else
+    {
+        MethodModel methodRoute = classModel.AddMethod(
+            new MethodModel($"Configure{sourceModel.Name2}Route", "void")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Configures the dictionary used to set the action parameters in the route.")
+            })
+                .WithParameter(
+                    new MethodParameterModel("routeParameters", "System.Collections.Generic.IDictionary<string, object?>")
+                    {
+                        Documentation = new DocumentationModel("The dictionary used to set the action parameters in the route.")
+                    });
+
+        MethodModel methodHeaders = classModel.AddMethod(
+            new MethodModel($"Configure{sourceModel.Name2}Headers", "void")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Configures the dictionary used to set the action parameters in the headers.")
+            })
+                .WithParameter(
+                    new MethodParameterModel("headers", "System.Collections.Generic.IDictionary<string, string?>")
+                    {
+                        Documentation = new DocumentationModel("The dictionary used to set the action parameters in the headers.")
+                    });
+    }
+
+    if (!string.IsNullOrEmpty(sourceModel.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = sourceModel.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            method1.WithAttribute(
+                new AttributeModel(customAttribute));
+            method2.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+
+    MethodModel methodValidation = classModel.AddMethod(
+        new MethodModel($"Validate{sourceModel.Name2}")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Validates the action parameters.")
+            {
+                Remarks = "Override this method to implement custom validations."
+            }
+        });
+
+    if (!sourceModel.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in sourceModel.ParentController.ChildParameters)
+        {
+            MethodParameterModel parameterModel = methodValidation.AddParameter(
+                new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true))
+                {
+                    Documentation = new DocumentationModel(parameter.Summary)
+                });
+        }
+    }
+
+    foreach (ControllerTypeActionParameter parameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide))
+    {
+        MethodParameterModel parameterModel = methodValidation.AddParameter(
+            new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true))
+            {
+                Documentation = new DocumentationModel(parameter.Summary)
+            });
+    }
+
+    if (sourceModel.ODataEnabled)
+    {
+        if (sourceModel.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+        {
+            methodValidation.AddParameter(
+                new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>")
+                {
+                    Documentation = new DocumentationModel("The OData query options.")
+                });
+        }
+        else
+        {
+            methodValidation.AddParameter(
+                new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>?")
+                {
+                    DefaultValue = "null",
+                    Documentation = new DocumentationModel("The OData query options.")
+                });
+        }
+    }
+}
+
+private void AddControllerParameterCustomAttributes(ControllerTypeParameter parameter, MethodParameterModel parameterModel)
+{
+    if (!string.IsNullOrEmpty(parameter.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = parameter.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            parameterModel.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+}
+
+private void AddControllerActionParameterCustomAttributes(ControllerTypeActionParameter parameter, MethodParameterModel parameterModel)
+{
+    if (!string.IsNullOrEmpty(parameter.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = parameter.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            parameterModel.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+}
+
+#>

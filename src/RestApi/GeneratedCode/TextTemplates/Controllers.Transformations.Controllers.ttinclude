@@ -1,0 +1,1098 @@
+﻿<#+
+
+// *** TransformController
+
+public void TransformController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ControllerType sourceModel = sourceElement as ControllerType;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    // Ignore?
+
+    if (sourceModel.Visibility == ControllerTypeVisibility.ClientSide)
+    {
+        return;
+    }
+
+    // Base class
+
+    string baseInheritance = $"CustomApiControllerBase, I{sourceModel.Name}Controller";
+
+    if (sourceModel.Extensions().HasODataServerSide)
+    {
+        baseInheritance = $"CustomApiODataControllerBase, I{sourceModel.Name}Controller";
+    }
+
+    ClassModel baseClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("{0}ControllerBase".Format(sourceModel.Name))
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+                Inheritance = baseInheritance,
+                Documentation = new DocumentationModel(sourceModel.Summary)
+                {
+                    Remarks = "This is the base class of the MVC controller."
+                }
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithProperty(
+                new PropertyModel("Logger", "Microsoft.Extensions.Logging.ILogger", $"this.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<{sourceModel.Name}ControllerBase>>()")
+                {
+                    Documentation = new DocumentationModel("Gets the logger."),
+                    Modifiers = PropertyModifiers.Protected,
+                    Facets = new Dictionary<string, object>()
+                    {
+                        ["BaseControllerLogger"] = true,
+                        ["ControllerName"] = sourceModel.Name
+                    }
+                })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ControllerBase\" /> class.".Format(sourceModel.Name))
+                })
+                .ParentModelAs<ClassModel>();
+
+    if (!string.IsNullOrEmpty(sourceModel.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = sourceModel.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            baseClassModel.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+
+    IList<string> controllerApiVersions = sourceModel.GetApiVersionsInUse();
+
+    foreach (string controllerApiVersion in controllerApiVersions)
+    {
+        baseClassModel.WithAttribute(
+            new AttributeModel("Microsoft.AspNetCore.Mvc.ApiVersion(\"{0}\")".Format(controllerApiVersion)));
+    }
+
+    if (sourceModel.AccessModifier != ControllerTypeAccessModifier.Public)
+    {
+        baseClassModel
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ApiExplorerSettings(IgnoreApi = true)"));
+    }
+
+    foreach (ControllerTypeAction action in sourceModel.ChildActions.OrderBy(n => n.Name2))
+    {
+        this.TransformControllerAction(action, baseClassModel);
+    }
+
+    // Class
+
+    ClassModel classModel = targetModel.Namespace
+        .AddClass(new ClassModel("{0}Controller".Format(sourceModel.Name))
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+            Inheritance = "{0}ControllerBase".Format(sourceModel.Name),
+            Documentation = new DocumentationModel(sourceModel.Summary)
+            {
+                Remarks = "This is the MVC controller."
+            }
+        })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)"))
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base()",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}Controller\" /> class.".Format(sourceModel.Name))
+            })
+                .ParentModelAs<ClassModel>()
+        ;
+}
+
+// *** TransformControllerAction
+
+public void TransformControllerAction(ControllerTypeAction action, ClassModel classModel)
+{
+    if (action.Visibility == ControllerTypeActionVisibility.ClientSide)
+    {
+        return;
+    }
+
+    IList<string> versions = action.GetApiVersionsInUse();
+
+    bool onlyNew = versions.All(i => this.ApiVersionIsNew(action.ServiceModel, i));
+    bool onlyLegacy = versions.All(i => this.ApiVersionIsLegacy(action.ServiceModel, i));
+    bool generateLegacy = !onlyLegacy && !onlyNew;
+
+    this.TransformControllerAction(action, classModel, onlyNew, onlyLegacy, generateLegacy);
+}
+
+private void TransformControllerAction(ControllerTypeAction action, ClassModel classModel, bool onlyNew, bool onlyLegacy, bool generateLegacy)
+{
+    ServiceModel serviceModel = action.ServiceModel;
+
+    // Action method
+
+    MethodModel actionMethod = classModel
+        .AddMethod(
+            new MethodModel($"{action.Name2}Async", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel(true)
+            })
+            .WithAttribute(new AttributeModel("{0}(Metadata.Routes.{1}.{2})".Format(this.GetMethodAttribute(action.HttpMethod), action.ParentController.Name, action.Name2)));
+
+    if (AuthorizationHelper.IsAuthorizationOn(action))
+    {
+        string policy = AuthorizationHelper.GetPolicy(action);
+        if (!string.IsNullOrEmpty(policy))
+        {
+            actionMethod
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Authorization.Authorize(Common.Constants.Policies.{0})".Format(policy)));
+        }
+    }
+
+    if (action.ODataEnabled)
+    {
+        this.AddODataQueryAttribute(action, actionMethod);
+    }
+    else if (action.ParentController.Extensions().HasODataServerSide)
+    {
+        this.AddODataIgnoredAttribute(action, actionMethod);
+    }
+
+    IList<string> controllerActionApiVersions = action.GetApiVersionsInUse();
+
+    foreach (string controllerActionApiVersion in controllerActionApiVersions)
+    {
+        if (onlyNew || onlyLegacy)
+        {
+            actionMethod.WithAttribute(
+                new AttributeModel("Microsoft.AspNetCore.Mvc.ApiVersion(\"{0}\")".Format(controllerActionApiVersion)));
+        }
+        else
+        {
+            ApiVersion apiVersion = serviceModel.ApiVersions.FirstOrDefault(i => i.Version.EqualsNoCase(controllerActionApiVersion));
+
+            if (apiVersion == null || apiVersion.ErrorResponse == ErrorResponseKind.RestProblemDetails)
+            {
+                actionMethod.WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.ApiVersion(\"{0}\")".Format(controllerActionApiVersion)));
+            }
+        }
+    }
+
+    this.TransformControllerActionProducesAttributes(action, actionMethod, !onlyLegacy);
+
+    actionMethod.Facets["MethodKind"] = "Action";
+    actionMethod.Facets["Action"] = action;
+
+    if (!string.IsNullOrEmpty(action.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = action.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            actionMethod.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+
+    // Action implementation method
+
+    MethodModel implementationMethod = null;
+
+    if (action.ServiceModel.Extensions().UseMediatorOrCqrs)
+    {
+        implementationMethod = classModel
+            .AddMethod(
+                new MethodModel(action.Name2 + "WithMediatorAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel(action.Summary)
+                    {
+                        Returns = "The action result."
+                    }
+                });
+    }
+    else
+    {
+        implementationMethod = classModel
+            .AddMethod(
+                new MethodModel(action.Name2 + "CoreAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Abstract,
+                    Documentation = new DocumentationModel(action.Summary)
+                    {
+                        Returns = "The action result."
+                    }
+                });
+    }
+
+    implementationMethod.Facets["Action"] = action;
+    implementationMethod.Facets["ActionImplementation"] = true;
+    implementationMethod.Facets["Architecture"] = action.ServiceModel.Settings.ArchitectureKind;
+
+    // Extension methods
+
+    MethodModel extensionMethod1 = null;
+    MethodModel extensionMethod2 = null;
+
+    if (action.ServiceModel.Extensions().UseMediatorOrCqrs)
+    {
+        extensionMethod1 = classModel
+            .AddMethod(new MethodModel("On" + action.Name2 + "Async", "System.Threading.Tasks.ValueTask")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel($"Invoked when {action.Name2}() completes, before returning the result.")
+                {
+                    Returns = "The <see cref=\"System.Threading.Tasks.ValueTask\" /> that represents the asynchronous operation.",
+                    Remarks = "This method can be used, for example, to publish webhooks."
+                },
+                Facets = new Dictionary<string, object>()
+                {
+                    ["ExtensionPoint"] = true
+                }
+            });
+
+        string requestName = $"Domain.{action.ParentController.Name}{action.Name2}Request";
+        string createRequestMethodName = $"Create{action.Name2}RequestAsync";
+
+        if (action.ServiceModel.Extensions().UseCqrs)
+        {
+            switch (action.Kind)
+            {
+                case ControllerTypeActionKind.Command:
+                    requestName = $"Domain.{action.ParentController.Name}{action.Name2}Command";
+                    createRequestMethodName = $"Create{action.Name2}CommandAsync";
+                    break;
+                default:
+                    requestName = $"Domain.{action.ParentController.Name}{action.Name2}Query";
+                    createRequestMethodName = $"Create{action.Name2}QueryAsync";
+                    break;
+            }
+        }
+
+        extensionMethod2 = classModel
+            .AddMethod(
+                new MethodModel(createRequestMethodName, $"System.Threading.Tasks.ValueTask<{requestName}>")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Creates a new instance of <see cref=\"{requestName}\" />.")
+                    {
+                        Returns = $"The <see cref=\"System.Threading.Tasks.ValueTask{{TResult}}\" /> that represents the asynchronous operation.\r\nThe <see cref=\"{requestName}\" /> instance.",
+                        Remarks = "This method can be used to customize the mediator request."
+                    },
+                    Facets = new Dictionary<string, object>()
+                    {
+                        ["Action"] = action,
+                        ["MediatorRequestBuilder"] = true
+                    }
+                });
+
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter controllerParameter in action.ParentController.ChildParameters)
+            {
+                string domainType = controllerParameter.Extensions().AsCSharpType("Server.Domain", true);
+
+                extensionMethod2
+                    .WithParameter(new MethodParameterModel(controllerParameter.Name.Transform().ToCamelCase(), domainType)
+                    {
+                        Documentation = new DocumentationModel(controllerParameter.Summary)
+                    });
+            }
+        }
+
+        foreach (ControllerTypeActionParameter actionParameter in action.ChildParameters.Where(i => i is not ControllerTypeActionModelParameter))
+        {
+            string domainType = actionParameter.Extensions().AsCSharpType("Server.Domain", true, true, true);
+
+            extensionMethod2
+                .WithParameter(new MethodParameterModel(actionParameter.Name.Transform().ToCamelCase(), domainType)
+                {
+                    Documentation = new DocumentationModel(actionParameter.Summary)
+                });
+        }
+
+        ControllerTypeActionModelParameter modelParameter = action.ChildParameters.OfType<ControllerTypeActionModelParameter>().FirstOrDefault();
+        if (modelParameter != null)
+        {
+            string domainType = modelParameter.Extensions().AsCSharpType("Server.Domain", true, true, true);
+
+            extensionMethod2
+                .WithParameter(
+                    new MethodParameterModel("entity", domainType)
+                    {
+                        Documentation = new DocumentationModel("The entity.")
+                    });
+        }
+
+        if (action.ODataEnabled)
+        {
+            string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+            extensionMethod2
+                .WithParameter(
+                    new MethodParameterModel("queryOptions", $"Microsoft.AspNetCore.OData.Query.ODataQueryOptions<{modelsTypeSingle}>")
+                    {
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+        }
+
+        extensionMethod2
+            .WithParameter(
+                new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                {
+                    Documentation = new DocumentationModel("The cancellation token.")
+                });
+    }
+
+    // Mapping and projection methods
+
+    if (action.ReturnValueType == ControllerTypeActionReturnValueType.Model)
+    {
+        string domainType = action.Extensions().AsCSharpType("Server.Domain", true);
+        string modelsType = action.Extensions().AsCSharpType("Server.RestApi.Models", true);
+        string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+        if (action.ODataEnabled && action.ReturnValueCardinality == Cardinality.List)
+        {
+            classModel
+                .AddMethod(
+                    new MethodModel("Project" + action.Name2 + "Result", $"System.Linq.IQueryable<{modelsTypeSingle}>")
+                    {
+                        Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel($"Projects the result of {action.Name2}().")
+                        {
+                            Returns = "The action result, after projection."
+                        },
+                        Facets = new Dictionary<string, object>()
+                        {
+                            ["ProjectResult"] = true,
+                            ["Action"] = action
+                        }
+                    })
+                    .WithParameter(
+                        new MethodParameterModel("result", domainType)
+                        {
+                            Documentation = new DocumentationModel("The action result.")
+                        });
+        }
+        else
+        {
+            classModel
+                .AddMethod(
+                    new MethodModel("Map" + action.Name2 + "Result", modelsType)
+                    {
+                        Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel($"Maps the result of {action.Name2}().")
+                        {
+                            Returns = "The action result, after mapping."
+                        },
+                        Facets = new Dictionary<string, object>()
+                        {
+                            ["MapResult"] = true,
+                            ["Action"] = action
+                        }
+                    })
+                    .WithParameter(
+                        new MethodParameterModel("result", domainType)
+                        {
+                            Documentation = new DocumentationModel("The action result.")
+                        });
+        }
+    }
+
+    if (action.ReturnValueType == ControllerTypeActionReturnValueType.Enumeration)
+    {
+        string domainType = action.Extensions().AsCSharpType("Server.Domain", true);
+        string modelsType = action.Extensions().AsCSharpType("Server.RestApi.Models", true);
+
+        classModel
+            .AddMethod(
+                new MethodModel("Map" + action.Name2 + "Result", modelsType)
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Maps the result of {action.Name2}().")
+                    {
+                        Returns = "The action result, after mapping."
+                    },
+                    Facets = new Dictionary<string, object>()
+                    {
+                        ["MapResult"] = true,
+                        ["Action"] = action
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("result", domainType)
+                    {
+                        Documentation = new DocumentationModel("The action result.")
+                    });
+    }
+
+    // Get location method
+
+    if (action.ServiceModel.Extensions().UseMediatorOrCqrs && (action.SuccessStatusCode == ControllerTypeActionHttpStatusCodeKind.Created || action.SuccessStatusCode == ControllerTypeActionHttpStatusCodeKind.Accepted))
+    {
+        string returnType = "System.Uri";
+
+        if (action.SuccessStatusCode == ControllerTypeActionHttpStatusCodeKind.Accepted)
+        {
+            returnType = "System.Uri?";
+        }
+
+        MethodModel getLocationMethod = classModel
+            .AddMethod(new MethodModel("Get" + action.Name2 + "LocationUri", returnType)
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Abstract,
+                Documentation = new DocumentationModel($"Returns the location URI.")
+                {
+                    Returns = "The location URI."
+                }
+            });
+
+        if (action.SuccessStatusCode == ControllerTypeActionHttpStatusCodeKind.Accepted)
+        {
+            getLocationMethod.Documentation.Remarks = "If the result is null, the location header will not be included in the response.";
+        }
+
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter controllerParameter in action.ParentController.ChildParameters)
+            {
+                string restApiType = controllerParameter.Extensions().AsCSharpType("Server.RestApi.Models", true);
+
+                getLocationMethod
+                    .WithParameter(new MethodParameterModel(controllerParameter.Name.Transform().ToCamelCase(), restApiType)
+                    {
+                        Documentation = new DocumentationModel(controllerParameter.Summary)
+                    });
+            }
+        }
+
+        foreach (ControllerTypeActionParameter actionParameter in action.ChildParameters.Where(i => i is not ControllerTypeActionModelParameter))
+        {
+            string restApiType = actionParameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true);
+
+            getLocationMethod
+                .WithParameter(new MethodParameterModel(actionParameter.Name.Transform().ToCamelCase(), restApiType)
+                {
+                    Documentation = new DocumentationModel(actionParameter.Summary)
+                });
+        }
+
+        ControllerTypeActionModelParameter modelParameter = action.ChildParameters.OfType<ControllerTypeActionModelParameter>().FirstOrDefault();
+        if (modelParameter != null)
+        {
+            string restApiType = modelParameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true);
+
+            getLocationMethod
+                .WithParameter(new MethodParameterModel(modelParameter.Name.Transform().ToCamelCase(), restApiType)
+                {
+                    Documentation = new DocumentationModel(modelParameter.Summary)
+                });
+        }
+
+        if (action.ReturnValueType != ControllerTypeActionReturnValueType.None)
+        {
+            getLocationMethod
+                .WithParameter(new MethodParameterModel("result", action.Extensions().AsCSharpType("Server.RestApi.Models", true))
+                {
+                    Documentation = new DocumentationModel("The action result.")
+                });
+        }
+    }
+
+    // Validation method
+
+    MethodModel validationMethod = classModel
+        .AddMethod(
+            new MethodModel($"Validate{action.Name2}", "bool")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Validates the action parameters.")
+                {
+                    Returns = "A value indicating whether the validation succeeded.",
+                    Remarks = "Override this method to implement custom validation."
+                }
+            });
+
+    validationMethod.Facets["ActionValidation"] = true;
+
+    // Parameters
+
+    if (!action.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in action.ParentController.ChildParameters)
+        {
+            this.TransformControllerTypeParameter(parameter, actionMethod, implementationMethod, extensionMethod1, validationMethod);
+        }
+    }
+
+    foreach (ControllerTypeActionParameter parameter in action.ChildParameters)
+    {
+        this.TransformControllerTypeActionParameter(parameter, actionMethod, implementationMethod, extensionMethod1, validationMethod);
+    }
+
+    if (action.ODataEnabled)
+    {
+        string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+        actionMethod
+            .WithParameter(
+                new MethodParameterModel("queryOptions", $"Microsoft.AspNetCore.OData.Query.ODataQueryOptions<{modelsTypeSingle}>"));
+    }
+
+    actionMethod
+        .WithParameter(
+            new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"));
+
+    if (implementationMethod != null)
+    {
+        if (action.ODataEnabled)
+        {
+            string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+            
+            implementationMethod    
+                .WithParameter(
+                    new MethodParameterModel("queryOptions", $"Microsoft.AspNetCore.OData.Query.ODataQueryOptions<{modelsTypeSingle}>")
+                    {
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+        }
+
+        implementationMethod    
+            .WithParameter(
+                new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                {
+                    Documentation = new DocumentationModel("The cancellation token.")
+                });
+    }
+
+    if (extensionMethod1 != null && action.ReturnValueType != ControllerTypeActionReturnValueType.None)
+    {
+        extensionMethod1
+            .WithParameter(
+                new MethodParameterModel("result", action.Extensions().AsCSharpType("Server.RestApi.Models", true))
+                {
+                    Documentation = new DocumentationModel("The result.")
+                });
+    }
+
+    if (extensionMethod1 != null)
+    {
+        extensionMethod1
+            .WithParameter(
+                new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                {
+                    Documentation = new DocumentationModel("The cancellation token.")
+                });
+    }
+
+    if (validationMethod != null)
+    {
+        validationMethod
+            .AddParameter(
+                new MethodParameterModel("error", "Primavera.Hydrogen.Rest.RestProblemDetails?")
+                {
+                    Modifiers = MethodParameterModifiers.Out,
+                    Documentation = new DocumentationModel("The validation error.")
+                })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.NotNullWhen(false)"));
+    }
+
+    // API Error Response Compatibility
+
+    if (generateLegacy)
+    {
+        MethodModel errorResponseCompatMethod = classModel
+            .AddMethod(new MethodModel(action.Name2 + "LegacyAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("{0}(Metadata.Routes.{1}.{2})".Format(this.GetMethodAttribute(action.HttpMethod), action.ParentController.Name, action.Name2)));
+
+        if (AuthorizationHelper.IsAuthorizationOn(action))
+        {
+            string policy = AuthorizationHelper.GetPolicy(action);
+            if (!string.IsNullOrEmpty(policy))
+            {
+                errorResponseCompatMethod
+                    .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Authorization.Authorize(Common.Constants.Policies.{0})".Format(policy)));
+            }
+        }
+
+        if (action.ODataEnabled)
+        {
+            this.AddODataQueryAttribute(action, errorResponseCompatMethod);
+        }
+        else if (action.ParentController.Extensions().HasODataServerSide)
+        {
+            this.AddODataIgnoredAttribute(action, errorResponseCompatMethod);
+        }
+
+        foreach (string controllerActionApiVersion in controllerActionApiVersions)
+        {
+            ApiVersion apiVersion = serviceModel.ApiVersions.FirstOrDefault(i => i.Version.EqualsNoCase(controllerActionApiVersion));
+
+            if (apiVersion != null && apiVersion.ErrorResponse == ErrorResponseKind.RestServiceError)
+            {
+                errorResponseCompatMethod.WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.ApiVersion(\"{0}\")".Format(controllerActionApiVersion)));
+            }
+        }
+
+        this.TransformControllerActionProducesAttributes(action, errorResponseCompatMethod, false);
+
+        errorResponseCompatMethod.Facets["MethodKind"] = "ErrorResponseCompatibility";
+        errorResponseCompatMethod.Facets["Action"] = action;
+
+        if (!string.IsNullOrEmpty(action.CustomAttributes))
+        {
+            IEnumerable<string> customAttributes = action.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                .Select(i => i.Trim())
+                .Where(i => !string.IsNullOrEmpty(i));
+
+            foreach (string customAttribute in customAttributes)
+            {
+                errorResponseCompatMethod.WithAttribute(
+                    new AttributeModel(customAttribute));
+            }
+        }
+
+        // Parameters
+
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter parameter in action.ParentController.ChildParameters)
+            {
+                this.TransformControllerTypeParameter(parameter, errorResponseCompatMethod, null, null, null);
+            }
+        }
+
+        foreach (ControllerTypeActionParameter parameter in action.ChildParameters)
+        {
+            this.TransformControllerTypeActionParameter(parameter, errorResponseCompatMethod, null, null, null);
+        }
+
+        if (action.ODataEnabled)
+        {
+            string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+            errorResponseCompatMethod
+                .WithParameter(
+                    new MethodParameterModel("queryOptions", $"Microsoft.AspNetCore.OData.Query.ODataQueryOptions<{modelsTypeSingle}>"));
+        }
+
+        errorResponseCompatMethod
+            .WithParameter(
+                new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"));
+
+        if (!classModel.Methods.Any(i => i.Name.EqualsNoCase("ConvertRestProblemDetailsResult")))
+        {
+            MethodModel errorResponseConvertMethod = classModel
+                .AddMethod(
+                    new MethodModel("ConvertRestProblemDetailsResult", "Microsoft.AspNetCore.Mvc.IActionResult")
+                    {
+                        Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel("Converts any <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\" /> returned in the specified action result to <see cref=\"Models.RestServiceErrorLegacy\" />.")
+                        {
+                            Returns = "The converted <see cref=\"Microsoft.AspNetCore.Mvc.IActionResult\" /> instance."
+                        }
+                    })
+                    .WithParameter(
+                        new MethodParameterModel("actionResult", "Microsoft.AspNetCore.Mvc.IActionResult")
+                        {
+                            Documentation = new DocumentationModel("The <see cref=\"Microsoft.AspNetCore.Mvc.IActionResult\" /> instance.")
+                        });
+        }
+    }
+}
+
+// *** AddODataIgnoredAttribute
+
+private void AddODataIgnoredAttribute(ControllerTypeAction action, MethodModel method)
+{
+    method
+        .WithAttribute(
+            new AttributeModel(
+                $"Microsoft.AspNetCore.OData.Routing.Attributes.ODataIgnored"));
+}
+
+// *** GetODataAllowedQueryOptions
+
+private string GetODataAllowedQueryOptions(ODataAllowedQueryOptions value)
+{
+    List<string> values = new List<string>();
+
+    if (value == ODataAllowedQueryOptions.None)
+    {
+        values.Add("None");
+    }
+    else
+    {
+        string[] possibleValues = Enum.GetNames(typeof(ODataAllowedQueryOptions));
+
+        foreach (string possibleValue in possibleValues.Where(i => !i.EqualsNoCase("None")))
+        {
+            ODataAllowedQueryOptions flag = (ODataAllowedQueryOptions)Enum.Parse(typeof(ODataAllowedQueryOptions), possibleValue);
+
+            if (value.HasFlag(flag))
+            {
+                values.Add(possibleValue);
+            }
+        }
+    }
+
+    return string.Join(" | ", values.OrderBy(i => i).Select(i => $"Microsoft.AspNetCore.OData.Query.AllowedQueryOptions.{i}"));
+}
+
+// *** GetODataRequiredQueryOptions
+
+private string GetODataRequiredQueryOptions(ODataRequiredQueryOptions value)
+{
+    List<string> values = new List<string>();
+
+    if (value == ODataRequiredQueryOptions.None)
+    {
+        values.Add("None");
+    }
+    else
+    {
+        string[] possibleValues = Enum.GetNames(typeof(ODataRequiredQueryOptions));
+
+        foreach (string possibleValue in possibleValues.Where(i => !i.EqualsNoCase("None")))
+        {
+            ODataRequiredQueryOptions flag = (ODataRequiredQueryOptions)Enum.Parse(typeof(ODataRequiredQueryOptions), possibleValue);
+
+            if (value.HasFlag(flag))
+            {
+                values.Add(possibleValue);
+            }
+        }
+    }
+
+    return string.Join(" | ", values.OrderBy(i => i).Select(i => $"Primavera.Hydrogen.AspNetCore.Mvc.OData.RequiredQueryOptions.{i}"));
+}
+
+// *** AddODataQueryAttribute
+
+private void AddODataQueryAttribute(ControllerTypeAction action, MethodModel method)
+{
+    string allowedOptions = this.GetODataAllowedQueryOptions(action.ODataAllowedQueryOptions);
+    string requiredOptions = this.GetODataRequiredQueryOptions(action.ODataRequiredQueryOptions);
+
+    if (action.ODataPageSize < 0)
+    {
+        method
+            .WithAttribute(
+                new AttributeModel(
+                    $"Primavera.Hydrogen.AspNetCore.Mvc.OData.EnableODataQuery(AllowedQueryOptions = {allowedOptions}, RequiredQueryOptions = {requiredOptions})"));
+    }
+    else
+    {
+        method
+            .WithAttribute(
+                new AttributeModel(
+                    $"Primavera.Hydrogen.AspNetCore.Mvc.OData.EnableODataQuery(AllowedQueryOptions = {allowedOptions}, PageSize = {action.ODataPageSize}, RequiredQueryOptions = {requiredOptions})"));
+    }
+}
+
+// *** ApiVersionIsLegacy
+
+private bool ApiVersionIsLegacy(ServiceModel serviceModel, string version)
+{
+    if (version.EqualsNoCase(serviceModel.Version))
+    {
+        return false;
+    }
+
+    ApiVersion apiVersion = serviceModel.ApiVersions.FirstOrDefault(i => version.EqualsNoCase(i.Version));
+
+    return apiVersion != null && apiVersion.ErrorResponse == ErrorResponseKind.RestServiceError;
+}
+
+// *** ApiVersionIsNew
+
+private bool ApiVersionIsNew(ServiceModel serviceModel, string version)
+{
+    if (version.EqualsNoCase(serviceModel.Version))
+    {
+        return true;
+    }
+
+    ApiVersion apiVersion = serviceModel.ApiVersions.FirstOrDefault(i => version.EqualsNoCase(i.Version));
+
+    return apiVersion != null && apiVersion.ErrorResponse == ErrorResponseKind.RestProblemDetails;
+}
+
+// *** TransformControllerTypeParameter
+
+public void TransformControllerTypeParameter(ControllerTypeParameter parameter, MethodModel actionMethod, MethodModel implementationMethod, MethodModel extensionMethod1, MethodModel validationMethod)
+{
+    // Parameter for action method
+
+    MethodParameterModel parameterModel1 = actionMethod
+        .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true)));
+
+    if (!string.IsNullOrEmpty(parameter.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = parameter.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+
+    ControllerTypeScalarParameter scalarParameter = parameter as ControllerTypeScalarParameter;
+    if (scalarParameter != null)
+    {
+        parameterModel1.WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.FromRoute"));
+    }
+
+    ControllerTypeEnumParameter enumParameter = parameter as ControllerTypeEnumParameter;
+    if (enumParameter != null)
+    {
+        parameterModel1.WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.FromRoute"));
+    }
+
+    // Parameter for action implementation method
+
+    if (implementationMethod != null)
+    {
+        MethodParameterModel parameterModel2 = implementationMethod
+            .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true))
+            {
+                Documentation = new DocumentationModel(parameter.Summary)
+            });
+    }
+
+    // Parameter for extension method
+
+    if (extensionMethod1 != null)
+    {
+        MethodParameterModel parameterModel3 = extensionMethod1
+            .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true))
+            {
+                Documentation = new DocumentationModel(parameter.Summary)
+            });
+    }
+
+    // Parameter for validation method
+
+    if (validationMethod != null)
+    {
+        MethodParameterModel parameterModel3 = validationMethod
+            .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true))
+            {
+                Documentation = new DocumentationModel(parameter.Summary)
+            });
+    }
+}
+
+// *** TransformControllerTypeActionParameter
+
+public void TransformControllerTypeActionParameter(ControllerTypeActionParameter parameter, MethodModel actionMethod, MethodModel implementationMethod, MethodModel extensionMethod1, MethodModel validationMethod)
+{
+    // Parameter for action method
+
+    MethodParameterModel parameterModel1 = actionMethod
+        .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true))
+        {
+            DefaultValue = NormalizeControllerActionParameterDefaultValue(parameter, "Server.RestApi.Models")
+        });
+
+    if (!string.IsNullOrEmpty(parameter.CustomAttributes))
+    {
+        IEnumerable<string> customAttributes = parameter.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrEmpty(i));
+
+        foreach (string customAttribute in customAttributes)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel(customAttribute));
+        }
+    }
+
+    ControllerTypeActionScalarParameter scalarParameter = parameter as ControllerTypeActionScalarParameter;
+    if (scalarParameter != null)
+    {
+        if (scalarParameter.Binding == BindingKind.FromQuery && scalarParameter.Cardinality == Cardinality.Single)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel($"Microsoft.AspNetCore.Mvc.FromQuery(Name = \"{scalarParameter.Extensions().BindingName}\")"));
+        }
+        else if (scalarParameter.Binding == BindingKind.FromHeader && scalarParameter.Cardinality == Cardinality.Single)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel($"Microsoft.AspNetCore.Mvc.FromHeader(Name = \"{scalarParameter.Extensions().BindingName}\")"));
+        }
+        else if (scalarParameter.Binding == BindingKind.Default && scalarParameter.Cardinality != Cardinality.Single)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel("Microsoft.AspNetCore.Mvc.FromBody"));
+        }
+        else
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel($"Microsoft.AspNetCore.Mvc.FromRoute(Name = \"{scalarParameter.Extensions().BindingName}\")"));
+        }
+    }
+
+    ControllerTypeActionEnumParameter enumParameter = parameter as ControllerTypeActionEnumParameter;
+    if (enumParameter != null)
+    {
+        if (enumParameter.Binding == BindingKind.FromQuery && enumParameter.Cardinality == Cardinality.Single)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel($"Microsoft.AspNetCore.Mvc.FromQuery(Name = \"{enumParameter.Extensions().BindingName}\")"));
+        }
+        else if (enumParameter.Binding == BindingKind.FromHeader && enumParameter.Cardinality == Cardinality.Single)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel($"Microsoft.AspNetCore.Mvc.FromHeader(Name = \"{enumParameter.Extensions().BindingName}\")"));
+        }
+        else if (enumParameter.Binding == BindingKind.Default && enumParameter.Cardinality != Cardinality.Single)
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel("Microsoft.AspNetCore.Mvc.FromBody"));
+        }
+        else
+        {
+            parameterModel1.WithAttribute(
+                new AttributeModel($"Microsoft.AspNetCore.Mvc.FromRoute(Name = \"{enumParameter.Extensions().BindingName}\")"));
+        }
+    }
+
+    ControllerTypeActionModelParameter modelParameter = parameter as ControllerTypeActionModelParameter;
+    if (modelParameter != null)
+    {
+        parameterModel1.WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.FromBody"));
+    }
+
+    ControllerTypeActionJsonParameter jsonParameter = parameter as ControllerTypeActionJsonParameter;
+    if (jsonParameter != null)
+    {
+        parameterModel1.WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.FromBody"));
+    }
+
+    // Parameter for action implementation method
+
+    if (implementationMethod != null)
+    {
+        MethodParameterModel parameterModel2 = implementationMethod
+            .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true))
+            {
+                Documentation = new DocumentationModel(parameter.Summary)
+            });
+    }
+
+    // Parameter for extension method
+
+    if (extensionMethod1 != null)
+    {
+        MethodParameterModel parameterModel2 = extensionMethod1
+            .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true))
+            {
+                Documentation = new DocumentationModel(parameter.Summary)
+            });
+    }
+
+    // Parameter for validation method
+
+    if (validationMethod != null)
+    {
+        MethodParameterModel parameterModel3 = validationMethod
+            .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true))
+            {
+                Documentation = new DocumentationModel(parameter.Summary)
+            });
+    }
+}
+
+// *** TransformControllerActionProducesAttributes
+
+public void TransformControllerActionProducesAttributes(ControllerTypeAction action, MethodModel methodModel, bool restProblemDetails = true)
+{
+    string problemType = restProblemDetails ? "Primavera.Hydrogen.Rest.RestProblemDetails" : "Models.RestServiceErrorLegacy";
+
+    // Success
+
+    if (action.ReturnValueType == ControllerTypeActionReturnValueType.None)
+    {
+        methodModel
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(void), (int){0})".Format(action.SuccessStatusCode.AsCSharpType())));
+    }
+    else
+    {
+        string returnValueType = action.Extensions().AsCSharpType("Server.RestApi.Models", true);
+
+        if (action.ODataEnabled)
+        {
+            returnValueType = action.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true);
+
+            returnValueType = $"Primavera.Hydrogen.Rest.ODataResult<{returnValueType}>";
+        }
+
+        methodModel
+            .WithAttribute(
+                new AttributeModel(
+                    $"Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof({returnValueType}), (int){action.SuccessStatusCode.AsCSharpType()})"));
+    }
+
+    // BadRequest
+
+    methodModel
+        .WithAttribute(new AttributeModel($"Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof({problemType}), (int)System.Net.HttpStatusCode.BadRequest)"));
+
+    // NotFound
+
+    if (action.ProducesNotFound.IsTrue())
+    {
+        methodModel
+            .WithAttribute(new AttributeModel($"Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof({problemType}), (int)System.Net.HttpStatusCode.NotFound)"));
+    }
+
+    // Conflict
+
+    if (action.ProducesConflict.IsTrue())
+    {
+        methodModel
+            .WithAttribute(new AttributeModel($"Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof({problemType}), (int)System.Net.HttpStatusCode.Conflict)"));
+    }
+}
+
+// *** GetMethodAttribute
+
+public string GetMethodAttribute(ControllerTypeActionHttpMethodKind value)
+{
+    switch (value)
+    {
+        case ControllerTypeActionHttpMethodKind.Delete:
+            return "Microsoft.AspNetCore.Mvc.HttpDelete";
+        case ControllerTypeActionHttpMethodKind.Get:
+            return "Microsoft.AspNetCore.Mvc.HttpGet";
+        case ControllerTypeActionHttpMethodKind.Post:
+            return "Microsoft.AspNetCore.Mvc.HttpPost";
+        case ControllerTypeActionHttpMethodKind.Put:
+            return "Microsoft.AspNetCore.Mvc.HttpPut";
+        default:
+            throw new InvalidOperationException("Method kind not supported: {0}.".Format(value));
+    }
+}
+
+#>

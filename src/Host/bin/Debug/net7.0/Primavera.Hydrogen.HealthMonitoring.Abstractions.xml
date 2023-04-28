@@ -1,0 +1,604 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.HealthMonitoring.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:System.Diagnostics.CodeAnalysis.AllowNullAttribute">
+            <summary>
+            A non-nullable parameter, field, or property may be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DisallowNullAttribute">
+            <summary>
+            A nullable parameter, field, or property should never be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullAttribute">
+            <summary>
+            A non-nullable parameter, field, property, or return value may be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullAttribute">
+            <summary>
+            A nullable parameter, field, property, or return value will never be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute">
+            <summary>
+            A non-nullable argument may be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute">
+            <summary>
+            A nullable argument won't be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute">
+            <summary>
+            A return value, property, or argument isn't null if the argument for the specified parameter isn't null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute">
+            <summary>
+            A method or property never returns. In other words, it always throws an exception.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute">
+            <summary>
+            This method or property never returns if the associated boolean parameter has the specified value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute">
+            <summary>
+            The listed member won't be null when the method returns.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute">
+            <summary>
+            The listed member won't be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext">
+            <summary>
+            Defines a <see cref="T:System.Text.Json.Serialization.JsonSerializerContext" /> configured to use source generation to speed up
+            serialization (by avoiding reflection) of the entities used by the health monitoring service.
+            </summary>
+            <seealso cref="T:System.Text.Json.Serialization.JsonSerializerContext" />
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.HealthStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.TimeSpan">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.Object">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.IDictionary">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.Int32">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.MethodBase">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.Exception">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.IReadOnlyDictionaryStringString">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.HealthResultEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.IReadOnlyDictionaryStringHealthResultEntry">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.HealthResult">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeContext">
+            <summary>
+            Defines the execution context of an health probe.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeContext.ApplicationServices">
+            <summary>
+            Gets the application services.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeContext.Registration">
+            <summary>
+            Gets the registration of the currently executing probe.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeContext.#ctor(System.IServiceProvider,Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeContext"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="registration">The registration.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeDelegate">
+            <summary>
+            Defines a <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbe"/> capable of executing a delegate.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbe" />
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeDelegate.#ctor(System.Func{Primavera.Hydrogen.HealthMonitoring.HealthProbeContext,System.Threading.CancellationToken,System.Threading.Tasks.Task{Primavera.Hydrogen.HealthMonitoring.HealthProbeResult}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeDelegate"/> class.
+            </summary>
+            <param name="probe">The delegate that should be executed.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeDelegate.RunAsync(Primavera.Hydrogen.HealthMonitoring.HealthProbeContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration">
+            <summary>
+            Defines a registration of an health probe.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration.Probe">
+            <summary>
+            Gets the probe that should be executed.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration.Timeout">
+            <summary>
+            Gets the timeout.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration.#ctor(System.String,Primavera.Hydrogen.HealthMonitoring.IHealthProbe,System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration"/> class.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="probe">The probe.</param>
+            <param name="timeout">The timeout.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult">
+            <summary>
+            Describes the result of the execution of a health probe.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Status">
+            <summary>
+            Gets the status of the component probed.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Description">
+            <summary>
+            Gets a description of the status of the component probed.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Exception">
+            <summary>
+            Gets the exception (if any) raised while probing the component.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Data">
+            <summary>
+            Gets additional data associated with the probe executed.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.#ctor(Primavera.Hydrogen.HealthMonitoring.HealthStatus,System.String,System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult" /> class.
+            </summary>
+            <param name="status">The status of the component probed.</param>
+            <param name="description">A description of the status of the component probed.</param>
+            <param name="exception">The exception (if any) raised while probing the component.</param>
+            <param name="data">Additional data associated with the probe executed.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Healthy(System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> indicating that the component is healthy.
+            </summary>
+            <param name="description">A description of the status of the component probed.</param>
+            <param name="data">Additional data associated with the probe executed.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Unhealthy(System.String,System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> indicating that the component is unhealthy.
+            </summary>
+            <param name="description">A description of the status of the component probed.</param>
+            <param name="exception">The exception (if any) raised while probing the component.</param>
+            <param name="data">Additional data associated with the probe executed.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Degraded(System.String,System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> indicating that the component is degraded.
+            </summary>
+            <param name="description">A description of the status of the component probed.</param>
+            <param name="exception">The exception (if any) raised while probing the component.</param>
+            <param name="data">Additional data associated with the probe executed.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.Ignored(System.String,System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> indicating that the component was ignored.
+            </summary>
+            <param name="description">A description of the status of the component probed.</param>
+            <param name="exception">The exception (if any) raised while probing the component.</param>
+            <param name="data">Additional data associated with the probe executed.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthResult">
+            <summary>
+            Describes the result of monitoring the health of the application by executing a set of health probes.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResult.Status">
+            <summary>
+            Gets or sets the aggregated health status, combining the results of all health probes executed.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResult.StatusValue">
+            <summary>
+            Gets the value of <see cref="P:Primavera.Hydrogen.HealthMonitoring.HealthResult.Status"/> as a string.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResult.TotalDuration">
+            <summary>
+            Gets or sets the total time the health probes took to execute.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResult.Results">
+            <summary>
+            Gets or sets a dictionary containing the results of all the health probes executed.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResult.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResult.#ctor(System.Collections.Generic.IReadOnlyDictionary{System.String,Primavera.Hydrogen.HealthMonitoring.HealthResultEntry},System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> class.
+            </summary>
+            <param name="results">The results.</param>
+            <param name="totalDuration">The total duration.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResult.#ctor(Primavera.Hydrogen.HealthMonitoring.HealthStatus,System.Collections.Generic.IReadOnlyDictionary{System.String,Primavera.Hydrogen.HealthMonitoring.HealthResultEntry},System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> class.
+            </summary>
+            <param name="status">The status.</param>
+            <param name="results">The results.</param>
+            <param name="totalDuration">The total duration.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResult.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry">
+            <summary>
+            Describes the result of the execution of a health probe.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.Status">
+            <summary>
+            Gets or sets the status of the component probed.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.StatusValue">
+            <summary>
+            Gets the value of <see cref="P:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.Status"/> as a string.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.Description">
+            <summary>
+            Gets or sets a description of the status of the component probed.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.Exception">
+            <summary>
+            Gets the exception (if any) raised while probing the component.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.Data">
+            <summary>
+            Gets or sets additional data associated with the probe executed.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.Duration">
+            <summary>
+            Gets or sets the time the health probe took to execute.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.#ctor(Primavera.Hydrogen.HealthMonitoring.HealthStatus,System.String,System.TimeSpan,System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry" /> class.
+            </summary>
+            <param name="status">The status of the component probed.</param>
+            <param name="description">A description of the status of the component probed.</param>
+            <param name="duration">The time the health probe took to execute.</param>
+            <param name="exception">The exception (if any) raised while probing the component.</param>
+            <param name="data">Additional data associated with the probe executed.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResultEntry.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthResultSerializer">
+            <summary>
+            Provides methods to serialize and deserialize <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> instances.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResultSerializer.SerializeAsync(Primavera.Hydrogen.HealthMonitoring.HealthResult,System.Text.Json.JsonSerializerOptions,System.Threading.CancellationToken)">
+            <summary>
+            Serializes the specified result.
+            </summary>
+            <param name="result">The result that should be serialized.</param>
+            <param name="options">The serializer options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The serialized result.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResultSerializer.Serialize(Primavera.Hydrogen.HealthMonitoring.HealthResult,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Serializes the specified result.
+            </summary>
+            <param name="result">The result that should be serialized.</param>
+            <param name="options">The serializer options.</param>
+            <returns>
+            The serialized result.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthResultSerializer.Deserialize(System.String,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Serializes the specified JSON as an <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> instance.
+            </summary>
+            <param name="json">The JSON.</param>
+            <param name="options">The serializer options.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthStatus">
+            <summary>
+            Defines the status of a component of the application as determined by an health probe.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.HealthMonitoring.HealthStatus.Unhealthy">
+            <summary>
+            Indicates that the component was unhealthy, or an unhandled
+            exception was thrown while executing the health probe.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.HealthMonitoring.HealthStatus.Degraded">
+            <summary>
+            Indicates that the component was in a degraded state.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.HealthMonitoring.HealthStatus.Healthy">
+            <summary>
+            Indicates that the component was healthy.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.HealthMonitoring.HealthStatus.Ignored">
+            <summary>
+            Indicates that the component was not probed.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService">
+            <summary>
+            Defines the interface of the health monitoring service.
+            This service is capable of monitoring the health of an application by executing
+            probes on its components.
+            </summary>
+            <remarks>
+            This allow monitoring the health of an application by executing
+            multiple health probes configured with a builder.
+            </remarks>
+            <example>
+            <code>
+            <![CDATA[
+            ServiceCollection services = new ServiceCollection();
+            services.AddHealthMonitoring();
+            
+            IHealthProbesBuilder builder = HealthProbesBuilder
+                .Create()
+                .AddProbe(...)
+                .AddProbe(...);
+                
+            IServiceProvider provider = services.BuildServiceProvider();
+            
+            IHealthMonitoringService service = provider.GetRequiredService<IHealthMonitoringService>();
+            
+            HealthResult result = await service.ProbeAsync(builder).ConfigureAwait(false);
+            ]]>
+            </code>
+            </example>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService.ProbeAsync(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.Threading.CancellationToken)">
+            <summary>
+            Executes the probes defined by the specified builder.
+            </summary>
+            <param name="builder">The probes builder.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The aggregated health result.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbe">
+            <summary>
+            Defines an health probe, used to check the health of a component of the application.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.IHealthProbe.RunAsync(Primavera.Hydrogen.HealthMonitoring.HealthProbeContext,System.Threading.CancellationToken)">
+            <summary>
+            Runs the health probe.
+            </summary>
+            <param name="context">The context associated with the current execution.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The status of the health probe.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder">
+            <summary>
+            Defines a builder that allows registering health probes to be executed by
+            <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService"/>.
+            </summary>
+            <example>
+            <code>
+            <![CDATA[
+            ServiceCollection services = new ServiceCollection();
+            services.AddHealthMonitoring();
+            
+            IHealthProbesBuilder builder = HealthProbesBuilder
+                .Create()
+                .AddProbe(...)
+                .AddProbe(...);
+                
+            IServiceProvider provider = services.BuildServiceProvider();
+            
+            IHealthMonitoringService service = provider.GetRequiredService<IHealthMonitoringService>();
+            
+            HealthResult result = await service.ProbeAsync(builder).ConfigureAwait(false);
+            ]]>
+            </code>
+            </example>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder.Registrations">
+            <summary>
+            Gets the registrations.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder.Add(Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration)">
+            <summary>
+            Adds the specified health probe.
+            </summary>
+            <param name="registration">The health probe registration.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilderExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilderExtensions.AddProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,Primavera.Hydrogen.HealthMonitoring.IHealthProbe,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds the specified probe.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The unique probe name.</param>
+            <param name="probe">The delegate used to probe health.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilderExtensions.AddProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.Func{Primavera.Hydrogen.HealthMonitoring.HealthProbeContext,System.Threading.CancellationToken,System.Threading.Tasks.Task{Primavera.Hydrogen.HealthMonitoring.HealthProbeResult}},System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds the specified probe.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The unique probe name.</param>
+            <param name="probeDelegate">The delegate used to probe health.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.Properties.Resources.RES_Exception_InvalidTimeout">
+            <summary>
+              Looks up a localized string similar to The timeout is invalid. It should be a positive value or the infinite timeout..
+            </summary>
+        </member>
+    </members>
+</doc>

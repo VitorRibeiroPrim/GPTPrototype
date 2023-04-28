@@ -1,0 +1,96 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName='..'" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(
+    this.ServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    this.TransformServiceModel);
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel(this.ServiceModel);
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Add writers
+
+controller.AddModelWriter<ConstructorBodyModel>(
+    (w, m) =>
+    {
+        ConstructorModel parentConstructor = m.ParentModelAs<ConstructorModel>();
+        ClassModel parentClass = parentConstructor.ParentModelAs<ClassModel>();
+        return parentClass.Name.EndsWith("StartupBase");
+    }, 
+    this.WriteConstructor);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("AddRestApiPart");
+    }, 
+    this.WriteAddRestApiPart);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("AddMvc");
+    }, 
+    this.WriteAddMvc);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("AddOData");
+    }, 
+    this.WriteAddOData);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("AddMappings");
+    }, 
+    this.WriteAddMappings);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Modifiers.HasFlag(MethodModifiers.Internal) && parentMethod.Name.EqualsNoCase("ConfigureWebhooksOptions");
+    }, 
+    this.WriteConfigureWebhooksOptions);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("GetResourceValueForCulture");
+    }, 
+    this.WriteGetResourceValueForCulture);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ConfigureJsonOptions");
+    }, 
+    this.WriteConfigureJsonOptions);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

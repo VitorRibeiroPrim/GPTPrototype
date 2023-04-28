@@ -1,0 +1,68 @@
+﻿<#+
+
+// *** WriteWebhooksDocumentation
+
+public void WriteWebhooksDocumentation(ModelWriter w, ServiceModel m)
+{
+    this.WriteTitle(w, m);
+
+    foreach (Webhook webhook in m.Webhooks.OrderBy(i => i.Name))
+    {
+        this.WriteWebhook(w, webhook);
+    }
+}
+
+// *** WriteTitle
+
+public void WriteTitle(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("# <a name=\"root\"></a>{0} {1} ({2}) Webhooks", m.Product, m.DisplayName, m.GUID);
+    w.AppendLine();
+}
+
+// *** WriteWebhook
+
+public void WriteWebhook(ModelWriter w, Webhook m)
+{
+    w.AppendLine("### `{0}`", m.Name);
+    w.AppendLine();
+    w.AppendLine(m.EventDescription);
+    w.AppendLine();
+    w.AppendLine("#### Payload");
+    w.AppendLine();
+    w.AppendLine(m.PayloadDescription);
+    w.AppendLine();
+    this.WritePayload(w, m);
+    w.AppendLine("[^ Back to top](#root)");
+    w.AppendLine();
+}
+
+// *** WritePayload
+
+public void WritePayload(ModelWriter w, Webhook m)
+{
+    if (m.Payload == null)
+    {
+        return;
+    }
+
+    w.AppendLine("`{0}`", m.Payload.Name);
+    w.AppendLine();
+
+    if (m.Payload.ChildProperties.Count == 0)
+    {
+        return;
+    }
+
+    w.AppendLine("| Property | Description |");
+    w.AppendLine("| - | - |");
+
+    foreach (ModelTypeProperty property in m.Payload.ChildProperties)
+    {
+        w.AppendLine("| `{0}` | {1} |", property.Name, property.Summary);
+    }
+
+    w.AppendLine();
+}
+
+#>

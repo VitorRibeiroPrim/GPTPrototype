@@ -1,0 +1,27 @@
+﻿<#+
+
+// *** WriteAppControllerBaseConstructor
+
+public void WriteAppControllerBaseConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.Logger = logger;
+<#+
+
+}
+
+// *** WriteValidate
+
+public void WriteValidate(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return new Primavera.Hydrogen.AspNetCore.Mvc.Validation.ApiControllerValidator(
+            this.ModelState,
+            this.Logger);
+<#+
+
+}
+
+#>

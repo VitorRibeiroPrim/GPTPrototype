@@ -1,0 +1,2125 @@
+﻿<#+
+
+// *** WriteHandleCustomMenuOptionsAsync
+
+public void WriteHandleCustomMenuOptionsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return System.Threading.Tasks.Task.FromResult(true);
+<#+
+
+}
+
+// *** WriteGetClient
+
+public void WriteGetClient(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            if (this.client == null)
+            {
+                this.client = this.GetServiceClient();
+            }
+
+            return this.client;
+        }
+<#+
+
+}
+
+// *** WriteConstructor
+
+public void WriteConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(options, nameof(options));
+
+        this.Configuration = options;
+
+        System.Console.OutputEncoding = System.Text.Encoding.UTF8;
+<#+
+
+}
+
+// *** WriteRunAsync
+
+public void WriteRunAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+    string displayName = sourceModel.DisplayName;
+    OnOff authorizationMode = sourceModel.AuthorizationMode;
+
+#>
+        this.Console.WriteLine("=======================================");
+        this.Console.WriteLine("<#= displayName.ToUpperInvariant() #> CONSOLE");
+        this.Console.WriteLine("=======================================");
+
+        this.Initialize();
+
+        if (!this.CheckConfiguration())
+        {
+            return;
+        }
+
+        this.SelectEnvironment();
+
+        this.WriteConfiguration();
+            
+        bool cont = true;
+        while (cont)
+        {
+            this.Console.WriteLine();
+            this.Console.WriteLine("========================================");
+            this.Console.WriteLine("Main Menu");
+            this.WriteConfiguration();
+            this.Console.WriteLine();
+            this.Console.WriteLine("0. Change Environment");
+
+            this.PrintCustomMenuOptions();
+
+            this.Console.WriteLine("M. Monitoring");
+<#+
+
+    if (sourceModel.Webhooks.Any())
+    {
+
+#>
+            this.Console.WriteLine("W. Webhooks");
+<#+
+
+    }
+#>
+            this.Console.WriteLine("Q. Quit");
+            this.Console.Write(">> ");
+
+            System.ConsoleKeyInfo key = this.Console.ReadKey();
+            this.Console.WriteLine();
+
+            switch (key.Key)
+            {
+                case System.ConsoleKey.Q:
+                    cont = false;
+                    break;
+                case System.ConsoleKey.D0:
+                case System.ConsoleKey.NumPad0:
+                    this.SelectEnvironment();
+                    cont = true;
+                    break;
+                case System.ConsoleKey.M:
+                    cont = !await this.ShowMonitoringMenuAsync().ConfigureAwait(false);
+                    break;
+<#+
+
+    if (sourceModel.Webhooks.Any())
+    {
+
+#>
+                case System.ConsoleKey.W:
+                    cont = !await this.ShowWebhooksMenuAsync().ConfigureAwait(false);
+                    break;
+<#+
+
+    }
+
+#>
+                default:
+                    cont = await this.HandleCustomMenuOptionsAsync(key).ConfigureAwait(false);
+                    break;
+            }
+        }
+<#+
+
+}
+
+// *** WriteGetServiceClient
+
+public void WriteGetServiceClient(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+    OnOff authorizationMode = sourceModel.AuthorizationMode;
+
+    if (authorizationMode .IsOn())
+    {
+        this.WriteGetServiceClientWith(modelWriter, model);
+    }
+    else
+    {
+        this.WriteGetServiceClientWithout(modelWriter, model);
+    }
+}
+
+// *** WriteGetServiceClientWith
+
+public void WriteGetServiceClientWith(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        if (this.Configuration.ServiceBaseUri == null)
+        {
+            throw new System.InvalidOperationException("ServiceBaseUri is missing in configuration");
+        }
+
+        this.Console.WriteInformationLine($"Creating the service client for base URI '{this.Configuration.ServiceBaseUri}'...");
+
+        string clientId = this.Configuration.ClientId ?? "Unknown";
+        string clientSecret = this.Configuration.ClientSecret ?? "Unknown";
+
+        Rest.<#= this.ServiceModel.Name #>ClientOptions clientOptions = this.GetServiceClientOptions();
+
+        Rest.<#= this.ServiceModel.Name #>Client client = new Rest.<#= this.ServiceModel.Name #>Client(
+            new System.Uri(this.Configuration.ServiceBaseUri),
+            new Primavera.Hydrogen.Rest.Client.Authentication.ChallengeCredential(
+                async (args, cancellationToken) =>
+                {
+                    Primavera.Hydrogen.Rest.Client.Authentication.ClientSecretCredential innerCredential = new Primavera.Hydrogen.Rest.Client.Authentication.ClientSecretCredential(
+                        args.AuthorizationUri,
+                        clientId,
+                        clientSecret);
+
+                    string? accessToken = await innerCredential.GetTokenAsync(cancellationToken).ConfigureAwait(false);
+
+                    if (string.IsNullOrEmpty(accessToken))
+                    {
+                        throw new System.InvalidOperationException("Failure retrieving access token.");
+                    }
+
+                    return accessToken;
+                }),
+            clientOptions);
+
+        this.InitializeServiceClient(client);
+
+        return client;
+<#+
+
+}
+
+// *** WriteGetServiceClientWithout
+
+public void WriteGetServiceClientWithout(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (this.Configuration.ServiceBaseUri == null)
+        {
+            throw new System.InvalidOperationException("ServiceBaseUri is missing in configuration");
+        }
+
+        this.Console.WriteInformationLine($"Creating the service client for base URI '{this.Configuration.ServiceBaseUri}'...");
+
+        Rest.<#= this.ServiceModel.Name #>ClientOptions clientOptions = this.GetServiceClientOptions();
+
+        return new Rest.<#= this.ServiceModel.Name #>Client(
+            new System.Uri(this.Configuration.ServiceBaseUri),
+            new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+            clientOptions);
+<#+
+
+}
+
+// *** WriteGetServiceClientOptions
+
+public void WriteGetServiceClientOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return new Rest.<#= this.ServiceModel.Name #>ClientOptions();
+<#+
+
+}
+
+// *** WriteResetServiceClient
+
+public void WriteResetServiceClient(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.client = null;
+<#+
+
+}
+
+// *** WriteShowMonitoringMenuAsync
+
+public void WriteShowMonitoringMenuAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Menu
+
+        bool terminate = false;
+        bool cont = true;
+        while (cont)
+        {
+            this.Console.WriteLine();
+            this.Console.WriteLine("========================================");
+            this.Console.WriteLine("Monitoring Menu");
+            this.WriteConfiguration();
+            this.Console.WriteLine();
+            this.Console.WriteLine("1. Probe");
+            this.Console.WriteLine("2. Diagnostics");
+            this.Console.WriteLine("3. Endpoints");
+            this.Console.WriteLine("4. Configuration");
+            this.Console.WriteLine("5. Information");
+            this.Console.WriteLine("<. Back");
+            this.Console.WriteLine("Q. Quit");
+            this.Console.Write(">> ");
+
+            System.ConsoleKeyInfo key = this.Console.ReadKey();
+            this.Console.WriteLine();
+
+            switch (key.Key)
+            {
+                case System.ConsoleKey.Q:
+                    cont = false;
+                    terminate = true;
+                    break;
+                case System.ConsoleKey.LeftArrow:
+                    cont = false;
+                    break;
+                case System.ConsoleKey.D1:
+                case System.ConsoleKey.NumPad1:
+                    await this.ProbeAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D2:
+                case System.ConsoleKey.NumPad2:
+                    await this.DiagnosticsAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D3:
+                case System.ConsoleKey.NumPad3:
+                    await this.EndpointsAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D4:
+                case System.ConsoleKey.NumPad4:
+                    await this.ConfigurationAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D5:
+                case System.ConsoleKey.NumPad5:
+                    await this.InformationAsync().ConfigureAwait(false);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Result
+
+        return terminate;
+<#+
+
+}
+
+// *** WriteProbeAsync
+
+public void WriteProbeAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult> result = await this.Client.Monitoring.ProbeAsync().ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+
+            Primavera.Hydrogen.HealthMonitoring.HealthResult healthResult = result.Result;
+
+            this.WriteHealthResult(healthResult);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteDiagnosticsAsync
+
+public void WriteDiagnosticsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult> result = await this.Client.Monitoring.DiagnosticsAsync().ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+
+            Primavera.Hydrogen.HealthMonitoring.HealthResult healthResult = result.Result;
+
+            this.WriteHealthResult(healthResult);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteEndpointsAsync
+
+public void WriteEndpointsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>> result = await this.Client.Monitoring.EndpointsAsync().ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+
+            System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo> endpoints = result.Result;
+
+            WriteEndpoints(endpoints);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteConfigurationAsync
+
+public void WriteConfigurationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation> result = await this.Client.Monitoring.ConfigurationAsync().ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+
+            Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation location = result.Result;
+
+            WriteConfigurationLocation(location);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteInformationAsync
+
+public void WriteInformationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Description.ServiceInfo> result = await this.Client.Monitoring.InformationAsync().ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+
+            Primavera.Hydrogen.Rest.Description.ServiceInfo info = result.Result;
+
+            WriteServiceInfo(info);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteWriteException
+
+public void WriteWriteException(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteErrorLine("An error was raised. See bellow.");
+        this.Console.WriteErrorLine(ex);
+<#+
+
+}
+
+// *** WriteWriteRestRequestException
+
+public void WriteWriteRestRequestException(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (writeTitle)
+        {
+            this.Console.WriteErrorLine("REST API returned an error. See bellow.");
+        }
+
+        this.Console.WriteErrorLine(ex.Message);
+        this.WriteRestRequestExceptionError(string.Empty, ex.Error);
+        this.WriteRestServiceRequest(ex.Request, true);
+        this.WriteRestServiceResponse(ex.Response, true);
+
+        Primavera.Hydrogen.Rest.Client.RestRequestException? innerRestRequestException = ex.InnerException as Primavera.Hydrogen.Rest.Client.RestRequestException;
+        if (innerRestRequestException != null)
+        {
+            this.WriteRestRequestException(innerRestRequestException, false);
+        }
+        else
+        {
+            this.WriteRestRequestExceptionInner(ex.InnerException);
+        }
+<#+
+
+}
+
+// *** WriteWriteRestRequestExceptionError
+
+public void WriteWriteRestRequestExceptionError(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (error != null)
+        {
+            this.Console.WriteErrorLine(spacing + $"Code...: '{error.Code}'");
+            this.Console.WriteErrorLine(spacing + $"Title..: '{error.Title}'");
+            this.Console.WriteErrorLine(spacing + $"Status.: '{error.Status}'");
+            this.Console.WriteErrorLine(spacing + $"Type...: '{error.Type}'");
+
+            if (error.Errors != null)
+            {
+                this.Console.WriteErrorLine(spacing + "Errors.:");
+
+                if (error.Errors.Any())
+                {
+                    foreach (System.Collections.Generic.KeyValuePair<string, string[]> detail in error.Errors)
+                    {
+                        this.Console.WriteErrorLine(spacing + $"..{detail.Key}");
+
+                        foreach (string detailDetail in detail.Value)
+                        {
+                            this.Console.WriteErrorLine(spacing + $"....{detailDetail}");
+                        }
+                    }
+                }
+                else
+                {
+                    this.Console.WriteErrorLine(spacing + "..<empty>");
+                }
+            }
+        }
+<#+
+
+}
+
+// *** WriteWriteRestServiceRequest
+
+public void WriteWriteRestServiceRequest(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (request != null)
+        {
+            if (error)
+            {
+                this.Console.WriteErrorLine("Request:");
+                this.Console.WriteErrorLine($"..Method...: {request.Method}");
+                this.Console.WriteErrorLine($"..URI......: {request.Uri}");
+                this.Console.WriteErrorLine($"..RequestId: {request.RequestId}");
+            }
+            else
+            {
+                this.Console.WriteInformationLine("Request:");
+                this.Console.WriteInformationLine($"..Method...: {request.Method}");
+                this.Console.WriteInformationLine($"..URI......: {request.Uri}");
+                this.Console.WriteInformationLine($"..RequestId: {request.RequestId}");
+            }
+                
+            this.WriteHeaders(request.Headers, error);
+        }
+<#+
+
+}
+
+// *** WriteWriteRestServiceResponse
+
+public void WriteWriteRestServiceResponse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (response != null)
+        {
+            if (error)
+            {
+                this.Console.WriteErrorLine("Response:");
+                this.Console.WriteErrorLine($"..StatusCode..: {response.StatusCode}");
+                this.Console.WriteErrorLine($"..ReasonPhrase: {response.ReasonPhrase}");
+                this.Console.WriteErrorLine($"..RequestId...: {response.RequestId}");
+
+                if (response.Content == null || response.Content.ToArray().Length == 0)
+                {
+                    this.Console.WriteErrorLine("..Content.....: <empty>");
+                }
+                else
+                {
+                    this.Console.WriteErrorLine("..Content.....:");
+                    this.WriteBinaryData(response.Content, error);
+                }
+            }
+            else
+            {
+                this.Console.WriteInformationLine("Response:");
+                this.Console.WriteInformationLine($"..StatusCode..: {response.StatusCode}");
+                this.Console.WriteInformationLine($"..ReasonPhrase: {response.ReasonPhrase}");
+                this.Console.WriteInformationLine($"..RequestId...: {response.RequestId}");
+            }
+
+            this.WriteHeaders(response.Headers, error);
+        }
+<#+
+
+}
+
+// *** WriteWriteBinaryData
+
+public void WriteWriteBinaryData(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        string value = data.ToString();
+
+        try
+        {
+            System.Text.Json.JsonDocument jsonDocument = System.Text.Json.JsonDocument.Parse(value);
+
+            value = System.Text.Json.JsonSerializer.Serialize(
+                jsonDocument, 
+                new System.Text.Json.JsonSerializerOptions 
+                { 
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true 
+                });
+        }
+        catch
+        {
+        }
+
+        if (error)
+        {
+            this.Console.WriteErrorLine(value);
+        }
+        else
+        {
+            this.Console.WriteInformationLine(value);
+        }
+<#+
+
+}
+
+// *** WriteWriteRestRequestExceptionInner
+
+public void WriteWriteRestRequestExceptionInner(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (ex != null)
+        {
+            this.Console.WriteErrorLine("Inner Exception:");
+            this.Console.WriteErrorLine($"..Message: '{ex.Message}'");
+        }
+<#+
+
+}
+
+// *** WriteWriteHeaders
+
+public void WriteWriteHeaders(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (error)
+        {
+            this.Console.WriteErrorLine("..Headers:");
+        }
+        else
+        {
+            this.Console.WriteInformationLine("..Headers:");
+        }
+
+        foreach (Primavera.Hydrogen.Net.Http.HttpHeader header in headers.OrderBy(i => i.Name))
+        {
+            if (error)
+            {
+                this.Console.WriteErrorLine($"....'{header.Name}' = '{header.Value}'");
+            }
+            else
+            {
+                this.Console.WriteInformationLine($"....'{header.Name}' = '{header.Value}'");
+            }
+        }
+<#+
+
+}
+
+// *** WriteCheckConfiguration
+
+public void WriteCheckConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        if (this.Configuration.Environments == null)
+        {
+            this.Console.WriteErrorLine("The environments are missing in configuration.");
+            this.Console.WriteErrorLine("Please press any key to quit.");
+            this.Console.ReadKey();
+            return false;
+        }
+
+        if (this.Configuration.Environments == null || this.Configuration.Environments.Count == 0)
+        {
+            this.Console.WriteErrorLine("You need to the specify the address of at least one environment in configuration.");
+            this.Console.WriteErrorLine("Please press any key to quit.");
+            this.Console.ReadKey();
+            return false;
+        }
+
+        return true;
+<#+
+
+}
+
+// *** WriteWriteConfiguration
+
+public void WriteWriteConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        this.Console.WriteLine("=======================================");
+        this.Console.WriteLine($"Service......: {this.Configuration.ServiceBaseUri}");
+
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        this.Console.WriteLine($"Client Id....: {this.Configuration.ClientId}");
+        this.Console.WriteLine($"Client Secret: {this.Configuration.ClientSecret}");
+<#+
+    
+    }
+
+#>
+
+        this.WriteAdditionalConfiguration();
+        this.Console.WriteLine("=======================================");
+<#+
+
+}
+
+// *** WriteGetString1
+
+public void WriteGetString1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueString(name, true, defaultValue)!;
+<#+
+
+}
+
+// *** WriteGetString2
+
+public void WriteGetString2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        string? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (string.IsNullOrEmpty(defaultValue))
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(defaultValue))
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                value = valueStr;
+            }
+
+            if (required)
+            {
+                cont = !string.IsNullOrEmpty(value);
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetStrings
+
+public void WriteGetStrings(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Collections.Generic.List<string> result = new System.Collections.Generic.List<string>();
+
+        bool stop = false;
+        bool first = true;
+
+        while (!stop)
+        {
+            string? value = this.GetValueString(name, required && first, first ? defaultValue : null, true);
+            if (!string.IsNullOrEmpty(value))
+            {
+                result.Add(value);
+            }
+            else
+            {
+                stop = true;
+            }
+
+            first = false;
+        }
+
+        return result;
+<#+
+
+}
+
+// *** WriteGetIntegers
+
+public void WriteGetIntegers(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Collections.Generic.List<int> result = new System.Collections.Generic.List<int>();
+
+        bool stop = false;
+        bool first = true;
+
+        while (!stop)
+        {
+            int? value = this.GetValueInteger(name, required && first, first ? defaultValue : null, true);
+
+            if (value != null)
+            {
+                result.Add(value.Value);
+            }
+            else
+            {
+                stop = true;
+            }
+
+            first = false;
+        }
+
+        return result;
+<#+
+
+}
+
+// *** WriteGetUris
+
+public void WriteGetUris(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Collections.Generic.List<System.Uri> result = new System.Collections.Generic.List<System.Uri>();
+
+        bool stop = false;
+        bool first = true;
+
+        while (!stop)
+        {
+            System.Uri? value = this.GetValueUri(name, required && first, first ? defaultValue : null, true);
+            if (value != null)
+            {
+                result.Add(value);
+            }
+            else
+            {
+                stop = true;
+            }
+
+            first = false;
+        }
+
+        return result;
+<#+
+
+}
+
+// *** WriteGetEnums
+
+public void WriteGetEnums(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Collections.Generic.List<TEnum> result = new System.Collections.Generic.List<TEnum>();
+
+        bool stop = false;
+        bool first = true;
+
+        while (!stop)
+        {
+            TEnum? value = this.GetValueEnum<TEnum>(name, required && first, first ? defaultValue : null, true);
+
+            if (value != null)
+            {
+                result.Add(value.Value);
+            }
+            else
+            {
+                stop = true;
+            }
+
+            first = false;
+        }
+
+        return result;
+<#+
+
+}
+
+// *** WriteGetDictionaryString
+
+public void WriteGetDictionaryString(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Collections.Generic.Dictionary<string, string?> result = new System.Collections.Generic.Dictionary<string, string?>(System.StringComparer.OrdinalIgnoreCase);
+
+        bool stop = false;
+        bool first = true;
+
+        while (!stop)
+        {
+            string? key = this.GetValueString(keyName, notEmpty && first, null, first ? !notEmpty : true);
+            if (!string.IsNullOrEmpty(key))
+            {
+                string? value = this.GetValueString(valueName, valueRequired);
+
+                if (result.ContainsKey(key))
+                {
+                    result[key] = value;
+                }
+                else
+                {
+                    result.Add(key, value);
+                }
+            }
+            else
+            {
+                stop = true;
+            }
+
+            first = false;
+        }
+
+        return result;
+<#+
+
+}
+
+// *** WriteGetBoolean1
+
+public void WriteGetBoolean1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueBoolean(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetBoolean2
+
+public void WriteGetBoolean2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        bool? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (y/n): ");
+                }
+                else
+                {
+                    string defaultValueStr = defaultValue ?? false ? "y" : "n";
+                    this.Console.Write($"Please enter the {name} (y/n) (blank = {defaultValueStr}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (y/n) (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (y/n) (blank to stop): ");
+                    }
+                    else
+                    {
+                        string defaultValueStr = defaultValue ?? false ? "y" : "n";
+                        this.Console.Write($"Please enter the {name} (y/n) (blank = {defaultValueStr}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (valueStr.EqualsNoCase("Y"))
+                {
+                    value = true;
+                }
+                else if (valueStr.EqualsNoCase("N"))
+                {
+                    value = false;
+                }
+                else
+                {
+                    value = null;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetInteger1
+
+public void WriteGetInteger1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueInteger(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetInteger2
+
+public void WriteGetInteger2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        int? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (int.TryParse(valueStr, out int valueInt))
+                {
+                    value = valueInt;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetLong1
+
+public void WriteGetLong1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueLong(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetLong2
+
+public void WriteGetLong2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        long? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (long.TryParse(valueStr, out long valueLong))
+                {
+                    value = valueLong;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetDouble1
+
+public void WriteGetDouble1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueDouble(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetDouble2
+
+public void WriteGetDouble2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        double? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (double.TryParse(valueStr, out double valueDouble))
+                {
+                    value = valueDouble;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetDecimal1
+
+public void WriteGetDecimal1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueDecimal(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetDecimal2
+
+public void WriteGetDecimal2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        decimal? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (decimal.TryParse(valueStr, out decimal valueDecimal))
+                {
+                    value = valueDecimal;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetDateTime1
+
+public void WriteGetDateTime1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueDateTime(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetDateTime2
+
+public void WriteGetDateTime2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.DateTime? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (System.DateTime.TryParse(valueStr, out System.DateTime valueDateTime))
+                {
+                    value = valueDateTime;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetGuid1
+
+public void WriteGetGuid1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueGuid(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetGuid2
+
+public void WriteGetGuid2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Guid? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (System.Guid.TryParse(valueStr, out System.Guid valueGuid))
+                {
+                    value = valueGuid;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetEnum1
+
+public void WriteGetEnum1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueEnum(name, true, defaultValue)!.Value;
+<#+
+
+}
+
+// *** WriteGetEnum2
+
+public void WriteGetEnum2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        TEnum? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (System.Enum.TryParse(valueStr, true, out TEnum valueEnum))
+                {
+                    value = valueEnum;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteGetUri1
+
+public void WriteGetUri1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.GetValueUri(name, true, defaultValue)!;
+<#+
+
+}
+
+// *** WriteGetUri2
+
+public void WriteGetUri2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Uri? value = defaultValue;
+
+        bool cont = false;
+        while (!cont)
+        {
+            if (required)
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name}: ");
+                }
+                else
+                {
+                    this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    this.Console.Write($"Please enter the {name} (blank = ignore): ");
+                }
+                else
+                {
+                    if (blankToStop)
+                    {
+                        this.Console.Write($"Please enter the {name} (blank to stop): ");
+                    }
+                    else
+                    {
+                        this.Console.Write($"Please enter the {name} (blank = {defaultValue}): ");
+                    }
+                }
+            }
+
+            string? valueStr = this.Console.ReadLine();
+            if (!string.IsNullOrEmpty(valueStr))
+            {
+                if (System.Uri.TryCreate(valueStr, System.UriKind.Absolute, out System.Uri? valueUri))
+                {
+                    value = valueUri;
+                }
+            }
+
+            if (required)
+            {
+                cont = value != null;
+            }
+            else
+            {
+                cont = true;
+            }
+        }
+
+        return value;
+<#+
+
+}
+
+// *** WriteWriteHealthResult
+
+public void WriteWriteHealthResult(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine("HealthResult:");
+        this.Console.WriteInformationLine($"..Status.......: {result.Status}");
+        this.Console.WriteInformationLine($"..TotalDuration: {result.TotalDuration}");
+        this.Console.WriteInformationLine("..Results......:");
+        this.WriteHealthResultResults("....", result.Results);
+<#+
+
+}
+
+// *** WriteWriteHealthResultResults
+
+public void WriteWriteHealthResultResults(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (results == null)
+        {
+            this.Console.WriteInformationLine($"{spacing}<null>");
+            return;
+        }
+
+        if (results.Count == 0)
+        {
+            this.Console.WriteInformationLine($"{spacing}<empty>");
+            return;
+        }
+
+        foreach (KeyValuePair<string, Primavera.Hydrogen.HealthMonitoring.HealthResultEntry> result in results)
+        {
+            this.WriteHealthResultResult(spacing, result);
+        }
+<#+
+
+}
+
+// *** WriteWriteHealthResultResult
+
+public void WriteWriteHealthResultResult(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine(spacing + "HealthResultEntry:");
+        this.Console.WriteInformationLine(spacing + $"..Key........: {result.Key}");
+        this.Console.WriteInformationLine(spacing + $"..Status.....: {result.Value.Status}");
+        this.Console.WriteInformationLine(spacing + $"..Description: {result.Value.Description}");
+        this.Console.WriteInformationLine(spacing + $"..Duration...: {result.Value.Duration}");
+<#+
+
+}
+
+// *** WriteWriteEndpoints
+
+public void WriteWriteEndpoints(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine("Endpoints:");
+
+        foreach (Primavera.Hydrogen.Rest.Routing.EndpointInfo endpoint in endpoints.OrderBy(e => e.RoutePattern).ThenBy(e => e.HttpMethods))
+        {
+            this.WriteEndpoint("..", endpoint);
+        }
+<#+
+
+}
+
+// *** WriteWriteEndpoint
+
+public void WriteWriteEndpoint(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine(spacing + "Endpoint:");
+        this.Console.WriteInformationLine(spacing + $"..HttpMethods...: {endpoint.HttpMethods}");
+        this.Console.WriteInformationLine(spacing + $"..RoutePattern..: {endpoint.RoutePattern}");
+        this.Console.WriteInformationLine(spacing + $"..EndpointName..: {endpoint.EndpointName}");
+        this.Console.WriteInformationLine(spacing + $"..RouteName.....: {endpoint.RouteName}");
+        this.Console.WriteInformationLine(spacing + $"..ControllerName: {endpoint.ControllerName}");
+        this.Console.WriteInformationLine(spacing + $"..ActionName....: {endpoint.ActionName}");
+        this.Console.WriteInformationLine(spacing + $"..Order.........: {endpoint.Order}");
+        this.Console.WriteInformationLine(spacing + $"..DisplayName...: {endpoint.DisplayName}");
+        this.Console.WriteInformationLine(spacing + $"..ApiVersions...: {endpoint.ApiVersions}");
+        this.Console.WriteInformationLine(spacing + $"..Secured.......: {endpoint.Secured}");
+<#+
+
+}
+
+// *** WriteWriteConfigurationLocation
+
+public void WriteWriteConfigurationLocation(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine("ConfigurationLocation:");
+        this.Console.WriteInformationLine($"..Location.: {location.Location}");
+        this.Console.WriteInformationLine($"..Reference: {location.Reference}");
+<#+
+
+}
+
+// *** WriteWriteServiceInfo
+
+public void WriteWriteServiceInfo(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine("ServiceInfo:");
+        this.Console.WriteInformationLine($"..Id.................: {info.Id}");
+        this.Console.WriteInformationLine($"..Name...............: {info.Name}");
+        this.Console.WriteInformationLine($"..DisplayName........: {info.DisplayName}");
+        this.Console.WriteInformationLine($"..Version............: {info.Version}");
+        this.Console.WriteInformationLine($"..Build..............: {info.Build}");
+        this.Console.WriteInformationLine($"..Copyright..........: {info.Copyright}");
+        this.Console.WriteInformationLine($"..Framework..........: {info.Framework}");
+
+        this.Console.WriteInformationLine($"..Host...............:");
+
+        if (info.Host == null)
+        {
+            this.Console.WriteInformationLine("....<null>");
+        }
+        else
+        {
+            this.Console.WriteInformationLine($"....Application: {info.Host.Application}");
+            this.Console.WriteInformationLine($"....Environment: {info.Host.Environment}");
+        }
+
+        this.Console.WriteInformationLine($"..ApiVersions........:");
+
+        if (info.ApiVersions == null || info.ApiVersions.Count == 0)
+        {
+            this.Console.WriteInformationLine("....<empty>");
+        }
+        else
+        {
+            foreach (string apiVersion in info.ApiVersions)
+            {
+                this.Console.WriteInformationLine($"....{apiVersion}");
+            }
+        }
+
+        this.Console.WriteInformationLine($"..ApiScopes..........:");
+
+        if (info.ApiScopes == null || info.ApiScopes.Count == 0)
+        {
+            this.Console.WriteInformationLine("....<empty>");
+        }
+        else
+        {
+            foreach (string apiScope in info.ApiScopes)
+            {
+                this.Console.WriteInformationLine($"....{apiScope}");
+            }
+        }
+
+        this.Console.WriteInformationLine($"..Dependencies.......:");
+
+        if (info.Dependencies == null || info.Dependencies.Count == 0)
+        {
+            this.Console.WriteInformationLine("....<empty>");
+        }
+        else
+        {
+            foreach (string dependency in info.Dependencies)
+            {
+                this.Console.WriteInformationLine($"....{dependency}");
+            }
+        }
+
+        this.Console.WriteInformationLine($"..ServiceDependencies:");
+
+        if (info.ServiceDependencies == null || info.ServiceDependencies.Count == 0)
+        {
+            this.Console.WriteInformationLine("....<empty>");
+        }
+        else
+        {
+            foreach (string serviceDependency in info.ServiceDependencies)
+            {
+                this.Console.WriteInformationLine($"....{serviceDependency}");
+            }
+        }
+
+        this.Console.WriteInformationLine($"..Properties.........:");
+
+        if (info.Properties == null || info.Properties.Count == 0)
+        {
+            this.Console.WriteInformationLine("....<empty>");
+        }
+        else
+        {
+            foreach (System.Collections.Generic.KeyValuePair<string, string?> property in info.Properties)
+            {
+                this.Console.WriteInformationLine($"....{property.Key}: {property.Value}");
+            }
+        }
+<#+
+
+}
+
+// *** WriteSelectEnvironment
+
+public void WriteSelectEnvironment(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        bool hasLocalDevelopment = this.Configuration.Environments?.ContainsKey("Local") ?? false;
+        bool hasDevelopment = this.Configuration.Environments?.ContainsKey("Development") ?? false;
+        bool hasStaging = this.Configuration.Environments?.ContainsKey("Staging") ?? false;
+        bool hasPreview = this.Configuration.Environments?.ContainsKey("Preview") ?? false;
+        bool hasProduction = this.Configuration.Environments?.ContainsKey("Production") ?? false;
+
+        System.Collections.Generic.List<string> selectors = new System.Collections.Generic.List<string>();
+
+        if (hasLocalDevelopment)
+        {
+            selectors.Add("1 = Local");
+        }
+
+        if (hasDevelopment)
+        {
+            selectors.Add("2 = Development");
+        }
+
+        if (hasStaging)
+        {
+            selectors.Add("3 = Staging");
+        }
+
+        if (hasPreview)
+        {
+            selectors.Add("4 = Preview");
+        }
+
+        if (hasProduction)
+        {
+            selectors.Add("5 = Production");
+        }
+
+        this.Console.WriteLine();
+        this.Console.Write($"Please select the environment ({string.Join(", ", selectors)}): ");
+        System.ConsoleKeyInfo keyEnv = this.Console.ReadKey();
+        this.Console.WriteLine();
+
+        switch (keyEnv.Key)
+        {
+            case System.ConsoleKey.D2:
+            case System.ConsoleKey.NumPad2:
+                this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Development"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                this.Configuration.ClientId = this.Configuration.Environments?["Development"].ClientId;
+                this.Configuration.ClientSecret = this.Configuration.Environments?["Development"].ClientSecret;
+<#+
+
+    }
+
+#>
+                break;
+            case System.ConsoleKey.D3:
+            case System.ConsoleKey.NumPad3:
+                this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Staging"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                this.Configuration.ClientId = this.Configuration.Environments?["Staging"].ClientId;
+                this.Configuration.ClientSecret = this.Configuration.Environments?["Staging"].ClientSecret;
+<#+
+
+    }
+
+#>
+                break;
+            case System.ConsoleKey.D4:
+            case System.ConsoleKey.NumPad4:
+                this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Preview"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                this.Configuration.ClientId = this.Configuration.Environments?["Preview"].ClientId;
+                this.Configuration.ClientSecret = this.Configuration.Environments?["Preview"].ClientSecret;
+<#+
+
+    }
+
+#>
+                break;
+            case System.ConsoleKey.D5:
+            case System.ConsoleKey.NumPad5:
+                this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Production"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                this.Configuration.ClientId = this.Configuration.Environments?["Production"].ClientId;
+                this.Configuration.ClientSecret = this.Configuration.Environments?["Production"].ClientSecret;
+<#+
+
+    }
+
+#>
+                break;
+            default:
+                if (hasLocalDevelopment)
+                {
+                    this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Local"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                    this.Configuration.ClientId = this.Configuration.Environments?["Local"].ClientId;
+                    this.Configuration.ClientSecret = this.Configuration.Environments?["Local"].ClientSecret;
+<#+
+
+    }
+
+#>
+                }
+                else if (hasDevelopment)
+                {
+                    this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Development"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                    this.Configuration.ClientId = this.Configuration.Environments?["Development"].ClientId;
+                    this.Configuration.ClientSecret = this.Configuration.Environments?["Development"].ClientSecret;
+<#+
+
+    }
+
+#>
+                }
+                else if (hasStaging)
+                {
+                    this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Staging"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                    this.Configuration.ClientId = this.Configuration.Environments?["Staging"].ClientId;
+                    this.Configuration.ClientSecret = this.Configuration.Environments?["Staging"].ClientSecret;
+<#+
+
+    }
+
+#>
+                }
+                else if (hasPreview)
+                {
+                    this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Preview"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                    this.Configuration.ClientId = this.Configuration.Environments?["Preview"].ClientId;
+                    this.Configuration.ClientSecret = this.Configuration.Environments?["Preview"].ClientSecret;
+<#+
+
+    }
+
+#>
+                }
+                else
+                {
+                    this.Configuration.ServiceBaseUri = this.Configuration.Environments?["Production"].ServiceBaseUri;
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+                    this.Configuration.ClientId = this.Configuration.Environments?["Production"].ClientId;
+                    this.Configuration.ClientSecret = this.Configuration.Environments?["Production"].ClientSecret;
+<#+
+
+    }
+
+#>
+                }
+
+                break;
+        }
+
+        this.client = null;
+
+        this.Console.WriteLine();
+<#+
+
+}
+
+#>

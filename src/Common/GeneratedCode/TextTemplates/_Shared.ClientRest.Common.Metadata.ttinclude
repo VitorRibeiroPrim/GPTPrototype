@@ -1,0 +1,57 @@
+﻿<#+
+
+public void MetadataTransformation(string project)
+{
+    // Build the transformations
+
+    ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+    bool clientSide = project == "Client.Rest";
+
+    transformations.Add(
+        new RegularExpressionsTransformation(clientSide));
+
+    transformations.Add(
+        (s, t) => true,
+        (s, t) => { return s is ServiceModel; },
+        (s, t) =>
+        {
+            if (s is ServiceModel serviceModel)
+            {
+                // Empty?
+
+                if (serviceModel.RegularExpressions.Count == 0)
+                {
+                    t.WithEmptyComment("This file is empty because the service model does not include\nany regular expression.");
+                    return;
+                }
+
+                // Namespace
+
+                string namespacePart = project == "Client.Rest" ? ".Client.Rest.Metadata" : ".Server.Common.Metadata";
+
+                t.Namespace = new NamespaceModel(serviceModel.Namespace + namespacePart)
+                    .WithClass(
+                        new ClassModel("RegularExpressions")
+                        {
+                            Modifiers = ClassModifiers.Public | ClassModifiers.Static | ClassModifiers.Partial,
+                            Documentation = new DocumentationModel("Defines constants that specify the regular expressions used by the REST API actions.")
+                        });
+            }
+        });
+
+    // Transform
+
+    CSharpFileModel targetModel = new CSharpFileModel();
+    transformations.TransformTo(targetModel);
+
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Generate code
+
+    controller.Write(targetModel);
+}
+
+#>

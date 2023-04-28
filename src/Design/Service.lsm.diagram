@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<serviceModelDiagram dslVersion="5.0.0.0" Id="9ce92e1c-c224-40a6-b02b-4a5779641ffd" absoluteBounds="0, 0, 11, 8.5" name="Service" configuration="" fillColor="White" textColor="Black">
+  <serviceModelMoniker name="/ChatGPT" />
+  <nestedChildShapes>
+    <oAuthClientShape Id="19a1bcae-8760-46a2-a325-9a88c096f9a0" absoluteBounds="0.5, 1.25, 2, 0.5" fillColor="Beige" textColor="Black" outlineColor="Beige">
+      <oAuthClientMoniker name="/ChatGPT/chatgpt-clientcredentials" />
+    </oAuthClientShape>
+    <commentShape Id="0803b3af-ebac-4beb-9bf2-5f22d91c2261" absoluteBounds="0.5, 0.5, 6.625, 0.5" fillColor="Gainsboro" textColor="Black" outlineColor="Gainsboro">
+      <commentMoniker Id="c032d219-656d-4e46-9360-ea3cffba063e" />
+    </commentShape>
+    <commentShape Id="56de4b29-06e1-47ef-bc71-97404c5d4fbc" absoluteBounds="0.5, 2.125, 6.625, 0.5" fillColor="Gainsboro" textColor="Black" outlineColor="Gainsboro">
+      <commentMoniker Id="426a8e22-0055-4bb6-9c34-9a048a0e92cd" />
+    </commentShape>
+    <modelTypeShape Id="2a453cca-74aa-4862-9776-fa68b1c764f6" absoluteBounds="0.5, 4.25, 2, 0.95169108072916675" fillColor="LightSalmon" textColor="Black" outlineColor="LightSalmon">
+      <modelTypeMoniker name="/ChatGPT/Request" />
+      <nestedChildShapes>
+        <elementListCompartment Id="539af5c0-4069-4429-8f9c-68555028e553" absoluteBounds="0.51499999999999968, 4.66, 1.9700000000000002, 0.44169108072916663" name="Properties" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </modelTypeShape>
+    <controllerTypeShape Id="05773ec5-2620-4dd5-a6e9-ab85c1936f24" absoluteBounds="0.5, 3, 2, 0.75938964843749979" fillColor="Plum" textColor="Black" outlineColor="Plum">
+      <controllerTypeMoniker name="/ChatGPT/ChatGPT" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b8c7dbaf-dcf4-44a0-8ba4-904d92f61bf1" absoluteBounds="0.515, 3.41, 1.9700000000000002, 0.2493896484375" name="Parameters" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </controllerTypeShape>
+    <controllerTypeActionShape Id="15ead5ce-c026-4e92-b461-6a9a891b3c7d" absoluteBounds="2.875, 3, 2, 0.95169108072916675" fillColor="PaleGreen" textColor="Black" outlineColor="PaleGreen">
+      <controllerTypeActionMoniker name="/ChatGPT/ChatGPT#Ask" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4597e823-55dc-4df5-a8b7-37c9bcf16a1e" absoluteBounds="2.89, 3.41, 1.9700000000000002, 0.44169108072916663" name="Parameters" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </controllerTypeActionShape>
+    <controllerActionConnector Id="0064828c-07df-45ac-ba7a-8b7f954cf104" edgePoints="[(2.5 : 3.37969482421875); (2.875 : 3.37969482421875)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="75ef0337-3d3a-4dd2-98e3-6d4c059e482b">
+      <nodes>
+        <controllerTypeShapeMoniker Id="05773ec5-2620-4dd5-a6e9-ab85c1936f24" />
+        <controllerTypeActionShapeMoniker Id="15ead5ce-c026-4e92-b461-6a9a891b3c7d" />
+      </nodes>
+    </controllerActionConnector>
+  </nestedChildShapes>
+</serviceModelDiagram>

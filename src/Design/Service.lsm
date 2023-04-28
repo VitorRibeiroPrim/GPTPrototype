@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<serviceModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Library" dslVersion="5.0.0.0" Id="6d4a300c-cc85-4e01-a9bd-65cb4efc56a1" name="ChatGPT" summary="Chat GPT prototype." namespace="Primavera.Lithium.ChatGPT" displayName="Chat Gpt Service" authorizationMode="Off" gUID="GPT" wasModified="true" designerVersion="504" xmlns="http://schemas.microsoft.com/dsltools/ServiceDesigner">
+  <models>
+    <modelType Id="ba9aee62-43ab-4011-91e6-3a2b5fe60cce" name="Request" summary="The request resource.">
+      <childProperties>
+        <modelTypeHasChildProperties>
+          <modelTypeScalarProperty Id="8137d0b4-db90-41e3-b37a-0970b2c25496" name="Question" summary="The question." displayName="Question" />
+        </modelTypeHasChildProperties>
+      </childProperties>
+    </modelType>
+  </models>
+  <comments>
+    <comment Id="c032d219-656d-4e46-9360-ea3cffba063e" text="Clients" nameProvider="Clients" />
+    <comment Id="426a8e22-0055-4bb6-9c34-9a048a0e92cd" text="ChatGPT" nameProvider="ChatGpt" />
+  </comments>
+  <controllers>
+    <controllerType Id="2f94a11d-75a4-4542-b618-4e083cc62f67" name="ChatGPT" summary="The chatGPT controller.">
+      <childActions>
+        <controllerHasChildActions>
+          <controllerTypeActionMoniker name="/ChatGPT/ChatGPT#Ask" />
+        </controllerHasChildActions>
+      </childActions>
+    </controllerType>
+  </controllers>
+  <actions>
+    <controllerTypeAction Id="ae6d2ee9-b3a1-40ef-a6b7-d4bc2ca36d6b" name="ChatGPT#Ask" summary="Ask a question to the chat." returns="The chat response." returnValueType="String" httpMethod="Post" producesNotFound="False" producesConflict="True" routeIgnoreControllerParameters="false" name2="Ask" kind="Command" oDataEnabled="false" oDataAllowedQueryOptions="Top, Skip, Filter, OrderBy, Count">
+      <childParameters>
+        <controllerTypeActionHasChildParameters>
+          <controllerTypeActionModelParameter Id="be6d4b87-1a5a-4263-a297-4af9f5c11314" name="Request" summary="The request with the question." displayName="Request">
+            <referencedModel>
+              <controllerTypeActionModelParameterReferencesModelType>
+                <modelTypeMoniker name="/ChatGPT/Request" />
+              </controllerTypeActionModelParameterReferencesModelType>
+            </referencedModel>
+          </controllerTypeActionModelParameter>
+        </controllerTypeActionHasChildParameters>
+      </childParameters>
+    </controllerTypeAction>
+  </actions>
+  <settings>
+    <modelHasSettings>
+      <serviceModelSettings Id="5929c639-6e85-46ea-808f-3e732acb2fd9" hasCustomControllersClientSide="false" hasCustomModelsClientSide="false" hasCustomEnumerationsClientSide="false" generateOidcSupport="false" />
+    </modelHasSettings>
+  </settings>
+  <oAuthClients>
+    <oAuthClient Id="a7627d36-e211-4773-a774-29da2b4382ea" name="chatgpt-clientcredentials" secret="XshHXeP1PVye3lWwadoNI9rAu2RGb7Srh5p3ATlsiG1NXY2aIvcP8hFlyNF0RXzPKp3ivnaIVFrIbzI4YPOVdg22" />
+  </oAuthClients>
+</serviceModel>

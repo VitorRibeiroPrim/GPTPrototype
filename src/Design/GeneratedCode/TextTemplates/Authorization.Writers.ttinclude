@@ -1,0 +1,392 @@
+﻿<#+
+
+// *** WriteAuthorizationSpec
+
+public void WriteAuthorizationSpec(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model.AuthorizationMode.IsOff())
+    {
+        modelWriter.CancelTransformation();
+        return;
+    }
+
+    // Spec
+
+    AuthorizationSpec spec = new AuthorizationSpec()
+    {
+        Name = model.GUID
+    };
+
+    // API Resource
+
+    this.AddApiResource(spec, model);
+
+    // API Scopes
+
+    this.AddApiScopes(spec, model);
+
+    // Authorization Policies
+
+    this.AddAuthorizationPolicies(spec, model);
+
+    // Clients
+
+    this.AddClients(spec, model);
+
+    // Serialize
+
+    string json = spec.ToJson();
+
+    // Write
+
+    modelWriter.Append(json);
+}
+
+// *** AddApiResource
+
+public void AddApiResource(AuthorizationSpec spec, ServiceModel model)
+{
+    List<string> scopes = new List<string>();
+
+    scopes.Add(model.DefaultScope);
+
+    if (model.Webhooks.Count > 0)
+    {
+        scopes.Add(model.DefaultScope + "-wh");
+    }
+
+    if (model.AuthorizationPolicies != null)
+    {
+        foreach (AuthorizationPolicy policy in model.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Scope))
+        {
+            scopes.Add(policy.Scope);
+        }
+    }
+
+    List<string> claims = new List<string>();
+
+    if (model.Settings.GenerateOidcSupport)
+    {
+        claims.Add("name");
+        claims.Add("email");
+        claims.Add("profile");
+    }
+
+    spec.ApiResources.Add(
+        new ApiResourceSpec()
+        {
+            UserClaims = claims,
+            DisplayName = "{0} REST API".Format(model.DisplayName),
+            Name = model.DefaultScope,
+            Scopes = scopes
+        });
+}
+
+// *** AddApiScopes
+
+public void AddApiScopes(AuthorizationSpec spec, ServiceModel model)
+{
+    spec.ApiScopes.Add(
+        new ApiScopeSpec()
+        {
+            DisplayName = "{0} REST API".Format(model.DisplayName),
+            Name = model.DefaultScope
+        });
+
+    if (model.Webhooks.Count > 0)
+    {
+        spec.ApiScopes.Add(
+            new ApiScopeSpec()
+            {
+                DisplayName = "{0} REST API Webhooks".Format(model.DisplayName),
+                Name = model.DefaultScope + "-wh"
+            });
+    }
+
+    if (model.AuthorizationPolicies != null)
+    {
+        foreach (AuthorizationPolicy policy in model.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Scope))
+        {
+            spec.ApiScopes.Add(
+                new ApiScopeSpec()
+                {
+                    DisplayName = "{0} REST API ({1})".Format(model.DisplayName, policy.Name),
+                    Name = policy.Scope,
+                    Emphasize = false,
+                    Required = false
+                });
+        }
+    }
+}
+
+// *** AddAuthorizationPolicies
+
+public void AddAuthorizationPolicies(AuthorizationSpec spec, ServiceModel model)
+{
+    foreach (AuthorizationPolicy policy in model.AuthorizationPolicies.OrderBy(i => i.Name))
+    {
+        if (policy.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Custom)
+        {
+            spec.AuthorizationPolicies.Add(
+                new AuthorizationPolicySpec(
+                    policy.Name, 
+                    Primavera.Hydrogen.DesignTime.Specs.Authorization.AuthorizationPolicyKind.Custom));
+        }
+        else
+        {
+            spec.AuthorizationPolicies.Add(
+                new AuthorizationPolicySpec(
+                    policy.Name, 
+                    Primavera.Hydrogen.DesignTime.Specs.Authorization.AuthorizationPolicyKind.Scope)
+                {
+                    Scope = policy.Scope
+                });
+        }
+    }
+}
+
+// *** AddClients
+
+public void AddClients(AuthorizationSpec spec, ServiceModel model)
+{
+    List<string> scopes = new List<string>()
+    {
+        model.DefaultScope
+    };
+
+    if (model.Webhooks.Count > 0)
+    {
+        scopes.Add(model.DefaultScope + "-wh");
+    }
+
+    if (model.AuthorizationPolicies != null)
+    {
+        foreach (AuthorizationPolicy policy in model.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Scope))
+        {
+            scopes.Add(policy.Scope);
+        }
+    }
+
+    List<string> oidcScopes = new List<string>(scopes)
+    {
+        "openid",
+        "email",
+        "profile"
+    };
+
+    // Client credentials
+
+    OAuthClient oauthClient = model.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.ClientCredentials);
+    if (oauthClient != null)
+    {
+        List<string> clientCredentialsScopes = new List<string>(scopes);
+
+        AddAdditionalScopes(clientCredentialsScopes, oauthClient.AdditionalScopes);
+
+        ClientSpec clientSpec = new ClientSpec()
+        {
+            ClientId = oauthClient.Name,
+            ClientName = "{0} (Client Credentials)".Format(model.DisplayName),
+            Description = "Allows accessing the {0} REST API using the client credentials grant type.".Format(model.DisplayName),
+            RequireClientSecret = true,
+            RequireConsent = false,
+            AllowOfflineAccess = false,
+            AlwaysIncludeUserClaimsInIdToken = false,
+            AllowedCorsOrigins = new List<string>(),
+            AllowedGrantTypes = new List<string>()
+            {
+                "client_credentials"
+            },
+            AllowedScopes = clientCredentialsScopes,
+            Secrets = new List<ClientSecretSpec>()
+        };
+
+        if (!string.IsNullOrWhiteSpace(oauthClient.Secret))
+        {
+            clientSpec.Secrets.Add(
+                new ClientSecretSpec()
+                {
+                    Description = "Default Secret",
+                    Kind = "SharedSecret",
+                    Value = oauthClient.Secret
+                });
+        }
+
+        spec.Clients.Add(clientSpec);
+    }
+
+    // Hybrid
+
+    oauthClient = model.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.Hybrid);
+    if (oauthClient != null)
+    {
+        List<string> hybridScopes = new List<string>(oidcScopes);
+
+        AddAdditionalScopes(hybridScopes, oauthClient.AdditionalScopes);
+
+        string redirectUri = $"https://localhost:[PORT]/{oauthClient.RedirectUriPath}";
+        string postLogoutRedirectUri = $"https://localhost:[PORT]{oauthClient.PostLogoutRedirectUriPath}";
+
+        ClientSpec clientSpec = new ClientSpec()
+        {
+            AllowAccessTokensViaBrowser = true,
+            AllowOfflineAccess = false,
+            AlwaysIncludeUserClaimsInIdToken = true,
+            ClientId = oauthClient.Name,
+            ClientName = "{0} (Hybrid)".Format(model.DisplayName),
+            Description = "Allows accessing the {0} REST API using the hybrid grant type.".Format(model.DisplayName),
+            RequireClientSecret = false,
+            RequireConsent = true,
+            AllowedGrantTypes = new List<string>()
+            {
+                "hybrid"
+            },
+            AllowedScopes = hybridScopes,
+            RedirectUris = new List<string>()
+            {
+                redirectUri
+            },
+            PostLogoutRedirectUris = new List<string>()
+            {
+                postLogoutRedirectUri
+            },
+            Secrets = new List<ClientSecretSpec>()
+        };
+
+        if (!string.IsNullOrWhiteSpace(oauthClient.Secret))
+        {
+            clientSpec.Secrets.Add(
+                new ClientSecretSpec()
+                {
+                    Description = "Default Secret",
+                    Kind = "SharedSecret",
+                    Value = oauthClient.Secret
+                });
+        }
+
+        spec.Clients.Add(clientSpec);
+    }
+
+    // Authorization code
+
+    oauthClient = model.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCode);
+    if (oauthClient != null)
+    {
+        List<string> authorizationCodeScopes = new List<string>(oidcScopes);
+
+        AddAdditionalScopes(authorizationCodeScopes, oauthClient.AdditionalScopes);
+
+        string redirectUri = $"https://localhost:[PORT]/{oauthClient.RedirectUriPath}";
+        string postLogoutRedirectUri = $"https://localhost:[PORT]{oauthClient.PostLogoutRedirectUriPath}";
+
+        ClientSpec clientSpec = new ClientSpec()
+        {
+            AllowAccessTokensViaBrowser = false,
+            AllowOfflineAccess = false,
+            AlwaysIncludeUserClaimsInIdToken = true,
+            ClientId = oauthClient.Name,
+            ClientName = "{0} (Authorization Code)".Format(model.DisplayName),
+            Description = "Allows accessing the {0} REST API using the authorization code grant type.".Format(model.DisplayName),
+            RequireClientSecret = false,
+            RequireConsent = true,
+            AllowedGrantTypes = new List<string>()
+            {
+                "authorization_code"
+            },
+            AllowedScopes = authorizationCodeScopes,
+            RedirectUris = new List<string>()
+            {
+                redirectUri
+            },
+            PostLogoutRedirectUris = new List<string>()
+            {
+                postLogoutRedirectUri
+            },
+            Secrets = new List<ClientSecretSpec>()
+        };
+
+        if (!string.IsNullOrWhiteSpace(oauthClient.Secret))
+        {
+            clientSpec.Secrets.Add(
+                new ClientSecretSpec()
+                {
+                    Description = "Default Secret",
+                    Kind = "SharedSecret",
+                    Value = oauthClient.Secret
+                });
+        }
+
+        spec.Clients.Add(clientSpec);
+    }
+
+    // Authorization code with PKCE
+
+    oauthClient = model.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCodeWithPkce);
+    if (oauthClient != null)
+    {
+        List<string> authorizationCodePkceScopes = new List<string>(oidcScopes);
+
+        AddAdditionalScopes(authorizationCodePkceScopes, oauthClient.AdditionalScopes);
+
+        string redirectUri = $"https://localhost:[PORT]/{oauthClient.RedirectUriPath}";
+        string postLogoutRedirectUri = $"https://localhost:[PORT]{oauthClient.PostLogoutRedirectUriPath}";
+
+        ClientSpec clientSpec = new ClientSpec()
+        {
+            AllowAccessTokensViaBrowser = false,
+            AllowOfflineAccess = false,
+            AlwaysIncludeUserClaimsInIdToken = true,
+            ClientId = oauthClient.Name,
+            ClientName = "{0} (Authorization Code PKCE)".Format(model.DisplayName),
+            Description = "Allows accessing the {0} REST API using the authorization code with PKCE grant type.".Format(model.DisplayName),
+            RequireClientSecret = false,
+            RequireConsent = true,
+            RequirePkce = true,
+            AllowedGrantTypes = new List<string>()
+            {
+                "authorization_code"
+            },
+            AllowedScopes = authorizationCodePkceScopes,
+            RedirectUris = new List<string>()
+            {
+                redirectUri
+            },
+            PostLogoutRedirectUris = new List<string>()
+            {
+                postLogoutRedirectUri
+            },
+            Secrets = new List<ClientSecretSpec>()
+        };
+
+        if (!string.IsNullOrWhiteSpace(oauthClient.Secret))
+        {
+            clientSpec.Secrets.Add(
+                new ClientSecretSpec()
+                {
+                    Description = "Default Secret",
+                    Kind = "SharedSecret",
+                    Value = oauthClient.Secret
+                });
+        }
+
+        spec.Clients.Add(clientSpec);
+    }
+}
+
+private static void AddAdditionalScopes(List<string> scopes, string additionalScopes)
+{
+    if (!string.IsNullOrWhiteSpace(additionalScopes))
+    {
+        IList<string> additional = additionalScopes.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Select(i => i.Trim())
+            .Where(i => !string.IsNullOrWhiteSpace(i))
+            .ToList();
+
+        if (additional.Count > 0)
+        {
+            scopes.AddRange(additional);
+        }
+    }
+}
+
+#>

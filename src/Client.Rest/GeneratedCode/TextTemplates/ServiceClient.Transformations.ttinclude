@@ -1,0 +1,257 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    string serviceVersionString = VersioningHelper.GetApiVersionString(sourceModel);
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Rest");
+
+    // Base class
+
+    ClassModel baseClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("{0}ClientBase".Format(sourceModel.Name))
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Inheritance = "Primavera.Hydrogen.Rest.Client.RestServiceClient, I{0}Client".Format(sourceModel.Name),
+                Documentation = new DocumentationModel("Defines the base class for the service client that allows accessing the {0} API.".Format(sourceModel.DisplayName))
+            })
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithField(
+                new FieldModel("monitoring", "IMonitoringClientController?"))
+            .WithProperty(
+                new PropertyModel("DefaultApiVersion", "string", $"\"{serviceVersionString}\"")
+                {
+                    Modifiers = PropertyModifiers.Internal,
+                    Documentation = new DocumentationModel("Gets the default API version.")
+                });
+
+    if (sourceModel.Webhooks.Any())
+    {
+        baseClassModel.AddField(
+            new FieldModel("webhooks", "IWebhooksClientController?"));
+    }
+
+    if (sourceModel.Settings.GenerateServiceClientConstructors)
+    {
+        baseClassModel
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Inheritance = "base(serviceUri, credential, new {0}ClientOptions())".Format(sourceModel.Name),
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ClientBase\" /> class.".Format(sourceModel.Name))
+                })
+                .WithParameter(
+                    new MethodParameterModel("serviceUri", "System.Uri")
+                    {
+                        Documentation = new DocumentationModel("The service URI.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("credential", "Primavera.Hydrogen.Rest.Client.BearerTokenCredential")
+                    {
+                        Documentation = new DocumentationModel("The credential that should be used to access the service.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Inheritance = "base(serviceUri, credential, clientOptions)",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ClientBase\" /> class.".Format(sourceModel.Name))
+                })
+                .WithParameter(
+                    new MethodParameterModel("serviceUri", "System.Uri")
+                    {
+                        Documentation = new DocumentationModel("The service URI.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("credential", "Primavera.Hydrogen.Rest.Client.BearerTokenCredential")
+                    {
+                        Documentation = new DocumentationModel("The credential that should be used to access the service.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientOptions", "{0}ClientOptions".Format(sourceModel.Name))
+                    {
+                        Documentation = new DocumentationModel("The client options.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("Initialize")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Invoked when the service client is being created.")
+                    {
+                        Remarks = "This method can be overridden to add custom behavior when the service client is being created."
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("clientOptions", "{0}ClientOptions".Format(sourceModel.Name))
+                    {
+                        Documentation = new DocumentationModel("The client options.")
+                    })
+                .ParentModelAs<ClassModel>();
+    }
+
+    baseClassModel.AddProperty(
+        new PropertyModel("PipelineInvoker", "Primavera.Hydrogen.Rest.Client.Pipeline.RestHttpPipeline.PipelineInvoker", "this.Pipeline.Invoker")
+        {
+            Modifiers = PropertyModifiers.Internal,
+            Documentation = new DocumentationModel("Gets the pipeline invoker.")
+        });
+
+    baseClassModel.AddProperty(
+        new PropertyModel("Monitoring", "IMonitoringClientController")
+        {
+            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+            GetAccessor = new PropertyGetAccessorModel(),
+            Documentation = new DocumentationModel(true)
+        });
+
+    if (sourceModel.Webhooks.Any())
+    {
+        baseClassModel.AddProperty(
+            new PropertyModel("Webhooks", "IWebhooksClientController")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                Documentation = new DocumentationModel(true)
+            });
+    }
+
+    // Response classifier
+
+    baseClassModel.AddMethod(
+        new MethodModel("GetResponseClassifier", "Primavera.Hydrogen.Rest.Client.RestResponseClassifier")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Override,
+            Documentation = new DocumentationModel(true)
+        });
+
+    ClassModel classifierClassModel = baseClassModel
+        .AddClass(
+            new ClassModel("ResponseClassifier")
+            {
+                Modifiers = ClassModifiers.Private | ClassModifiers.Partial,
+                Inheritance = "Primavera.Hydrogen.Rest.Client.RestResponseClassifier",
+                Documentation = new DocumentationModel("Defines a custom response classifier.")
+            })
+            .AddMethod(
+                new MethodModel("IsRetriable", "bool")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Override,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(
+                    new MethodParameterModel("context", "Primavera.Hydrogen.Rest.Client.Pipeline.RestHttpPipelineContext"))
+                .ParentModelAs<ClassModel>();
+
+    // Class
+
+    ClassModel classModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("{0}Client".Format(sourceModel.Name))
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "{0}ClientBase".Format(sourceModel.Name),
+                Documentation = new DocumentationModel("Defines the service client that allows accessing the {0} API.".Format(sourceModel.DisplayName))
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"));
+
+    if (sourceModel.Settings.GenerateServiceClientConstructors)
+    {
+        classModel
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base(serviceUri, credential, new {0}ClientOptions())".Format(sourceModel.Name),
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}Client\" /> class.".Format(sourceModel.Name))
+                })
+                .WithParameter(
+                    new MethodParameterModel("serviceUri", "System.Uri")
+                    {
+                        Documentation = new DocumentationModel("The service URI.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("credential", "Primavera.Hydrogen.Rest.Client.BearerTokenCredential")
+                    {
+                        Documentation = new DocumentationModel("The credential that should be used to access the service.")
+                    })
+            .ParentModelAs<ClassModel>()
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base(serviceUri, credential, clientOptions)",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}Client\" /> class.".Format(sourceModel.Name))
+                })
+                .WithParameter(
+                    new MethodParameterModel("serviceUri", "System.Uri")
+                    {
+                        Documentation = new DocumentationModel("The service URI.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("credential", "Primavera.Hydrogen.Rest.Client.BearerTokenCredential")
+                    {
+                        Documentation = new DocumentationModel("The credential that should be used to access the service.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientOptions", "{0}ClientOptions".Format(sourceModel.Name))
+                    {
+                        Documentation = new DocumentationModel("The client options.")
+                    });
+    }
+}
+
+// *** TransformController
+
+public void TransformController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ControllerType sourceModel = sourceElement as ControllerType;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (sourceModel.Visibility == ControllerTypeVisibility.ServerSide)
+    {
+        return;
+    }
+
+    if (!sourceModel.ChildActions.Any(a => a.IsApiVersionInUse(sourceModel.ServiceModel.Version)))
+    {
+        return;
+    }
+
+    PropertyModifiers modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual;
+
+    if (sourceModel.AccessModifier == ControllerTypeAccessModifier.Internal)
+    {
+        modifiers = PropertyModifiers.Internal | PropertyModifiers.Virtual;
+    };
+
+    ClassModel baseClassModel = targetModel.Namespace.Classes[0];
+
+    baseClassModel.AddField(
+        new FieldModel("{0}".Format(sourceModel.Name.Transform().ToCamelCase()), "I{0}ClientController?".Format(sourceModel.Name)));
+
+    baseClassModel.AddProperty(
+        new PropertyModel(sourceModel.Name, "I{0}ClientController".Format(sourceModel.Name))
+        {
+            Modifiers = modifiers,
+            GetAccessor = new PropertyGetAccessorModel(),
+            Documentation = new DocumentationModel(true)
+        });
+}
+
+#>

@@ -1,0 +1,70 @@
+﻿<#+
+
+// *** TransformClientLibDocumentationController
+
+public void TransformClientLibDocumentationController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    // Base class
+
+    ClassModel baseClass = targetModel.Namespace
+        .AddClass(new ClassModel("ClientLibDocumentationControllerBase")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+            Inheritance = "AppControllerBase, IClientLibDocumentationController",
+            Documentation = new DocumentationModel("Defines the base class for the controller that provides the client library documentation routes.")
+            {
+                Remarks = "This is the base class of the MVC controller."
+            }
+        })
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Protected,
+                Inheritance = "base(logger)",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ClientLibDocumentationControllerBase\" /> class.")
+            })
+                .WithParameter(new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger")
+                {
+                    Documentation = new DocumentationModel("The logger.")
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("DocumentationAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.ClientLibDocumentation.Routes.Documentation)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.ClientLibDocumentation.Actions.Documentation)"))
+                .ParentModelAs<ClassModel>();
+
+    // Controller
+
+    ClassModel controllerClass = targetModel.Namespace
+        .AddClass(new ClassModel("ClientLibDocumentationController")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+            Inheritance = "ClientLibDocumentationControllerBase",
+            Documentation = new DocumentationModel("Defines the controller that provides the client library documentation routes.")
+        })
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ControllerName(Common.Constants.Controllers.ClientLibDocumentation.Name)"))
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base(logger)",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ClientLibDocumentationController\" /> class.")
+            })
+                .WithParameter(new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger<ClientLibDocumentationController>")
+                {
+                    Documentation = new DocumentationModel("The logger.")
+                })
+                .ParentModelAs<ClassModel>();
+
+}
+
+#>

@@ -1,0 +1,939 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    
+    targetModel
+        .WithNamespaceImport(new NamespaceImportModel("Primavera.Hydrogen"))
+        .WithNamespaceImport(new NamespaceImportModel("Primavera.Hydrogen.Reflection"));
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Common.Configuration");
+
+    // ### Host configuration base class
+
+    ClassModel hostConfigurationBaseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("HostConfigurationBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the base class for the configuration settings used by the service host.")
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .AddProperty(
+                new PropertyModel("ServiceCatalogServiceBaseUri", "string")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the Service Catalog base URI.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1056:UriPropertiesShouldNotBeStrings\")"))
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"))
+                .ParentModelAs<ClassModel>()
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"HostConfigurationBase\"/> class.")
+                })
+            .WithMethod(
+                new MethodModel("SetDefaultValues")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Sets the default values.")
+                    {
+                        Remarks = "This method should be overridden to set the default values of properties."
+                    }
+                })
+            .WithMethod(
+                new MethodModel("Validate")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Validates the host configuration.")
+                });
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        hostConfigurationBaseClass
+            .AddProperty(
+                new PropertyModel("IdentityServerBaseUri", "string")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the Identity Server base URI.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1056:UriPropertiesShouldNotBeStrings\")"))
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+    }
+
+    // ... Service dependencies
+
+    foreach (ServiceDependency serviceDependency in sourceModel.ServiceDependencies.Where(s => !string.IsNullOrEmpty(s.Service)).OrderBy(s => s.Service))
+    {
+        ServiceDescriptionData serviceInfo = ServiceCatalogServiceProxy.GetServiceByName(serviceDependency.Service);
+        if (serviceInfo != null)
+        {
+            hostConfigurationBaseClass
+                .AddProperty(
+                    new PropertyModel("{0}ServiceBaseUri".Format(serviceInfo.Name), "string")
+                    {
+                        Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                        GetAccessor = new PropertyGetAccessorModel(),
+                        SetAccessor = new PropertySetAccessorModel(),
+                        Documentation = new DocumentationModel("Gets or sets the {0} base URI.".Format(serviceInfo.Name))
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1056:UriPropertiesShouldNotBeStrings\")"))
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+        }
+    }
+
+    // ... Information
+
+    hostConfigurationBaseClass
+        .AddProperty(
+            new PropertyModel("Information", "InformationOptions")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets information about the host.")
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+            .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+
+    // ... Authorization
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        hostConfigurationBaseClass
+            .AddProperty(
+                new PropertyModel("Authorization", "AuthorizationOptions")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the authorization configuration options.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+    }
+
+    // ... Cors
+
+    hostConfigurationBaseClass
+        .AddProperty(
+            new PropertyModel("Cors", "CorsOptions")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the CORS configuration options.")
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+            .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+
+    // Custom configuration model
+
+    ConfigurationModelType hostConfigurationModel = sourceModel.ConfigurationModels.FirstOrDefault(i => i.Name.EqualsNoCase("HostConfiguration"));
+    if (hostConfigurationModel != null)
+    {
+        foreach (ConfigurationModelTypeProperty property in hostConfigurationModel.ChildProperties.OrderBy(i => i.Name))
+        {
+            string propertyType = property.Extensions().AsCSharpType("Server.Common.Configuration", false, true);
+
+            PropertyModel propertyModel = null;
+
+            if (property.Kind == PropertyKind.Calculated)
+            {
+                propertyModel = hostConfigurationBaseClass
+                    .AddProperty(
+                        new PropertyModel(property.Name, propertyType, $"this.Get{property.Name}Value()")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            Documentation = new DocumentationModel(property.Summary)
+                        });
+            }
+            else
+            {
+                propertyModel = hostConfigurationBaseClass
+                    .AddProperty(
+                        new PropertyModel(property.Name, propertyType)
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel(property.Summary)
+                        });
+            }
+
+            this.AddValidation(property, propertyModel);
+        }
+    }
+
+    // ### Information configuration base class
+
+    ClassModel informationOptionsBaseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("InformationOptionsBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the base class for the type that provides information about the host.")
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithField(new FieldModel("productName", "string?"))
+            .WithField(new FieldModel("hostTitle", "string?"))
+            .WithField(new FieldModel("company", "string?"))
+            .WithField(new FieldModel("copyright", "string?"))
+            .WithField(new FieldModel("version", "string?"))
+            .WithField(new FieldModel("informationalVersion", "string?"))
+            .AddProperty(
+                new PropertyModel("ProductName", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the product name.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1822:MarkMembersAsStatic\")"))
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("HostTitle", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the host title.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1822:MarkMembersAsStatic\")"))
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("Company", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the company.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1822:MarkMembersAsStatic\")"))
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("Copyright", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the copyright.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1822:MarkMembersAsStatic\")"))
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("Version", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the version.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1822:MarkMembersAsStatic\")"))
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("InformationalVersion", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the informational version.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1822:MarkMembersAsStatic\")"))
+                .ParentModelAs<ClassModel>()
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"InformationOptionsBase\"/> class.")
+                })
+            .WithMethod(
+                new MethodModel("SetDefaultValues")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Sets the default values.")
+                    {
+                        Remarks = "This method should be overridden to set the default values of properties."
+                    }
+                });
+
+    // ### Authorization configuration base class
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        ClassModel authorizationOptionsBaseClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel("AuthorizationOptionsBase")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                    Documentation = new DocumentationModel("Defines the base class for the type that provides configuration options used for authorization.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                .WithConstructor(
+                    new ConstructorModel()
+                    {
+                        Modifiers = ConstructorModifiers.Protected,
+                        Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"AuthorizationOptionsBase\"/> class.")
+                    })
+                .WithMethod(
+                    new MethodModel("SetDefaultValues")
+                    {
+                        Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel("Sets the default values.")
+                        {
+                            Remarks = "This method should be overridden to set the default values of properties."
+                        }
+                    });
+
+        authorizationOptionsBaseClass
+            .AddProperty(
+                new PropertyModel("Credentials", "CredentialsOptions")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the credentials.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+    }
+
+    // ### Credentials configuration base classes
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        ClassModel credentialsOptionsBaseClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel("CredentialsOptionsBase")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                    Documentation = new DocumentationModel("Defines the base class for the type that provides configuration options used for authorization credentials.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                .WithConstructor(
+                    new ConstructorModel()
+                    {
+                        Modifiers = ConstructorModifiers.Protected,
+                        Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"CredentialsOptionsBase\"/> class.")
+                    })
+                .WithMethod(
+                    new MethodModel("SetDefaultValues")
+                    {
+                        Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel("Sets the default values.")
+                        {
+                            Remarks = "This method should be overridden to set the default values of properties."
+                        }
+                    });
+
+        // Client credentials
+
+        OAuthClient oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.ClientCredentials);
+        if (oauthClient != null)
+        {
+            credentialsOptionsBaseClass
+                .AddProperty(
+                    new PropertyModel("ClientCredentials", "ClientCredentialsOptions")
+                    {
+                        Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                        GetAccessor = new PropertyGetAccessorModel(),
+                        SetAccessor = new PropertySetAccessorModel(),
+                        Documentation = new DocumentationModel("Gets or sets the client credentials.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+
+            ClassModel clientCredentialsOptionsBaseClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("ClientCredentialsOptionsBase")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                        Documentation = new DocumentationModel("Defines the base class for the type that provides configuration options used for authorization credentials with the client credentials flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Protected,
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ClientCredentialsOptionsBase\"/> class.")
+                        })
+                    .WithMethod(
+                        new MethodModel("SetDefaultValues")
+                        {
+                            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                            Documentation = new DocumentationModel("Sets the default values.")
+                            {
+                                Remarks = "This method should be overridden to set the default values of properties."
+                            }
+                        })
+                    .AddProperty(
+                        new PropertyModel("ClientId", "string")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client identifier.")
+                        })
+                        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                        .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"))
+                        .ParentModelAs<ClassModel>()
+                    .AddProperty(
+                        new PropertyModel("ClientSecret", "string")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client secret.")
+                        })
+                        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                        .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"))
+                        .ParentModelAs<ClassModel>();
+        }
+
+        // Hybrid
+
+        oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.Hybrid);
+        if (oauthClient != null)
+        {
+            credentialsOptionsBaseClass
+                .AddProperty(
+                    new PropertyModel("Hybrid", "HybridCredentialsOptions")
+                    {
+                        Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                        GetAccessor = new PropertyGetAccessorModel(),
+                        SetAccessor = new PropertySetAccessorModel(),
+                        Documentation = new DocumentationModel("Gets or sets the hybrid credentials.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+
+            ClassModel hybridCredentialsOptionsBaseClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("HybridCredentialsOptionsBase")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                        Documentation = new DocumentationModel("Defines the base class for the type that provides configuration options used for authorization credentials with the hybrid flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Protected,
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"HybridCredentialsOptionsBase\"/> class.")
+                        })
+                    .WithMethod(
+                        new MethodModel("SetDefaultValues")
+                        {
+                            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                            Documentation = new DocumentationModel("Sets the default values.")
+                            {
+                                Remarks = "This method should be overridden to set the default values of properties."
+                            }
+                        })
+                    .AddProperty(
+                        new PropertyModel("ClientId", "string")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client identifier.")
+                        })
+                        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                        .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"))
+                        .ParentModelAs<ClassModel>()
+                    .AddProperty(
+                        new PropertyModel("ClientSecret", "string?")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client secret.")
+                        })
+                        .ParentModelAs<ClassModel>();
+        }
+
+        // Authorization code
+
+        oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCode);
+        if (oauthClient != null)
+        {
+            credentialsOptionsBaseClass
+                .AddProperty(
+                    new PropertyModel("AuthorizationCode", "AuthorizationCodeCredentialsOptions")
+                    {
+                        Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                        GetAccessor = new PropertyGetAccessorModel(),
+                        SetAccessor = new PropertySetAccessorModel(),
+                        Documentation = new DocumentationModel("Gets or sets the authorization code credentials.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+
+            ClassModel authorizationCodeCredentialsOptionsBaseClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("AuthorizationCodeCredentialsOptionsBase")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                        Documentation = new DocumentationModel("Defines the base class for the type that provides configuration options used for authorization credentials with the authorization code flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Protected,
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"AuthorizationCodeCredentialsOptionsBase\"/> class.")
+                        })
+                    .WithMethod(
+                        new MethodModel("SetDefaultValues")
+                        {
+                            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                            Documentation = new DocumentationModel("Sets the default values.")
+                            {
+                                Remarks = "This method should be overridden to set the default values of properties."
+                            }
+                        })
+                    .AddProperty(
+                        new PropertyModel("ClientId", "string")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client identifier.")
+                        })
+                        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                        .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"))
+                        .ParentModelAs<ClassModel>()
+                    .AddProperty(
+                        new PropertyModel("ClientSecret", "string?")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client secret.")
+                        })
+                        .ParentModelAs<ClassModel>();
+        }
+
+        // Authorization code with PKCE
+
+        oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCodeWithPkce);
+        if (oauthClient != null)
+        {
+            credentialsOptionsBaseClass
+                .AddProperty(
+                    new PropertyModel("AuthorizationCodeWithPkce", "AuthorizationCodeWithPkceCredentialsOptions")
+                    {
+                        Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                        GetAccessor = new PropertyGetAccessorModel(),
+                        SetAccessor = new PropertySetAccessorModel(),
+                        Documentation = new DocumentationModel("Gets or sets the authorization code with PKCE credentials.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                    .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"));
+
+            ClassModel authorizationCodeWithPkceCredentialsOptionsBaseClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("AuthorizationCodeWithPkceCredentialsOptionsBase")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                        Documentation = new DocumentationModel("Defines the base class for the type that provides configuration options used for authorization credentials with the authorization code with PKCE flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Protected,
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"AuthorizationCodeWithPkceCredentialsOptionsBase\"/> class.")
+                        })
+                    .WithMethod(
+                        new MethodModel("SetDefaultValues")
+                        {
+                            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                            Documentation = new DocumentationModel("Sets the default values.")
+                            {
+                                Remarks = "This method should be overridden to set the default values of properties."
+                            }
+                        })
+                    .AddProperty(
+                        new PropertyModel("ClientId", "string")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client identifier.")
+                        })
+                        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.MaybeNull"))
+                        .WithAttribute(new AttributeModel("Primavera.Hydrogen.ComponentModel.DataAnnotations.Required"))
+                        .ParentModelAs<ClassModel>()
+                    .AddProperty(
+                        new PropertyModel("ClientSecret", "string?")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel("Gets or sets the client secret.")
+                        })
+                        .ParentModelAs<ClassModel>();
+        }
+    }
+
+    // ### CORS configuration base class
+
+    ClassModel corsOptionsBaseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("CorsOptionsBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the base class for the type that provides configuration options used for CORS.")
+            })
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .AddProperty(
+                new PropertyModel("Enabled", "bool")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets a value indicating whether the CORS middleware should be enabled.")
+                    {
+                        Remarks = "If false, the middleware will not be configured and all other options will be ignored.\r\nIf true, the middleware will be configured and allowed origins, headers, etc. will be added according to the other configuration options."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("AllowedOrigins", "string?")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the allowed origins.")
+                    {
+                        Remarks = "You may specify multiple origins, separated by ;.\r\nIf the value is null or whitespace, no origins will be added.\r\nIt is not possible to allow all origins."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("AllowedMethods", "string?")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the allowed methods.")
+                    {
+                        Remarks = "You may specify multiple methods, separated by ;.\r\nIf the value is null or whitespace ALL methods will be allowed."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("AllowedHeaders", "string?")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the allowed headers.")
+                    {
+                        Remarks = "You may specify multiple headers, separated by ;.\r\nIf the value is null or whitespace ALL headers will be allowed."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"CorsOptionsBase\"/> class.")
+                })
+            .WithMethod(
+                new MethodModel("SetDefaultValues")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Sets the default values.")
+                    {
+                        Remarks = "This method should be overridden to set the default values of properties."
+                    }
+                });
+
+    // ### Host configuration class
+
+    ClassModel hostConfigurationClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("HostConfiguration")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "HostConfigurationBase",
+                Documentation = new DocumentationModel("Defines the configuration settings used by the service host.")
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"HostConfiguration\"/> class.")
+                });
+
+    // ### Information configuration class
+
+    ClassModel informationOptionsClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("InformationOptions")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "InformationOptionsBase",
+                Documentation = new DocumentationModel("Provides information about the host.")
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"InformationOptions\"/> class.")
+                });
+
+    // ### Authorization configuration class
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        ClassModel authorizationOptionsClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel("AuthorizationOptions")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                    Inheritance = "AuthorizationOptionsBase",
+                    Documentation = new DocumentationModel("Provides configuration options used for authorization.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                .WithConstructor(
+                    new ConstructorModel()
+                    {
+                        Modifiers = ConstructorModifiers.Public,
+                        Inheritance = "base()",
+                        Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"AuthorizationOptions\"/> class.")
+                    });
+    }
+
+    // ### Credentials configuration classes
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        ClassModel credentialsOptionsClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel("CredentialsOptions")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                    Inheritance = "CredentialsOptionsBase",
+                    Documentation = new DocumentationModel("Provides configuration options used for authorization credentials.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                .WithConstructor(
+                    new ConstructorModel()
+                    {
+                        Modifiers = ConstructorModifiers.Public,
+                        Inheritance = "base()",
+                        Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"CredentialsOptions\"/> class.")
+                    });
+
+        // Client credentials
+
+        OAuthClient oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.ClientCredentials);
+        if (oauthClient != null)
+        {
+            ClassModel clientCredentialsOptionsClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("ClientCredentialsOptions")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                        Inheritance = "ClientCredentialsOptionsBase",
+                        Documentation = new DocumentationModel("Provides configuration options used for authorization credentials with the client credentials flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Public,
+                            Inheritance = "base()",
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ClientCredentialsOptions\"/> class.")
+                        });
+        }
+
+        // Hybrid
+
+        oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.Hybrid);
+        if (oauthClient != null)
+        {
+            ClassModel hybridCredentialsOptionsClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("HybridCredentialsOptions")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                        Inheritance = "HybridCredentialsOptionsBase",
+                        Documentation = new DocumentationModel("Provides configuration options used for authorization credentials with the hybrid flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Public,
+                            Inheritance = "base()",
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"HybridCredentialsOptions\"/> class.")
+                        });
+        }
+
+        // Authorization code
+
+        oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCode);
+        if (oauthClient != null)
+        {
+            ClassModel authorizationCodeCredentialsOptionsClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("AuthorizationCodeCredentialsOptions")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                        Inheritance = "AuthorizationCodeCredentialsOptionsBase",
+                        Documentation = new DocumentationModel("Provides configuration options used for authorization credentials with the authorization code flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Public,
+                            Inheritance = "base()",
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"AuthorizationCodeCredentialsOptions\"/> class.")
+                        });
+        }
+
+        // Authorization code with PKCE
+
+        oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCodeWithPkce);
+        if (oauthClient != null)
+        {
+            ClassModel authorizationCodeWithPkceCredentialsOptionsClass = targetModel.Namespace
+                .AddClass(
+                    new ClassModel("AuthorizationCodeWithPkceCredentialsOptions")
+                    {
+                        Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                        Inheritance = "AuthorizationCodeWithPkceCredentialsOptionsBase",
+                        Documentation = new DocumentationModel("Provides configuration options used for authorization credentials with the authorization code with PKCE flow.")
+                    })
+                    .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                    .WithConstructor(
+                        new ConstructorModel()
+                        {
+                            Modifiers = ConstructorModifiers.Public,
+                            Inheritance = "base()",
+                            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"AuthorizationCodeWithPkceCredentialsOptions\"/> class.")
+                        });
+        }
+    }
+
+    // ### CORS configuration class
+
+    ClassModel corsOptionsClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("CorsOptions")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "CorsOptionsBase",
+                Documentation = new DocumentationModel("Provides configuration options used for CORS.")
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"CorsOptions\"/> class.")
+                });
+
+    // ### Custom configuration models
+
+    IEnumerable<ConfigurationModelType> customConfigurationModels = sourceModel.ConfigurationModels.Where(i => !i.Name.EqualsNoCase("HostConfiguration")).OrderBy(i => i.Name);
+
+    foreach (ConfigurationModelType customConfigurationModel in customConfigurationModels)
+    {
+        ClassModel customBaseClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel($"{customConfigurationModel.Name}Base")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                    Documentation = new DocumentationModel($"Defines the base class for <see cref=\"{customConfigurationModel.Name}\"/>.")
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                .WithConstructor(
+                    new ConstructorModel()
+                    {
+                        Modifiers = ConstructorModifiers.Protected,
+                        Documentation = new DocumentationModel($"Initializes a new instance of the <see cref=\"{customConfigurationModel.Name}\"/> class.")
+                    })
+                .WithMethod(
+                    new MethodModel("SetDefaultValues")
+                    {
+                        Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel("Sets the default values.")
+                        {
+                            Remarks = "This method should be overridden to set the default values of properties."
+                        },
+                        Facets = new Dictionary<string, object>()
+                        {
+                            { "CustomConfigurationModel", customConfigurationModel }
+                        }
+                    });
+
+        foreach (ConfigurationModelTypeProperty property in customConfigurationModel.ChildProperties.OrderBy(i => i.Name))
+        {
+            string propertyType = property.Extensions().AsCSharpType("Server.Common.Configuration", true, true);
+
+            PropertyModel propertyModel = null;
+
+            if (property.Kind == PropertyKind.Calculated)
+            {
+                propertyModel = customBaseClass
+                    .AddProperty(
+                        new PropertyModel(property.Name, propertyType, $"this.Get{property.Name}Value()")
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            Documentation = new DocumentationModel(property.Summary)
+                        });
+            }
+            else
+            {
+                propertyModel = customBaseClass
+                    .AddProperty(
+                        new PropertyModel(property.Name, propertyType)
+                        {
+                            Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                            GetAccessor = new PropertyGetAccessorModel(),
+                            SetAccessor = new PropertySetAccessorModel(),
+                            Documentation = new DocumentationModel(property.Summary)
+                        });
+            }
+
+            this.AddValidation(property, propertyModel);
+        }
+
+        ClassModel customClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel(customConfigurationModel.Name)
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                    Inheritance = $"{customConfigurationModel.Name}Base",
+                    Documentation = new DocumentationModel(customConfigurationModel.Summary)
+                })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+                .WithConstructor(
+                    new ConstructorModel()
+                    {
+                        Modifiers = ConstructorModifiers.Public,
+                        Inheritance = "base()",
+                        Documentation = new DocumentationModel($"Initializes a new instance of the <see cref=\"{customConfigurationModel.Name}\"/> class.")
+                    });
+    }
+}
+
+#>

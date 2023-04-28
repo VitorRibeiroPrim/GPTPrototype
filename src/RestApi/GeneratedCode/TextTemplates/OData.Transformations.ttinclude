@@ -1,0 +1,111 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    // Empty?
+
+    if (!serviceModel.Extensions().HasODataServerSide)
+    {
+        targetModel.WithEmptyComment("This file is empty because the service model does not include\nany OData endpoint.");
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.RestApi");
+
+    ClassModel baseClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("ODataModelsBuilderBase")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the OData models builder base class.")
+            })
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"));
+
+    ClassModel classModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("ODataModelsBuilder")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+                Inheritance = "ODataModelsBuilderBase",
+                Documentation = new DocumentationModel("Defines the OData models builder.")
+            })
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .ParentModelAs<ClassModel>();
+}
+
+// *** TransformControllerType
+
+public void TransformControllerType(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ControllerType controllerType = sourceElement as ControllerType;
+    if (controllerType == null)
+    {
+        return;
+    }
+
+    if (!controllerType.Extensions().HasODataServerSide)
+    {
+        return;
+    }
+
+    ClassModel baseClassModel = targetModel.Namespace.Classes.FirstOrDefault(i => i.Name == "ODataModelsBuilderBase");
+
+    baseClassModel
+        .AddMethod(
+            new MethodModel($"Get{controllerType.Name}Model", "Microsoft.OData.Edm.IEdmModel")
+            {
+                Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel($"Builds the OData model for controller '{controllerType.Name}'.")
+                {
+                    Returns = "The <see cref=\"Microsoft.OData.Edm.IEdmModel\" /> instance."
+                }
+            })
+            .WithFacet<MethodModel>("GetModel", controllerType);
+
+    foreach (ControllerTypeAction action in controllerType.ChildActions.Where(i => i.ODataEnabled && i.Extensions().IsVisibleServerSide).Where(i => i.ReturnValueCardinality == Cardinality.List))
+    {
+        this.TransformControllerTypeAction(baseClassModel, action, targetModel);
+    }
+}
+
+// *** TransformControllerTypeAction
+
+private void TransformControllerTypeAction(ClassModel baseClassModel, ControllerTypeAction controllerTypeAction, CSharpFileModel targetModel)
+{
+    string methodName = $"Add{controllerTypeAction.ReferencedModel.Name}";
+
+    if (baseClassModel.Methods.Any(i => i.Name == methodName))
+    {
+        return;
+    }
+
+    baseClassModel
+        .AddMethod(
+            new MethodModel(methodName)
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel($"Adds the entity set corresponding to the <see cref=\"RestApi.Models.{controllerTypeAction.ReferencedModel.Name}\" /> model."),
+                Facets = new Dictionary<string, object>()
+                {
+                    { "Action", controllerTypeAction }
+                }
+            })
+                .WithParameter(
+                    new MethodParameterModel("builder", "Microsoft.OData.ModelBuilder.ODataConventionModelBuilder")
+                    {
+                        Documentation = new DocumentationModel("builder.")
+                    })
+        .ParentModelAs<ClassModel>();
+}
+
+#>

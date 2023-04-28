@@ -1,0 +1,1759 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.AspNetCore.Webhooks</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundQueueWebhooksService">
+            <summary>
+            Provides an implementation of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService"/> service
+            that publishes events to a background queue, typically to be processed by a background
+            service.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService" />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundQueueWebhooksService.#ctor(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundQueueWebhooksService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundQueueWebhooksService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundQueueWebhooksService.PublishEventAsync``1(System.String,``0,System.Collections.Generic.IDictionary{System.String,System.String},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService">
+            <summary>
+            Defines a background service that publishes webhook events to client applications as they
+            are received from <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService"/> in a background queue.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Hosting.QueuedBackgroundService`1" />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService.Enabled">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService.HandleExceptions">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService.#ctor(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService.ExecuteWorkAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext{Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.BackgroundQueuePublishService.StartTelemetry(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext{Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem})">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService">
+            <summary>
+            Publishes webhooks events to client applications.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService.#ctor(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService.PublishAsync(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest,System.Net.Http.HttpClient,System.Threading.CancellationToken)">
+            <summary>
+            Publishes the specified webhook event to the client application.
+            </summary>
+            <param name="subscription">The subscription.</param>
+            <param name="webhookRequest">The webhook request.</param>
+            <param name="httpClient">The HTTP client.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService.__LogPublishedStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService.__LogNotPublishedStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService.__LogNotPublishedSocketErrorStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService.__LogTimeoutStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.PublishService.__LogExceptionStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.RetryPolicy">
+            <summary>
+            Provides the retry policy used for publishing webhooks events to the subscribers
+            callbacks.
+            </summary>
+            <remarks>
+            The policy determines the moment when a callback should be retried again and uses
+            an exponential wait period starting at 10 seconds on the first retry.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.RetryPolicy.NextRetry(System.Int32,System.Int32,System.DateTimeOffset)">
+            <summary>
+            Calculates the next retry.
+            </summary>
+            <param name="retries">The current number of retries.</param>
+            <param name="maxRetries">The maximum number retries.</param>
+            <param name="reference">The reference date time offset.</param>
+            <returns>
+            The moment when the next retry should be performed. Null if it should not be retried.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService">
+            <summary>
+            Defines a background service that retries publishing webhook events to client applications
+            at a recurring time interval.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Hosting.TimedBackgroundService" />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.Enabled">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.WaitPeriod">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.HandleExceptions">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.UseLocking">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.#ctor(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.Initialize(System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.BackgroundServices.TimedRetryService.ExecuteWorkAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Data.PingPayload">
+            <summary>
+            Defines the payload sent to the callback action when pinging the webhook subscription.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.PingPayload.ClientId">
+            <summary>
+            Gets or sets the client application identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.PingPayload.SubscriptionId">
+            <summary>
+            Gets or sets the subscription identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.PingPayload.Timestamp">
+            <summary>
+            Gets or sets the timestamp (UTC).
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Data.StorageHelper">
+            <summary>
+            Provides helper methods for storage.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Data.StorageHelper.EnsureStorageAsync(Primavera.Hydrogen.Storage.Tables.ITableStorageService,Microsoft.Extensions.Logging.ILogger,System.Threading.CancellationToken)">
+            <summary>
+            Ensures that the tables are created in the storage.
+            </summary>
+            <param name="storage">The table storage service.</param>
+            <param name="logger">The logger that should be used.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Data.StorageHelper.CheckStorageAsync(Primavera.Hydrogen.Storage.Tables.ITableStorageService,System.Threading.CancellationToken)">
+            <summary>
+            Ensures that the tables exist in the storage.
+            </summary>
+            <param name="storage">The storage.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <exception cref="T:System.InvalidOperationException">Raised if a table does not exist.</exception>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem">
+            <summary>
+            Defines the work item used to publish webhooks.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.ApplicationName">
+            <summary>
+            Gets or sets the name of the application that is publishing the webhook.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.EventName">
+            <summary>
+            Gets or sets the name of the webhook event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.EventTimestamp">
+            <summary>
+            Gets or sets the moment (UTC) when the webhook was published.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.PayloadJson">
+            <summary>
+            Gets or sets the webhook payload (serialized as JSON).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.DeliveryId">
+            <summary>
+            Gets or sets the webhook delivery identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.Filters">
+            <summary>
+            Gets or sets a set of webhook filters.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Data.WebhookWorkItem.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder">
+            <summary>
+            Defines the interface of the webhooks builder.
+            The webhooks builder allows configuring webhooks services.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder.Services">
+            <summary>
+            Gets the service collection.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder.BackgroundServices">
+            <summary>
+            Gets the background services builder.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent">
+            <summary>
+            Describes a webhook event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.EventName">
+            <summary>
+            Gets or sets the name of the event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.EventDescriptions">
+            <summary>
+            Gets or sets the event descriptions.
+            This is a dictionary indexed by culture (e.g. 'en', 'pt').
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.PayloadDescriptions">
+            <summary>
+            Gets or sets the event payload descriptions.
+            This is a dictionary indexed by culture (e.g. 'en', 'pt').
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent" /> class.
+            </summary>
+            <param name="eventName">The name of the event.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.#ctor(System.String,System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent" /> class.
+            </summary>
+            <param name="eventName">The name of the event.</param>
+            <param name="eventDescriptions">The event descriptions.</param>
+            <param name="payloadDescriptions">The payload descriptions.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.GetEventDescription">
+            <summary>
+            Gets the event description in the current culture.
+            </summary>
+            <returns>
+            The event description.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEvent.GetPayloadDescription">
+            <summary>
+            Gets the payload description in the current culture.
+            </summary>
+            <returns>
+            The payload description.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishContext">
+            <summary>
+            Defines the base class for contexts used when a webhook event is published.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishContext.Subscription">
+            <summary>
+            Gets the webhook subscription receiving the webhook event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishContext.Request">
+            <summary>
+            Gets the request sent to the webhook subscription callback.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishContext"/> class.
+            </summary>
+            <param name="subscription">The webhook subscription receiving the webhook event.</param>
+            <param name="request">The request sent to the webhook subscription callback.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishedContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnPublishedWebhookEventAsync"/> event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishedContext.Response">
+            <summary>
+            Gets the response received.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishedContext.Error">
+            <summary>
+            Gets the error.
+            Null if a response from the callback action was received (see <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishedContext.Response"/>).
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishedContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackResponse,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishedContext" /> class.
+            </summary>
+            <param name="subscription">The webhook subscription receiving the webhook event.</param>
+            <param name="request">The request sent.</param>
+            <param name="response">The response received.</param>
+            <param name="error">The error.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnPublishingWebhookEventAsync"/> event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext.Cancel">
+            <summary>
+            Gets or sets a value indicating whether the operation should be canceled.
+            When true, <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext.Error"/> should be set.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext.Error">
+            <summary>
+            Gets or sets the error that should be returned to the caller when <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext.Cancel"/> is true.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext" /> class.
+            </summary>
+            <param name="subscription">The webhook subscription receiving the webhook event.</param>
+            <param name="request">The request sent to the webhook subscription callback.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilder">
+            <summary>
+            Provides a default implementation for the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> interface.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder" />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilder.Services">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilder.BackgroundServices">
+            <summary>
+            Gets the background services builder.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilder.#ctor(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilder"/> class.
+            </summary>
+            <param name="services">The service collection.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilderExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> type that allow
+            configuring webhooks services.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilderExtensions.AddBackgroundQueuePublisher(Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder)">
+            <summary>
+            Adds an implementation of the webhooks service (<see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService"/>) to the
+            builder service collection that uses a background queue and a background service to
+            publish the webhooks events to subscribers.
+            </summary>
+            <param name="builder">The webhooks builder instance.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> instance.
+            </returns>
+            <remarks>
+            The service is registered as a singleton and has dependencies on <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilderExtensions.AddTimedRetry(Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder)">
+            <summary>
+            Adds a background service that retries failing webhooks callbacks at a recurring time
+            interval.
+            </summary>
+            <param name="builder">The webhooks builder instance.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksBuilderExtensions.AddAzureTableStorage(Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder)">
+            <summary>
+            Adds an implementation of the webhooks subscription service (<see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService"/> ) to the
+            builder service collection that uses Azure Table Storage to store the subscriptions.
+            </summary>
+            <param name="builder">The webhooks builder instance.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> instance.
+            </returns>
+            <remarks>
+            The services is registered as a singletons and has dependencies on <see cref="T:Primavera.Hydrogen.Storage.Tables.ITableStorageService"/>.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents">
+            <summary>
+            Defines events raised by the webhooks services that allow implementing custom behavior
+            in applications producing webhooks.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnCreatingSubscriptionAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised before a subscription is created.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnCreatedSubscriptionAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised after a subscription is created.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnUpdatingSubscriptionAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised before a subscription is updated.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnUpdatedSubscriptionAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised after a subscription is updated.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnDeletingSubscriptionAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised before a subscription is deleted.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnDeletedSubscriptionAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised after a subscription is deleted.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnPublishingWebhookEventAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised before publishing a webhook event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnPublishedWebhookEventAsync">
+            <summary>
+            Gets or sets the handler for the event that is raised after publishing a webhook event.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.CreatingSubscriptionAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event before a new webhook subscription is created.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.CreatedSubscriptionAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatedContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event after a new webhook subscription is created.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.UpdatingSubscriptionAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event before a webhook subscription is updated.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.UpdatedSubscriptionAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatedContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event after a webhook subscription is updated.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.DeletingSubscriptionAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event before a webhook subscription is deleted.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.DeletedSubscriptionAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletedContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event after a webhook subscription is deleted.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.PublishingWebhookEventAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishingContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event before publishing a webhook event.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.PublishedWebhookEventAsync(Primavera.Hydrogen.AspNetCore.Webhooks.WebhookEventPublishedContext,System.Threading.CancellationToken)">
+            <summary>
+            Triggers an event after publishing a webhook event.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions">
+            <summary>
+            Defines the configuration options used by webhooks services.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackTimeout">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackTimeout"/> (in seconds).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackMaxRetries">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackMaxRetries"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackRetryMinBackoff">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackRetryMinBackoff"/> (in seconds).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackRetryMaxBackoff">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackRetryMaxBackoff"/> (in seconds).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.ApplicationName">
+            <summary>
+            Gets or sets the name of the application that provides the webhooks.
+            This option is required.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.EventsSupported">
+            <summary>
+            Gets or sets the webhooks events supported by the application.
+            This option is required.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackTimeout">
+            <summary>
+            Gets or sets the timeout when invoking webhooks callback actions.
+            This option is required. The default value is <see cref="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackTimeout"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackMaxRetries">
+            <summary>
+            Gets or sets the maximum number of times the callback action for a particular
+            webhook event will be retried before giving up.
+            When a webhook event exhausts all retries, the associated subscription will be
+            disabled.
+            This option is required. The default value is <see cref="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackMaxRetries"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackRetryMinBackoff">
+            <summary>
+            Gets or sets the minimum time to wait before retrying callback actions.
+            This option is required. The default value is <see cref="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackRetryMinBackoff"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.CallbackRetryMaxBackoff">
+            <summary>
+            Gets or sets the maximum time to wait before retrying callback actions.
+            This option is required. The default value is <see cref="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.DefaultCallbackRetryMaxBackoff"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.Events">
+            <summary>
+            Gets or sets the instance of the events triggered by the services.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.SerializerOptions">
+            <summary>
+            Gets or sets the serializer options.
+            </summary>
+            <remarks>
+            Cannot be null.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions.Validate">
+            <summary>
+            Validates the configuration options.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type that allow
+            configuring webhooks services by initializing a <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> instance.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksServiceCollectionExtensions.AddWebhooks(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Creates a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> and registers the default
+            implementation of the webhooks subscription service.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> instance.
+            </returns>
+            <remarks>
+            By default webhook service is registered. The builder instance should be used to register additional
+            services like <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService"/> and <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksServiceCollectionExtensions.AddWebhooks(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions})">
+            <summary>
+            Creates a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> and registers the default
+            implementation of the webhooks subscription service.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksBuilder"/> instance.
+            </returns>
+            <remarks>
+            By default webhook service is registered. The builder instance should be used to register additional
+            services like <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService"/> and <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService"/>.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreateContext">
+            <summary>
+            Defines the base class for contexts used when a webhook subscription is created.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreateContext.Request">
+            <summary>
+            Gets the request to create the webhook subscription.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreateContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreateContext"/> class.
+            </summary>
+            <param name="request">The request to create the webhook subscription.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatedContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnCreatedSubscriptionAsync"/> event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatedContext.SubscriptionId">
+            <summary>
+            Gets the identifier of the new webhook subscription.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatedContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatedContext"/> class.
+            </summary>
+            <param name="request">The request to create the webhook subscription.</param>
+            <param name="subscriptionId">The identifier of the new webhook subscription.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnCreatingSubscriptionAsync"/> event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext.Cancel">
+            <summary>
+            Gets or sets a value indicating whether the operation should be canceled.
+            When true, <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext.Error"/> should be set.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext.Error">
+            <summary>
+            Gets or sets the error that should be returned to the caller when <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext.Cancel"/> is true.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionCreatingContext"/> class.
+            </summary>
+            <param name="request">The request to create the webhook subscription.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeleteContext">
+            <summary>
+            Defines the base class for contexts used when a webhook subscription is deleted.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeleteContext.Subscription">
+            <summary>
+            Gets the subscription being deleted.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeleteContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeleteContext"/> class.
+            </summary>
+            <param name="subscription">The subscription being deleted.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletedContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnDeletedSubscriptionAsync"/> event.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletedContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletedContext"/> class.
+            </summary>
+            <param name="subscription">The subscription being deleted.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnDeletingSubscriptionAsync"/> event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext.Cancel">
+            <summary>
+            Gets or sets a value indicating whether the operation should be canceled.
+            When true, <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext.Error"/> should be set.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext.Error">
+            <summary>
+            Gets or sets the error that should be returned to the caller when <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext.Cancel"/> is true.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionDeletingContext"/> class.
+            </summary>
+            <param name="subscription">The subscription being deleted.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdateContext">
+            <summary>
+            Defines the base class for contexts used when a webhook subscription is updated.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdateContext.Request">
+            <summary>
+            Gets the request to update the webhook subscription.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdateContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdateContext"/> class.
+            </summary>
+            <param name="request">The request to update the webhook subscription.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatedContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnUpdatedSubscriptionAsync"/> event.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatedContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatedContext"/> class.
+            </summary>
+            <param name="request">The request to update the webhook subscription.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext">
+            <summary>
+            Describes the context for the <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookServicesEvents.OnUpdatingSubscriptionAsync"/> event.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext.Cancel">
+            <summary>
+            Gets or sets a value indicating whether the operation should be canceled.
+            When true, <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext.Error"/> should be set.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext.Error">
+            <summary>
+            Gets or sets the error that should be returned to the caller when <see cref="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext.Cancel"/> is true.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext.#ctor(Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookSubscriptionUpdatingContext"/> class.
+            </summary>
+            <param name="request">The request to update the webhook subscription.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.CreateWebhookSubscriptionRequestExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.CreateWebhookSubscriptionRequestExtensions.ToWebhookSubscription(Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest,System.String)">
+            <summary>
+            Returns the <see cref="T:Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription" /> for the webhook request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription" /> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.StringExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.String"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.StringExtensions.SplitEvents(System.String)">
+            <summary>
+            Returns the list of event names from the specified value.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>
+            The list of event names from the specified value.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.StringExtensions.SplitKey(System.String,System.String@,System.String@)">
+            <summary>
+            Splits the two keys from the specified value.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="key1">The first key.</param>
+            <param name="key2">The second key.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the specified value does not include two keys separated by '$'.
+            </exception>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.TableRecordExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Storage.Tables.TableRecord"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.TableRecordExtensions.ToWebhookSubscription(Primavera.Hydrogen.Storage.Tables.TableRecord)">
+            <summary>
+            Returns the <see cref="T:Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription"/> instance represented by the specified <see cref="T:Primavera.Hydrogen.Storage.Tables.TableRecord"/>.
+            </summary>
+            <param name="record">The record.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.TableRecordExtensions.ToWebhookCallbackRequest(Primavera.Hydrogen.Storage.Tables.TableRecord)">
+            <summary>
+            Returns the <see cref="T:Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest"/> instance represented by the specified <see cref="T:Primavera.Hydrogen.Storage.Tables.TableRecord"/>.
+            </summary>
+            <param name="record">The record.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.TableRecordExtensions.SerializeDictionary(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Serializes the specified dictionary to a string that can be stored.
+            </summary>
+            <param name="dictionary">The dictionary.</param>
+            <returns>
+            The string that represents the dictionary.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.TableRecordExtensions.DeserializeDictionary(Primavera.Hydrogen.Storage.Tables.TableRecord,System.String)">
+            <summary>
+            Deserializes the value stored in the specified column to a dictionary.
+            </summary>
+            <param name="record">The table record.</param>
+            <param name="columnName">The name of the column in the record.</param>
+            <returns>
+            The dictionary.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.TableRecordExtensions.SerializeObject``1(``0)">
+            <summary>
+            Serializes the specified object to a string that can be stored.
+            </summary>
+            <typeparam name="T">The type of the object.</typeparam>
+            <param name="instance">The properties.</param>
+            <returns>
+            The string that represents the object.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.TableRecordExtensions.DeserializeObject``1(Primavera.Hydrogen.Storage.Tables.TableRecord,System.String)">
+            <summary>
+            Deserializes the value stored in the specified column to an object of type <typeparamref name="T" />.
+            </summary>
+            <typeparam name="T">The type of the object stored in the column.</typeparam>
+            <param name="record">The table record.</param>
+            <param name="columnName">The name of the column in the record.</param>
+            <returns>
+            The object of type <typeparamref name="T"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.WebhookCallbackRequestExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Extensions.WebhookCallbackRequestExtensions.ToHttpRequest(Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest)">
+            <summary>
+            Returns the <see cref="T:System.Net.Http.HttpRequestMessage"/> for the webhook request.
+            </summary>
+            <param name="webhookRequest">The webhook request.</param>
+            <returns>
+            The <see cref="T:System.Net.Http.HttpRequestMessage"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksHealthExtensions.DefaultProbeName">
+            <summary>
+            The default name used for probes.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksHealthExtensions.DefaultDiagnosticName">
+            <summary>
+            The default name used for diagnostics.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksHealthExtensions.AddWebhooksProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a probe for the webhooks services.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksHealthExtensions.DefaultProbeName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This probe checks if the webhooks services are available.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksHealthExtensions.AddWebhooksDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the webhooks services.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic checks if the tables required by the webhooks services are all available.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.HttpRequestExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.AspNetCore.Http.HttpRequest"/> that facilitate
+            retrieving webhooks data (the headers and the payload) in callbacks.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.HttpRequestExtensions.ReadWebhookPayloadAsStringAsync(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Reads the webhook payload JSON from the request body.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The webhook payload JSON. Null if the request or the request body is null.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.HttpRequestExtensions.ReadWebhookPayloadAsync``1(Microsoft.AspNetCore.Http.HttpRequest,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Reads the webhook payload from the request body.
+            </summary>
+            <typeparam name="T">The type of the request payload.</typeparam>
+            <param name="request">The request.</param>
+            <param name="options">The serializer options.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The webhook payload. default if the request or the request body is null.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.HttpRequestExtensions.GetWebhookHeaders(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Reads the webhook headers from the request headers.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The webhook headers.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_CallbackUrlInvalid">
+            <summary>
+              Looks up a localized string similar to The callback URI is invalid. It must be an absolute HTTPS URL..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_CallbackUrlRequired">
+            <summary>
+              Looks up a localized string similar to The callback URL is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_ClientIdInvalid">
+            <summary>
+              Looks up a localized string similar to The client identifier is invalid. Regular expression is &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_ClientIdRequired">
+            <summary>
+              Looks up a localized string similar to The client identifier is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_EventAlreadySubscribed">
+            <summary>
+              Looks up a localized string similar to Event &apos;{0}&apos; cannot be subscribed because it was already subscribed in another webkook subscription..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_EventNameInvalid">
+            <summary>
+              Looks up a localized string similar to The event name &apos;{0}&apos; is invalid. Regular expression is &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_EventNameNotSupported">
+            <summary>
+              Looks up a localized string similar to The event name &apos;{0}&apos; is not supported..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_EventNamesRequired">
+            <summary>
+              Looks up a localized string similar to The event names are required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_FailureSerializingPayload">
+            <summary>
+              Looks up a localized string similar to There was an error serializing the payload..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_NoSubscriptionsFound">
+            <summary>
+              Looks up a localized string similar to No webhooks subscriptions found..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_Ping_CallbackActionReturnUnexpectedStatusCode">
+            <summary>
+              Looks up a localized string similar to The callback action returned unexpected status &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_Ping_CallbackActionTimedOut">
+            <summary>
+              Looks up a localized string similar to The callback action did not respond within the configured timeout..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_Ping_Exception">
+            <summary>
+              Looks up a localized string similar to An unexpected error occurred while invoking the callback action..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_RequestCanceled">
+            <summary>
+              Looks up a localized string similar to The request was canceled by the application..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_RequestRequired">
+            <summary>
+              Looks up a localized string similar to The request data is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_SecretInvalid">
+            <summary>
+              Looks up a localized string similar to The secret is invalid. It should be at least {0} characters long..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_SecretRequired">
+            <summary>
+              Looks up a localized string similar to The secret is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_SubscriptionIdInvalid">
+            <summary>
+              Looks up a localized string similar to The subscription identifier is invalid. Regular expression is &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_SubscriptionIdRequired">
+            <summary>
+              Looks up a localized string similar to The subscription identifier is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Error_SubscriptionNotFound">
+            <summary>
+              Looks up a localized string similar to Webhook subscription &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_InvalidKeyFound">
+            <summary>
+              Looks up a localized string similar to Invalid key found: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_ApplicationName_Invalid">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The application name &apos;{0}&apos; is invalid. It should contain only upper case letters or digits, and start with a letter..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_ApplicationName_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The application name is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_CallbackMaxRetries_Invalid">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The callback maximum retries must be greater than 0..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_CallbackRetryMaxBackoff_GreaterThan_CallbackRetryMinBackoff">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The callback retry minimum back-off must be greater than or equal to the minimum back-off..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_CallbackRetryMaxBackoff_Invalid">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The callback retry maximum back-off must be greater than 0..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_CallbackRetryMinBackoff_Invalid">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The callback retry minimum back-off must be greater than 0..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_CallbackTimeout_Invalid">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The callback timeout must be greater than 0..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_EventDescription_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The event &apos;{0}&apos; description &apos;{1}&apos; is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_EventDescriptions_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The event &apos;{0}&apos; descriptions are required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_EventName_Invalid">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The event name &apos;{0}&apos; is invalid. It should be defined in the form &apos;Entity_Verb&apos; (example: &apos;Customer_Deleted&apos;)..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_EventName_Reserved">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The event name &apos;{0}&apos; is invalid because it matches a reserved event name..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_EventNames_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The event names are required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_PayloadDescription_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The event &apos;{0}&apos; payload description &apos;{1}&apos; is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exception_WebhooksOptions_PayloadDescriptions_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The event &apos;{0}&apos; payload descriptions are required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_Exceptions_ErrorAccessingTable">
+            <summary>
+              Looks up a localized string similar to There is problem accessing table &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.Properties.Resources.RES_NotProvided">
+            <summary>
+              Looks up a localized string similar to Not provided..
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext">
+            <summary>
+            Defines a <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> that uses the source
+            generator to speed up serialization.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.DateTime">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.PingPayload">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.WebhookCallbackRequestStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.Uri">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.IDictionaryStringString">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.DateTimeOffset">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.Int32">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.NullableDateTimeOffset">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.WebhookCallbackRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.WebhookCallbackResponse">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.SerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService">
+            <summary>
+            Provides an implementation of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService"/> service
+            that stores subscriptions in Azure Table Storage.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService" />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.#ctor(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.CreateSubscriptionAsync(Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.UpdateSubscriptionAsync(Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.DeleteSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.DeleteSubscriptionsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.GetSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.GetSubscriptionsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.PingSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.GetWebhooksMetadataAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.GetSubscriptionsForEventAsync(System.String,System.Collections.Generic.IDictionary{System.String,System.String},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.UpdateSubscriptionAsync(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackResponse,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.TableStorageSubscriptionsService.GetWebhooksToRetryAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions">
+            <summary>
+            Provides regular expressions used in validations.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.ApplicationNameRegularExpression">
+            <summary>
+            The application name regular expression.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.ClientIdRegularExpression">
+            <summary>
+            The client identifier regular expression.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.SubscriptionIdRegularExpression">
+            <summary>
+            The subscription identifier regular expression.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.EventNameRegularExpression">
+            <summary>
+            The event name regular expression.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.ApplicationName">
+            <remarks>
+            Pattern explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ 1st capture group.<br/>
+                ○ Match a character in the set [A-Z].<br/>
+            ○ Loop greedily any number of times.<br/>
+                ○ 2nd capture group.<br/>
+                    ○ Match a character in the set [A-Z\d].<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.ClientId">
+            <remarks>
+            Pattern explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Loop greedily any number of times.<br/>
+                ○ 1st capture group.<br/>
+                    ○ Match a character in the set [-A-Za-z\d].<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.SubscriptionId">
+            <remarks>
+            Pattern explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Loop greedily any number of times.<br/>
+                ○ 1st capture group.<br/>
+                    ○ Match a character in the set [-A-Za-z\d].<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.ValidationRegularExpressions.EventName">
+            <remarks>
+            Pattern explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ 1st capture group.<br/>
+                ○ Match a character in the set [A-Z].<br/>
+            ○ Loop greedily any number of times.<br/>
+                ○ 2nd capture group.<br/>
+                    ○ Match a character in the set [A-Za-z].<br/>
+            ○ 3rd capture group.<br/>
+                ○ Match '_'.<br/>
+            ○ 4th capture group.<br/>
+                ○ Match a character in the set [A-Z].<br/>
+            ○ Loop greedily any number of times.<br/>
+                ○ 5th capture group.<br/>
+                    ○ Match a character in the set [a-z].<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.Validator">
+            <summary>
+            Provides methods to perform validation.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.Validator.Validate(Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest)">
+            <summary>
+            Validates the specified <see cref="T:Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest" /> instance.
+            </summary>
+            <param name="request">The <see cref="T:Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest" /> instance.</param>
+            <returns>
+            The validation result.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.Validation.Validator.Validate(Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest)">
+            <summary>
+            Validates the specified <see cref="T:Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest" /> instance.
+            </summary>
+            <param name="request">The <see cref="T:Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest" /> instance.</param>
+            <returns>
+            The validation result.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants">
+            <summary>
+            Defines constants used by webhooks services.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.SystemEvents">
+            <summary>
+            Defines constants that identity webhooks event names used by the system.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.SystemEvents.Ping">
+            <summary>
+            The name of the ping event.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage">
+            <summary>
+            Defines constants used for the storage.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions">
+            <summary>
+            Defines constants associated with the table that records webhooks subscriptions.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Name">
+            <summary>
+            The table name.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns">
+            <summary>
+            Defines constants that specify column names.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.ClientId">
+            <summary>
+            The column that stores the client id.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.EventNames">
+            <summary>
+            The column that stores the event names.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.CallbackUrl">
+            <summary>
+            The column that stores the callback URL.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.Active">
+            <summary>
+            The column that stores a value indicating whether the webhook is active.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.Secret">
+            <summary>
+            The column that stores the signature secret.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.Filters">
+            <summary>
+            The column that stores the filters.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.Properties">
+            <summary>
+            The column that stores the properties.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.LastRequest">
+            <summary>
+            The column that stores the last request.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptions.Columns.LastResponse">
+            <summary>
+            The column that stores the last response.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptionsClients">
+            <summary>
+            Defines constants associated with the table that records clients and webhooks subscriptions.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptionsClients.Name">
+            <summary>
+            The table name.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptionsClients.Columns">
+            <summary>
+            Defines constants that specify column names.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptionsClients.Columns.EventNames">
+            <summary>
+            The column that stores the event names.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptionsEvents">
+            <summary>
+            Defines constants associated with the table that records events and webhooks subscriptions.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksSubscriptionsEvents.Name">
+            <summary>
+            The table name.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing">
+            <summary>
+            Defines constants associated with the table that records webhooks whose delivery has failed.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Name">
+            <summary>
+            The table name.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns">
+            <summary>
+            Defines constants that specify column names.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.CallbackUrl">
+            <summary>
+            The column that stores the callback URL.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.Filters">
+            <summary>
+            The column that stores the filters.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.Headers">
+            <summary>
+            The column that stores the headers.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.Properties">
+            <summary>
+            The column that stores the properties.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.Payload">
+            <summary>
+            The column that stores the payload.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.Retries">
+            <summary>
+            The column that stores the number of times it has been retried.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.NextRetry">
+            <summary>
+            The column that stores the moment in time after which it should be retried.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksConstants.Storage.WebhooksFailing.Columns.RequestTimestamp">
+            <summary>
+            The column that stores the request timestamp.
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ApplicationName_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the ApplicationName method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.ApplicationName_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ApplicationName_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ApplicationName_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ApplicationName_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ApplicationName_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ApplicationName_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ApplicationName_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ApplicationName_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ClientId_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the ClientId method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.ClientId_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ClientId_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ClientId_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ClientId_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.ClientId_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ClientId_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ClientId_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.ClientId_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EventName_2">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EventName method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.EventName_2.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EventName_2.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EventName_2.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EventName_2.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EventName_2.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EventName_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EventName_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EventName_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
+            <summary>Pushes 2 values onto the backtracking stack.</summary>
+        </member>
+    </members>
+</doc>

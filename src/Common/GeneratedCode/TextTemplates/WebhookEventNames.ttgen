@@ -1,0 +1,64 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    (s, t) =>
+    {
+        ServiceModel serviceModel = s as ServiceModel;
+        
+        // Empty?
+
+        if (serviceModel.Webhooks.Count == 0)
+        {
+            t.WithEmptyComment("This file is empty because the service model does not include\nany webhooks.");
+            return;
+        }
+
+        // Namespace
+
+        t.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.Common");
+
+        // Class
+
+        ClassModel classModel = t.Namespace
+            .AddClass(
+                new ClassModel("WebhookEventNames")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Static | ClassModifiers.Partial,
+                    Documentation = new DocumentationModel("Defines constants that identify webhook events.")
+                });
+
+        foreach (Webhook webhook in serviceModel.Webhooks.OrderBy(i => i.Name))
+        {
+            classModel
+                .WithConstant(
+                    new ConstantModel(webhook.Name, "string", "\"" + webhook.Name + "\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel(webhook.Summary)
+                    });
+        }
+    });
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel();
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

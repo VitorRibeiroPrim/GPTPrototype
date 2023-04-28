@@ -1,0 +1,129 @@
+﻿<#+
+
+// *** WriteMain
+
+public void WriteMain(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.Extensions.Hosting.IHostBuilder builder = Primavera.Hydrogen.Hosting.ConsoleHost.CreateDefaultBuilder<Application>(args)
+            .ConfigureHostConfiguration(
+                builder => Instance.ConfigureHostConfiguration(builder, args))
+            .ConfigureAppConfiguration(
+                (context, builder) => Instance.ConfigureAppConfiguration(context, builder, args))
+            .ConfigureServices(
+                (context, services) => Instance.ConfigureServices(context, services, args))
+            .ConfigureLogging(
+                (context, builder) => Instance.ConfigureLogging(context, builder, args));
+
+        IHost host = builder.Build();
+
+        return host.RunConsoleAsync<Application>(args);
+<#+
+
+}
+
+// *** WriteConfigureHostConfiguration
+
+public void WriteConfigureHostConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        builder
+            .SetBasePath(System.Environment.CurrentDirectory);
+        
+        builder
+            .AddJsonFile("hostsettings.json", optional: true);
+        
+        builder
+            .AddEnvironmentVariables(prefix: "PREFIX_");
+
+        if (args != null)
+        {
+            builder.AddCommandLine(args);
+        }
+<#+
+
+}
+
+// *** WriteConfigureAppConfiguration
+
+public void WriteConfigureAppConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        builder
+            .SetBasePath(System.Environment.CurrentDirectory);
+
+        builder
+            .AddJsonFile("GeneratedCode/appsettings.gen.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("CustomCode/appsettings.json", optional: true, reloadOnChange: true);
+
+        builder
+            .AddEnvironmentVariables();
+
+        if (args != null)
+        {
+            builder
+                .AddCommandLine(args);
+        }
+<#+
+
+}
+
+// *** WriteConfigureLogging
+
+public void WriteConfigureLogging(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        builder
+            .ClearProviders();
+
+        builder
+            .AddConfiguration(context.Configuration.GetSection("Logging"));
+
+        if (context.HostingEnvironment.IsDevelopment())
+        {
+            builder
+                .AddConsole()
+                .AddDebug();
+        }
+<#+
+
+}
+
+// *** WriteConfigureServices
+
+public void WriteConfigureServices(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddOptions()
+            .Configure<Configuration.ApplicationConfiguration>(context.Configuration.GetSection(nameof(Configuration.ApplicationConfiguration)));
+
+        services
+            .AddOptionsSnapshot<Configuration.ApplicationConfiguration>();
+<#+
+
+}
+
+// *** WriteGetInstance
+
+public void WriteGetInstance(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            instance ??= new Program();
+
+            return instance;
+        }
+<#+
+
+}
+
+
+#>

@@ -1,0 +1,387 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\Host.Tests.csproj": {}
+  },
+  "projects": {
+    "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj",
+        "projectName": "Primavera.Lithium.ChatGPT.Server.Common",
+        "projectPath": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj",
+        "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
+        "outputPath": "C:\\VSProjects\\ChatGPT\\Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Lithium.NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://packaging.primaverabss.com/nuget/_external_public-telerik": {},
+          "https://packaging.primaverabss.com/nuget/public-lithium-general": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "AsyncFixer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.0, )"
+            },
+            "Microsoft.VisualStudio.Threading.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[17.5.22, )"
+            },
+            "Primavera.Hydrogen.AspNetCore.Azure": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.*, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Configuration": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.2.0-beta.435, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj",
+        "projectName": "Primavera.Lithium.ChatGPT.Server.Host",
+        "projectPath": "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj",
+        "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
+        "outputPath": "C:\\VSProjects\\ChatGPT\\Host\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Lithium.NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://packaging.primaverabss.com/nuget/_external_public-telerik": {},
+          "https://packaging.primaverabss.com/nuget/public-lithium-general": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {
+                "projectPath": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj"
+              },
+              "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj": {
+                "projectPath": "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "AsyncFixer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "Microsoft.VisualStudio.Threading.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[17.5.22, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.*, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Configuration": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.2.0-beta.435, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj",
+        "projectName": "Primavera.Lithium.ChatGPT.Server.RestApi",
+        "projectPath": "C:\\VSProjects\\ChatGPT\\RestApi\\RestApi.csproj",
+        "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
+        "outputPath": "C:\\VSProjects\\ChatGPT\\RestApi\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Lithium.NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://packaging.primaverabss.com/nuget/_external_public-telerik": {},
+          "https://packaging.primaverabss.com/nuget/public-lithium-general": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj": {
+                "projectPath": "C:\\VSProjects\\ChatGPT\\Common\\Common.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "AsyncFixer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "Microsoft.VisualStudio.Threading.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[17.5.22, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.*, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Configuration": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.2.0-beta.435, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\Host.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\Host.Tests.csproj",
+        "projectName": "Primavera.Lithium.ChatGPT.Server.Host.Tests",
+        "projectPath": "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\Host.Tests.csproj",
+        "packagesPath": "C:\\Users\\Vitor.Ribeiro\\.nuget\\packages\\",
+        "outputPath": "C:\\VSProjects\\ChatGPT\\Tests\\Host.Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Vitor.Ribeiro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Lithium.NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://packaging.primaverabss.com/nuget/_external_public-telerik": {},
+          "https://packaging.primaverabss.com/nuget/public-lithium-general": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj": {
+                "projectPath": "C:\\VSProjects\\ChatGPT\\Host\\Host.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "AsyncFixer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[17.5.0, )"
+            },
+            "Microsoft.VisualStudio.Threading.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[17.5.22, )"
+            },
+            "Primavera.Hydrogen.Core": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.*, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Configuration": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "Primavera.Hydrogen.DesignTime.Testing.AspNetCore": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.2.0-beta.435, )"
+            },
+            "coverlet.msbuild": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.2.0, )"
+            },
+            "xunit": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

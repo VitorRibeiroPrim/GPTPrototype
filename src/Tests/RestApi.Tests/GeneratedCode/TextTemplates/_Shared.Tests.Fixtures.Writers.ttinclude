@@ -1,0 +1,207 @@
+﻿<#+
+
+// *** WriteBaseFixtureClassConstructor
+
+public void WriteBaseFixtureClassConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.configureServices = configureServices;
+<#+
+
+}
+
+// *** WriteGetApplicationServices
+
+public void WriteGetApplicationServices(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            this.Initialize();
+            return this.serviceProvider;
+        }
+<#+
+
+}
+
+// *** WriteInitialize
+
+public void WriteInitialize(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (this.initialized)
+        {
+            return;
+        }
+
+        this.initialized = true;
+
+        this.serviceProvider = this.BuildServiceProvider();
+<#+
+
+}
+
+// *** WriteBuildServiceProvider
+
+public void WriteBuildServiceProvider(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.Extensions.DependencyInjection.IServiceCollection services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+        this.ConfigureServices(services);
+
+        this.configureServices?.Invoke(services);
+
+        return services.BuildServiceProvider();
+<#+
+
+}
+
+// *** WriteConfigureServices
+
+public void WriteConfigureServices(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+    string project = (string)rootModel.Facets["Project"];
+
+    string partName = "[Error]";
+
+    string dependentPartName = null;
+
+    switch (project)
+    {
+        case "Application.Tests":
+            partName = "Application";
+            
+            if (serviceModel.Extensions().HasDomainLayer)
+            {
+                dependentPartName = "Domain";
+            }
+            
+            break;
+        case "Dependencies.Tests":
+            partName = "Dependencies";
+            
+            if (serviceModel.Extensions().HasDomainLayer)
+            {
+                dependentPartName = "Domain";
+            }
+            
+            break;
+        case "RestApi.Tests":
+            partName = "RestApi";
+            
+            if (serviceModel.Extensions().HasDomainLayer)
+            {
+                dependentPartName = "Domain";
+            }
+            
+            break;
+        case "Storage.Tests":
+            partName = "Storage";
+            
+            if (serviceModel.Extensions().HasDomainLayer)
+            {
+                dependentPartName = "Domain";
+            }
+            
+            break;
+        default:
+            break;
+    }
+
+#>
+        services
+            .AddOptions();
+
+        services.Configure<<#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration>(
+            hostConfiguration =>
+            {
+                this.ConfigureHostConfiguration(hostConfiguration);
+            });
+
+        services
+            .AddOptionsSnapshot<<#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration>();
+
+<#+
+
+    if (project == "RestApi.Tests")
+    {
+
+#>
+        Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder = services.AddMvc();
+
+<#+
+
+    }
+
+#>
+        System.IServiceProvider provider = services.BuildServiceProvider();
+        
+        <#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration hostConfiguration = 
+            provider.GetRequiredService<<#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration>();
+
+<#+
+
+    if (project == "RestApi.Tests")
+    {
+        if (!string.IsNullOrEmpty(dependentPartName))
+        {
+
+#>
+        services
+            .AddCommonPart(hostConfiguration)
+            .Add<#= dependentPartName #>Part(hostConfiguration);
+<#+
+
+        }
+        else
+        {
+
+#>
+        services
+            .AddCommonPart(hostConfiguration);
+<#+
+
+        }
+
+#>
+        
+        mvcBuilder
+            .AddRestApiPart(hostConfiguration);
+<#+
+
+    }
+    else
+    {
+
+#>
+        services
+            .AddCommonPart(hostConfiguration)
+<#+
+
+    if (!string.IsNullOrEmpty(dependentPartName))
+    {
+
+#>
+            .Add<#= dependentPartName #>Part(hostConfiguration)
+<#+
+
+    }
+
+#>
+            .Add<#= partName #>Part(hostConfiguration);
+
+        this.ConfigureAdditionalServices(services);
+<#+
+
+    }
+}
+
+#>

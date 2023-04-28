@@ -1,0 +1,75 @@
+﻿<#+
+
+// *** WriteAdd1
+
+public void WriteAdd1(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        return services
+            .Add<#= serviceModel.Name #>Client(
+                _ => new <#= serviceModel.Name #>ClientOptions(),
+                clientFactory);
+<#+
+
+}
+
+// *** WriteAdd2
+
+public void WriteAdd2(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        return services
+            .Add<#= serviceModel.Name #>Client(
+                Primavera.Hydrogen.Rest.Client.RestServiceClientFactory<<#= serviceModel.Name #>Client, <#= serviceModel.Name #>ClientOptions>.DefaultClientName,
+                clientOptionsFactory,
+                clientFactory);
+<#+
+
+}
+
+// *** WriteAdd3
+
+public void WriteAdd3(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        return services
+            .Add<#= serviceModel.Name #>Client(
+                name,
+                _ => new <#= serviceModel.Name #>ClientOptions(),
+                clientFactory);
+<#+
+
+}
+
+// *** WriteAdd4
+
+public void WriteAdd4(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        services
+            .AddRestServiceClient<<#= serviceModel.Name #>Client, <#= serviceModel.Name #>ClientOptions, <#= serviceModel.Name #>ClientFactory>(
+                name,
+                clientOptionsFactory,
+                clientFactory);
+
+        if (name.EqualsNoCase(RestServiceClientFactory<<#= serviceModel.Name #>Client, <#= serviceModel.Name #>ClientOptions>.DefaultClientName))
+        {
+            services
+                .TryAddSingleton<I<#= serviceModel.Name #>Client>(
+                    provider => provider.GetRequiredService<<#= serviceModel.Name #>Client>());
+        }
+
+        return services;
+<#+
+
+}
+
+#>

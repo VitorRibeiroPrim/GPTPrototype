@@ -1,0 +1,917 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Rest");
+
+    // Monitoring interface
+
+    InterfaceModel interfaceModel = targetModel
+        .Namespace
+        .AddInterface(
+            new InterfaceModel("IMonitoringClientController")
+            {
+                Modifiers = InterfaceModifiers.Public | InterfaceModifiers.Partial,
+                Documentation = new DocumentationModel("Provides monitoring operations on the service.")
+            });
+
+    interfaceModel.AddMethod(
+        new MethodModel("ProbeAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult>>")
+        {
+            Documentation = new DocumentationModel("Probes the service.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.HealthMonitoring.HealthResult\"/> that describes the health of the service.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        })
+        .AddParameter(
+            new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default",
+                Documentation = new DocumentationModel("The cancellation token.")
+            });
+
+    interfaceModel.AddMethod(
+        new MethodModel("DiagnosticsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult>>")
+        {
+            Documentation = new DocumentationModel("Diagnoses the service.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.HealthMonitoring.HealthResult\"/> that describes the health of the service.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        })
+        .AddParameter(
+            new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default",
+                Documentation = new DocumentationModel("The cancellation token.")
+            });
+
+    interfaceModel.AddMethod(
+        new MethodModel("EndpointsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>>>")
+        {
+            Documentation = new DocumentationModel("Analyzes the service endpoints.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"System.Collections.Generic.IEnumerable{T}\"/> of <see cref=\"Primavera.Hydrogen.Rest.Routing.EndpointInfo\"/> that contains the list of endpoints.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        })
+        .AddParameter(
+            new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default",
+                Documentation = new DocumentationModel("The cancellation token.")
+            });
+
+    interfaceModel.AddMethod(
+        new MethodModel("ConfigurationAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation>>")
+        {
+            Documentation = new DocumentationModel("Analyzes the service configuration.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation\"/> that describes where the configuration was saved.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        })
+        .AddParameter(
+            new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default",
+                Documentation = new DocumentationModel("The cancellation token.")
+            });
+
+    interfaceModel.AddMethod(
+        new MethodModel("InformationAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Description.ServiceInfo>>")
+        {
+            Documentation = new DocumentationModel("Returns information about the service.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.Rest.Description.ServiceInfo\"/> that provides information about the service.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        })
+        .AddParameter(
+            new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default",
+                Documentation = new DocumentationModel("The cancellation token.")
+            });
+
+    interfaceModel.AddMethod(
+        new MethodModel("Probe", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult>")
+        {
+            Documentation = new DocumentationModel("Probes the service.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.HealthMonitoring.HealthResult\"/> that describes the health of the service.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        });
+
+    interfaceModel.AddMethod(
+        new MethodModel("Diagnostics", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult>")
+        {
+            Documentation = new DocumentationModel("Diagnoses the service.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.HealthMonitoring.HealthResult\"/> that describes the health of the service.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        });
+
+    interfaceModel.AddMethod(
+        new MethodModel("Endpoints", "Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>>")
+        {
+            Documentation = new DocumentationModel("Analyzes the service endpoints.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"System.Collections.Generic.IEnumerable{T}\"/> of <see cref=\"Primavera.Hydrogen.Rest.Routing.EndpointInfo\"/> that contains the list of endpoints.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        });
+
+    interfaceModel.AddMethod(
+        new MethodModel("Configuration", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation>")
+        {
+            Documentation = new DocumentationModel("Analyzes the service configuration.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation\"/> that describes where the configuration was saved.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        });
+
+    interfaceModel.AddMethod(
+        new MethodModel("Information", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Description.ServiceInfo>")
+        {
+            Documentation = new DocumentationModel("Provides information about the service.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe <see cref=\"Primavera.Hydrogen.Rest.Description.ServiceInfo\"/> that provides information about the service.",
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        });
+
+    // Webhooks interface
+
+    if (sourceModel.Webhooks.Any())
+    {
+        InterfaceModel webhooksInterface = targetModel
+            .Namespace
+            .AddInterface(new InterfaceModel("IWebhooksClientController")
+            {
+                Modifiers = InterfaceModifiers.Public | InterfaceModifiers.Partial,
+                Documentation = new DocumentationModel("Provides operations to manage webhooks.")
+            })
+                .AddMethod(new MethodModel("CreateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<string>>")
+                {
+                    Documentation = new DocumentationModel("Creates the specified webhook subscription.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe webhook subscription identifier.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest")
+                    {
+                        Documentation = new DocumentationModel("The request to create a new webhook subscription.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("UpdateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+                {
+                    Documentation = new DocumentationModel("Updates the specified webhook subscription.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest")
+                    {
+                        Documentation = new DocumentationModel("The request to update a webhook subscription.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("GetSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>")
+                {
+                    Documentation = new DocumentationModel("Retrieves the specified webhook subscription.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe webhook subscription.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("GetSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>")
+                {
+                    Documentation = new DocumentationModel("Retrieves the webhook subscription that matches the specified event names.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe webhook subscription.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>")
+                    {
+                        Documentation = new DocumentationModel("The event names.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("DeleteSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+                {
+                    Documentation = new DocumentationModel("Deletes the specified webhook subscription.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("DeleteSubscriptionIfExistsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+                {
+                    Documentation = new DocumentationModel("Deletes the specified webhook subscription if it exists.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscription was deleted.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("GetSubscriptionsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>>")
+                {
+                    Documentation = new DocumentationModel("Retrieves all the webhook subscriptions for the specified client application.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe list of webhook subscriptions.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("DeleteSubscriptionsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+                {
+                    Documentation = new DocumentationModel("Deletes all the webhook subscriptions for the specified client application.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("DeleteSubscriptionsIfExistAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+                {
+                    Documentation = new DocumentationModel("Deletes all the webhook subscriptions for the specified client application if any exist.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscriptions were deleted.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("ActivateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+                {
+                    Documentation = new DocumentationModel("Activates the specified webhook subscription.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscription was activated.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("ActivateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+                {
+                    Documentation = new DocumentationModel("Activates the webhook subscription that matches the specified event names.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscription was activated.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>")
+                    {
+                        Documentation = new DocumentationModel("The event names.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("PingSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+                {
+                    Documentation = new DocumentationModel("Pings the specified webhook subscription.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("GetWebhooksMetadataAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata>>>")
+                {
+                    Documentation = new DocumentationModel("Retrieves metadata about all the webhooks available.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA list containing the metadata for all webhooks available.",
+                        Exceptions = new Dictionary<string, string>()
+                        {
+                            ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                        }
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                    {
+                        DefaultValue = "default",
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>();
+
+        webhooksInterface
+            .AddMethod(new MethodModel("CreateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<string>")
+            {
+                Documentation = new DocumentationModel("Creates the specified webhook subscription.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe webhook subscription identifier.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest")
+                {
+                    Documentation = new DocumentationModel("The request to create a new webhook subscription.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("UpdateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+            {
+                Documentation = new DocumentationModel("Updates the specified webhook subscription.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest")
+                {
+                    Documentation = new DocumentationModel("The request to update a webhook subscription.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("GetSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>")
+            {
+                Documentation = new DocumentationModel("Retrieves the specified webhook subscription.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe webhook subscription.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                {
+                    Documentation = new DocumentationModel("The webhook subscription identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("GetSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>")
+            {
+                Documentation = new DocumentationModel("Retrieves the webhook subscription that matches the specified event names.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe webhook subscription.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>")
+                {
+                    Documentation = new DocumentationModel("The event names.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("DeleteSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+            {
+                Documentation = new DocumentationModel("Deletes the specified webhook subscription.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                {
+                    Documentation = new DocumentationModel("The webhook subscription identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("DeleteSubscriptionIfExists", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+            {
+                Documentation = new DocumentationModel("Deletes the specified webhook subscription if it exists.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscription was deleted.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                {
+                    Documentation = new DocumentationModel("The webhook subscription identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("GetSubscriptions", "Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>")
+            {
+                Documentation = new DocumentationModel("Retrieves all the webhook subscriptions for the specified client application.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nThe list of webhook subscriptions.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("DeleteSubscriptions", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+            {
+                Documentation = new DocumentationModel("Deletes all the webhook subscriptions for the specified client application.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("DeleteSubscriptionsIfExist", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+            {
+                Documentation = new DocumentationModel("Deletes all the webhook subscriptions for the specified client application if any exist.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscriptions were deleted.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("ActivateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+            {
+                Documentation = new DocumentationModel("Activates the specified webhook subscription.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscription was activated.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                {
+                    Documentation = new DocumentationModel("The webhook subscription identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("ActivateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+            {
+                Documentation = new DocumentationModel("Activates the webhook subscription that matches the specified event names.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA value indicating whether the subscription was activated.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>")
+                {
+                    Documentation = new DocumentationModel("The event names.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("PingSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+            {
+                Documentation = new DocumentationModel("Pings a webhook subscription.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            })
+                .WithParameter(new MethodParameterModel("clientId", "string")
+                {
+                    Documentation = new DocumentationModel("The client application identifier.")
+                })
+                .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                {
+                    Documentation = new DocumentationModel("The webhook subscription identifier.")
+                })
+                .ParentModelAs<InterfaceModel>()
+            .AddMethod(new MethodModel("GetWebhooksMetadata", "Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata>>")
+            {
+                Documentation = new DocumentationModel("Retrieves metadata about all the webhooks available.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.\nA list containing the metadata for all webhooks available.",
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            });
+    }
+
+}
+
+// *** TransformController
+
+public void TransformController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ControllerType sourceModel = sourceElement as ControllerType;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (sourceModel.Visibility == ControllerTypeVisibility.ServerSide)
+    {
+        return;
+    }
+
+    if (!sourceModel.ChildActions.Any(a => a.IsApiVersionInUse(sourceModel.ServiceModel.Version)))
+    {
+        return;
+    }
+
+    InterfaceModifiers modifiers = InterfaceModifiers.Public | InterfaceModifiers.Partial;
+
+    if (sourceModel.AccessModifier == ControllerTypeAccessModifier.Internal)
+    {
+        modifiers = InterfaceModifiers.Internal | InterfaceModifiers.Partial;
+    };
+
+    InterfaceModel interfaceModel = targetModel
+        .Namespace
+        .AddInterface(new InterfaceModel("I" + sourceModel.Name + "ClientController")
+        {
+            Modifiers = modifiers,
+            Documentation = new DocumentationModel(sourceModel.Summary)
+        });
+
+    foreach (ControllerTypeAction action in sourceModel.ChildActions
+        .Where(a => a.ParentController.Visibility != ControllerTypeVisibility.ServerSide && a.Visibility != ControllerTypeActionVisibility.ServerSide)
+        .Where(a => a.IsApiVersionInUse(sourceModel.ServiceModel.Version))
+        .OrderBy(a => a.Name2))
+    {
+        string returnType = action.Extensions().AsCSharpType("Client.Rest.Models", true);
+        string odataReturnType = "???";
+
+        if (action.ODataEnabled)
+        {
+            odataReturnType = action.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            returnType = $"Primavera.Hydrogen.Rest.ODataResult<{odataReturnType}>";
+        }
+
+        string returnsDoc;
+        string returnsDocSync;
+        if (string.IsNullOrEmpty(returnType))
+        {
+            returnType = "Primavera.Hydrogen.Rest.Client.RestServiceResult";
+            returnsDoc = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.";
+            returnsDocSync = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult\"/> result.";
+        }
+        else
+        {
+            returnType = "Primavera.Hydrogen.Rest.Client.RestServiceResult<{0}>".Format(returnType);
+            returnsDoc = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.";
+            returnsDocSync = "The <see cref=\"Primavera.Hydrogen.Rest.Client.RestServiceResult{T}\"/> result.";
+        }
+
+        MethodModel method1 = interfaceModel.AddMethod(new MethodModel(action.Name2 + "Async", "System.Threading.Tasks.Task<{0}>".Format(returnType))
+        {
+            Documentation = new DocumentationModel(action.Summary)
+            {
+                Remarks = action.Remarks,
+                Returns = returnsDoc,
+                Exceptions = new Dictionary<string, string>()
+                {
+                    ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                }
+            }
+        });
+
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter parameter in action.ParentController.ChildParameters)
+            {
+                method1.AddParameter(
+                    new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true))
+                    {
+                        Documentation = new DocumentationModel(parameter.Summary)
+                    });
+            }
+        }
+
+        foreach (ControllerTypeActionParameter parameter in action.ChildParameters.Where(i => i.IncludeClientSide))
+        {
+            method1.AddParameter(
+                new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true))
+                {
+                    DefaultValue = NormalizeControllerActionParameterDefaultValue(parameter, "Client.Rest.Models"),
+                    Documentation = new DocumentationModel(parameter.Summary)
+                });
+        }
+
+        if (action.ODataEnabled)
+        {
+            if (action.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+            {
+                method1.AddParameter(
+                    new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>")
+                    {
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+            }
+            else
+            {
+                method1.AddParameter(
+                    new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>?")
+                    {
+                        DefaultValue = "null",
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+            }
+        }
+
+        method1.AddParameter(
+            new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default",
+                Documentation = new DocumentationModel("The cancellation token.")
+            });
+
+        MethodModel method2 = interfaceModel.AddMethod(
+            new MethodModel(action.Name2, returnType)
+            {
+                Documentation = new DocumentationModel(action.Summary)
+                {
+                    Remarks = action.Remarks,
+                    Returns = returnsDocSync,
+                    Exceptions = new Dictionary<string, string>()
+                    {
+                        ["Primavera.Hydrogen.Rest.Client.RestRequestException"] = "Raised when the operation returns an unexpected status code."
+                    }
+                }
+            });
+
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter parameter in action.ParentController.ChildParameters)
+            {
+                method2.AddParameter(
+                    new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true))
+                    {
+                        Documentation = new DocumentationModel(parameter.Summary)
+                    });
+            }
+        }
+
+        foreach (ControllerTypeActionParameter parameter in action.ChildParameters.Where(i => i.IncludeClientSide))
+        {
+            method2.AddParameter(
+                new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true))
+                {
+                    DefaultValue = NormalizeControllerActionParameterDefaultValue(parameter, "Client.Rest.Models"),
+                    Documentation = new DocumentationModel(parameter.Summary)
+                });
+        }
+
+        if (action.ODataEnabled)
+        {
+            if (action.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+            {
+                method2.AddParameter(
+                    new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>")
+                    {
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+            }
+            else
+            {
+                method2.AddParameter(
+                    new MethodParameterModel("queryOptions", $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{odataReturnType}>?")
+                    {
+                        DefaultValue = "null",
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+            }
+        }
+    }
+}
+
+#>

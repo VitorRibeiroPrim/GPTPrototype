@@ -1,0 +1,214 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    this.TransformCustomApiController);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    this.TransformWebhooksController);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ControllerType; },
+    this.TransformController);
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel(this.ServiceModel);
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Add writers
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.GetFacet<string>("MethodKind").EqualsNoCase("Action");
+    }, 
+    this.WriteAction);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.GetFacet<string>("MethodKind").EqualsNoCase("ErrorResponseCompatibility");
+    }, 
+    this.WriteActionErrorResponseCompatibility);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ConvertRestProblemDetailsResult");
+    }, 
+    this.WriteConvertRestProblemDetailsResult);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("CreateSubscriptionAsync");
+    }, 
+    this.WriteCreateSubscriptionAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("UpdateSubscriptionAsync");
+    }, 
+    this.WriteUpdateSubscriptionAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("GetSubscriptionAsync");
+    }, 
+    this.WriteGetSubscriptionAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("DeleteSubscriptionAsync");
+    }, 
+    this.WriteDeleteSubscriptionAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("GetSubscriptionsAsync");
+    }, 
+    this.WriteGetSubscriptionsAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("DeleteSubscriptionsAsync");
+    }, 
+    this.WriteDeleteSubscriptionsAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("PingSubscriptionAsync");
+    }, 
+    this.WritePingSubscriptionAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("GetWebhooksMetadataAsync");
+    }, 
+    this.WriteGetWebhooksMetadataAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ValidateSubscriptionRequestAsync");
+    }, 
+    this.WriteValidateSubscriptionRequestAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.GetFacet<bool>("ExtensionPoint");
+    }, 
+    this.WriteExtensionPointAsync);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.GetFacet<bool>("MediatorRequestBuilder");
+    }, 
+    this.WriteMediatorRequestBuilder);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+
+        ArchitectureKind architecture = parentMethod.GetFacet<ArchitectureKind>("Architecture");
+
+        return parentMethod.GetFacet<bool>("ActionImplementation") && architecture != ArchitectureKind.None;
+    }, 
+    this.WriteActionImplementation);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("NotFound");
+    }, 
+    this.WriteNotFound);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("BadRequest");
+    }, 
+    this.WriteBadRequest);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("Conflict");
+    }, 
+    this.WriteConflict);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+
+        return parentMethod.GetFacet<bool>("ActionValidation");
+    }, 
+    this.WriteActionValidation);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+
+        return parentMethod.GetFacet<bool>("ProjectResult");
+    }, 
+    this.WriteProjectResult);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+
+        return parentMethod.GetFacet<bool>("MapResult");
+    }, 
+    this.WriteMapResult);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

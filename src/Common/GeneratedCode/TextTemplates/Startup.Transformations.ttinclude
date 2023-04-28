@@ -1,0 +1,108 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.Common");
+
+    // ServiceCollection extensions
+
+    ClassModel extensionClassModel = targetModel.Namespace
+        .AddClass(new ClassModel("ServiceCollectionExtensions")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+            Documentation = new DocumentationModel("Provides extension methods for the IServiceCollection type.")
+        })
+            .AddMethod(new MethodModel("AddCommonPart", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                Documentation = new DocumentationModel("Configures the common part.")
+                {
+                    Returns = "The service collection instance.",
+                    Remarks = "This method is called from the host startup."
+                }
+            })
+                .WithParameter(new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Modifiers = MethodParameterModifiers.This,
+                    Documentation = new DocumentationModel("The service collection.")
+                })
+                .WithParameter(new MethodParameterModel("hostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                {
+                    Documentation = new DocumentationModel("The host configuration.")
+                })
+                .ParentModelAs<ClassModel>();
+
+    // Startup
+
+    ClassModel startupBaseClassModel = targetModel.Namespace
+        .AddClass(new ClassModel("StartupBase")
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial | ClassModifiers.Abstract,
+            Documentation = new DocumentationModel("Defines the base class for <see cref=\"Startup\" /> to allow customization.")
+        })
+            .WithProperty(new PropertyModel("HostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+            {
+                Modifiers = PropertyModifiers.Protected,
+                Documentation = new DocumentationModel("Gets the host configuration."),
+                GetAccessor = new PropertyGetAccessorModel()
+            })
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Protected,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"StartupBase\" /> class.")
+            })
+                .WithParameter(new MethodParameterModel("hostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                {
+                    Documentation = new DocumentationModel("The host configuration.")
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("AddServices")
+            {
+                Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Configures the services.")
+            })
+                .WithParameter(new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Documentation = new DocumentationModel("The service collection.")
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("AddMapper")
+            {
+                Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Configures the mapper.")
+            })
+                .WithParameter(new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Documentation = new DocumentationModel("The service collection.")
+                })
+                .ParentModelAs<ClassModel>();
+
+    ClassModel startupClassModel = targetModel.Namespace
+        .AddClass(new ClassModel("Startup")
+        {
+            Inheritance = "StartupBase",
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+            Documentation = new DocumentationModel("Provides methods to startup the common part.")
+        })
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base(hostConfiguration)",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"Startup\" /> class.")
+            })
+                .WithParameter(new MethodParameterModel("hostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                {
+                    Documentation = new DocumentationModel("The host configuration.")
+                })
+                .ParentModelAs<ClassModel>();
+}
+
+#>

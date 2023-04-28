@@ -1,0 +1,617 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Mediator.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.CommandExceptionHandler`3">
+            <summary>
+            Defines the base class of an exception handler for a command that returns a result.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TResult">The type of the command result.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.CommandExceptionHandler`3.HandleAsync(`0,`2,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{`1},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.CommandExceptionHandler`2">
+            <summary>
+            Defines the base class of an exception handler for a command that does not return a result.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.CommandExceptionHandler`2.HandleAsync(`0,`1,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{Primavera.Hydrogen.VoidReturnValue},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.CommandHandler`2">
+            <summary>
+            Defines the base class of an handler for a command that returns a result.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TResult">The type of the result.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.CommandHandler`2.HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.CommandHandler`1">
+            <summary>
+            Defines the base class of an handler for a command that does not return a result.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`1" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.CommandHandler`1.HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Handles the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.CommandHandler`1.Primavera#Hydrogen#Mediator#IRequestHandler{TCommand,Primavera#Hydrogen#VoidReturnValue}#HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.EventExceptionHandler`2">
+            <summary>
+            Defines the base class of an exception handler for an event.
+            </summary>
+            <typeparam name="TEvent">The type of the event.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.EventExceptionHandler`2.HandleAsync(`0,`1,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{Primavera.Hydrogen.VoidReturnValue},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.EventHandler`1">
+            <summary>
+            Defines the base class of an handler for an event.
+            </summary>
+            <typeparam name="TEvent">The type of the command.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.EventHandler`1.HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Handles the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.EventHandler`1.Primavera#Hydrogen#Mediator#IRequestHandler{TEvent,Primavera#Hydrogen#VoidReturnValue}#HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.ICommand`1">
+            <summary>
+            Defines a command that returns a result.
+            Applied to a class, marks that class as a CQRS command.
+            </summary>
+            <typeparam name="TResult">The type of the command result.</typeparam>
+            <remarks>
+            The command supports returning a result so it can indicate if it succeeded or
+            if it failed without having to throw exceptions.
+            </remarks>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest`1" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.ICommand">
+            <summary>
+            Defines a command that does not return a result.
+            Applied to a class, marks that class as a CQRS command.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest" />
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommand`1" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3">
+            <summary>
+            Defines an exception handler for a command that returns a result.
+            Applied to a class, marks that class as a CQRS command exception handler.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TResult">The type of the command result.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`2">
+            <summary>
+            Defines an exception handler for a command that does not return a result.
+            Applied to a class, marks that class as a CQRS command exception handler.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`2" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2">
+            <summary>
+            Defines an handler for a CQRS command that returns a result.
+            Applied to a class, marks that class as a mediator handler.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TResult">The type of the command result.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommand`1"/>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`1">
+            <summary>
+            Defines an handler for a CQRS command that does not return a result.
+            Applied to a class, marks that class as a mediator handler.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommand"/>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.IEvent">
+            <summary>
+            Defines an event.
+            Applied to a class, marks that class as a CQRS event.
+            </summary>
+            <remarks>
+            An event may be handled by multiple handlers.
+            </remarks>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2">
+            <summary>
+            Defines an exception handler for an event.
+            Applied to a class, marks that class as a CQRS event exception handler.
+            </summary>
+            <typeparam name="TEvent">The type of the query.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`2" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1">
+            <summary>
+            Defines an handler for a CQRS event.
+            Applied to a class, marks that class as a mediator handler.
+            </summary>
+            <typeparam name="TEvent">The type of the event.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommand"/>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.IQuery`1">
+            <summary>
+            Defines a query.
+            Applied to a class, marks that class as a CQRS query.
+            </summary>
+            <typeparam name="TResult">The type of the query result.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest`1" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3">
+            <summary>
+            Defines an exception handler for a query.
+            Applied to a class, marks that class as a CQRS query exception handler.
+            </summary>
+            <typeparam name="TQuery">The type of the query.</typeparam>
+            <typeparam name="TResult">The type of the command result.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2">
+            <summary>
+            Defines an handler for a CQRS query.
+            Applied to a class, marks that class as a mediator handler.
+            </summary>
+            <typeparam name="TQuery">The type of the query.</typeparam>
+            <typeparam name="TResult">The type of the query result.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQuery`1"/>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.QueryExceptionHandler`3">
+            <summary>
+            Defines the base class of an exception handler for a query.
+            </summary>
+            <typeparam name="TQuery">The type of the query.</typeparam>
+            <typeparam name="TResult">The type of the command result.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.QueryExceptionHandler`3.HandleAsync(`0,`2,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{`1},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.QueryHandler`2">
+            <summary>
+            Defines the base class of an handler for a query.
+            </summary>
+            <typeparam name="TQuery">The type of the query.</typeparam>
+            <typeparam name="TResult">The type of the result.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.QueryHandler`2.HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IMediator">
+            <summary>
+            Defines the interface of a mediator.
+            The mediator encapsulates communication patterns between objects to reduce dependencies between these
+            objects.
+            </summary>
+            <example>
+            The mediator can be used to send a request and wait for a response from the first handler found:
+            <code>
+            <![CDATA[
+            // Define the request (which also describes the response)
+            
+            public partial class MyRequest : IRequest<string>
+            {
+                // (...)
+            }
+            
+            // Send the request through the mediator
+            
+            IMediator mediator = this.ServiceProvider.GetRequiredService<IMediator>();
+            
+            MyRequest request = new MyRequest();
+            
+            // (...)
+            
+            string result = await mediator.SendAsync(request).ConfigureAwait(false);
+            
+            // (...)
+            ]]>
+            </code>
+            </example>
+            <remarks>
+            Typically the mediator will be registered in the service container, along with
+            all the handlers.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediator.SendAsync``1(Primavera.Hydrogen.Mediator.IRequest{``0},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Sends the specified request and waits for a response from a single handler.
+            </summary>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            The response from the handler.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Mediator.MediatorException">
+            Raised if no handler is found for the specified request.
+            </exception>
+            <remarks>
+            If multiple handlers are registered for the request, only the first one registered
+            will be invoked.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediator.SendAsync(Primavera.Hydrogen.Mediator.IRequest,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Sends the specified request and waits for a response from a single handler.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Mediator.MediatorException">
+            Raised if no handler is found for the specified request.
+            </exception>
+            <remarks>
+            If multiple handlers are registered for the request, only the first one registered
+            will be invoked.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediator.PublishAsync(Primavera.Hydrogen.Mediator.IRequest,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Publishes the specified request to all the handlers available.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+            <remarks>
+            If no handler is registered, no error will be raised.
+            If multiple handlers are registered for the request, the request will be sent to
+            each one in sequence.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IMiddleware`2">
+            <summary>
+            Defines a middleware that can be added to the mediator pipeline.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMiddleware`2.RunAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,Primavera.Hydrogen.Mediator.RequestHandlerDelegate{`0,`1},System.Threading.CancellationToken)">
+            <summary>
+            Processes the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context.</param>
+            <param name="nextDelegate">The delegate that represents the middleware remaining in the mediator pipeline.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            The response from the handler.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IMiddleware`1">
+            <summary>
+            Defines a middleware that can be added to the mediator pipeline for
+            requests that do not return responses.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.RequestHandlerDelegate`2">
+            <summary>
+            A delegate for handling the specified request.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <param name="request">The request.</param>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            The response from the handler.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.RequestHandlerDelegate`1">
+            <summary>
+            A delegate for handling the specified request.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <param name="request">The request.</param>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IRequest`1">
+            <summary>
+            Defines a request that returns a response.
+            Applied to a class, marks that class as a mediator request.
+            </summary>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IRequest">
+            <summary>
+            Defines a request that returns a void result.
+            Applied to a class, marks that class as a mediator request.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest`1"/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3">
+            <summary>
+            Defines an exception handler for a request that returns a response.
+            Applied to a class, marks that class as a mediator exception handler.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest`1"/>
+            <remarks>
+            The exception handler will only be considered if the corresponding middleware
+            is registered in the mediator pipeline.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3.HandleAsync(`0,`2,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{`1},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Handles the exception raised for the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="exception">The exception that was raised.</param>
+            <param name="state">The current state of handling the exception.</param>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`2">
+            <summary>
+            Defines an exception handler for a request that does not returns a response.
+            Applied to a class, marks that class as a mediator exception handler.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <remarks>
+            The exception handler will only be considered if the corresponding middleware
+            is registered in the mediator pipeline.
+            </remarks>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest" />
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3" />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IRequestHandler`2">
+            <summary>
+            Defines an handler for a request that returns a response.
+            Applied to a class, marks that class as a mediator handler.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest`1"/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IRequestHandler`2.HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Handles the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            The response from the handler.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IRequestHandler`1">
+            <summary>
+            Defines an handler for a request that returns a void response.
+            Applied to a class, marks that class as a mediator handler.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequest"/>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2"/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.MediatorContext">
+            <summary>
+            Defines the context used in a mediator operation.
+            This allows to share additional data about the operation between the caller
+            and the handler(s).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.MediatorContext.Id">
+            <summary>
+            Gets a unique identifier of the operation.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.MediatorContext.Properties">
+            <summary>
+            Gets the properties.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.MediatorContext"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.MediatorException">
+            <summary>
+            Describes an error raised by <see cref="T:Primavera.Hydrogen.Mediator.IMediator"/>.
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.MediatorException"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.MediatorException"/> class.
+            </summary>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.MediatorException"/> class.
+            </summary>
+            <param name="message">Error message.</param>
+            <param name="innerException">Represents the exception that caused this error.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Middleware`2">
+            <summary>
+            Defines the base class of a middleware for a request that returns a response.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Middleware`2.RunAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,Primavera.Hydrogen.Mediator.RequestHandlerDelegate{`0,`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Middleware`1">
+            <summary>
+            Defines the base class of a middleware for a request that does not return a response.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`1" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Middleware`1.RunAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,Primavera.Hydrogen.Mediator.RequestHandlerDelegate{`0},System.Threading.CancellationToken)">
+            <summary>
+            Processes the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context.</param>
+            <param name="nextDelegate">The delegate that represents the middleware remaining in the mediator pipeline.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            The response from the handler.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Middleware`1.Primavera#Hydrogen#Mediator#IMiddleware{TRequest,Primavera#Hydrogen#VoidReturnValue}#RunAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,Primavera.Hydrogen.Mediator.RequestHandlerDelegate{`0,Primavera.Hydrogen.VoidReturnValue},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.RequestExceptionHandler`3">
+            <summary>
+            Defines the base class of an exception handler for a request that returns a response.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.RequestExceptionHandler`3.HandleAsync(`0,`2,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{`1},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.RequestExceptionHandler`2">
+            <summary>
+            Defines the base class of an exception handler for a request that does not return a response.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.RequestExceptionHandler`2.HandleAsync(`0,`1,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{Primavera.Hydrogen.VoidReturnValue},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.RequestExceptionHandlerState`1">
+            <summary>
+            Describes the state of handling an exception raised while processing a request.
+            </summary>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.RequestExceptionHandlerState`1.Handled">
+            <summary>
+            Gets a value indicating whether the exception has been handled.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.RequestExceptionHandlerState`1.Response">
+            <summary>
+            Gets the response that should be returned when <see cref="P:Primavera.Hydrogen.Mediator.RequestExceptionHandlerState`1.Handled"/> is true.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.RequestExceptionHandlerState`1.SetHandled(`0)">
+            <summary>
+            Marks the exception has handled and sets the response that should be returned.
+            </summary>
+            <param name="response">The response that should be returned.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.RequestHandler`2">
+            <summary>
+            Defines the base class of an handler for a request that returns a response.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.RequestHandler`2.HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.RequestHandler`1">
+            <summary>
+            Defines the base class of an handler for a request that does not return a response.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`1" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.RequestHandler`1.HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Handles the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.RequestHandler`1.Primavera#Hydrogen#Mediator#IRequestHandler{TRequest,Primavera#Hydrogen#VoidReturnValue}#HandleAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

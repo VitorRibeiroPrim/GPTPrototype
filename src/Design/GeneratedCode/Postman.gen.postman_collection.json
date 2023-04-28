@@ -1,0 +1,157 @@
+{
+    "info": {
+		"_postman_id": "6d4a300c-cc85-4e01-a9bd-65cb4efc56a1",
+		"name": "GPT (ChatGPT)",
+        "description": "Chat GPT prototype.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "ChatGPT",
+            "description": "The chatGPT controller.",
+            "item": [
+                {
+                    "name": "ChatGPT.Ask",
+                    "request": {
+                        "description": "Ask a question to the chat.",
+                        "method": "POST",
+                        "header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+                        "body": {
+                            "mode": "raw",
+							"raw": "{\n\t\"question\": \"value\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/api/v{{apiVersion}}/chatgpt",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v{{apiVersion}}",
+								"chatgpt"
+							]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Monitoring",
+            "description": "Provides operations to monitor the service.",
+            "item": [
+                {
+                    "name": "Monitoring.Probe",
+                    "request": {
+                        "description": "Probes the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/probe",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"probe"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Diagnostics",
+                    "request": {
+                        "description": "Diagnoses the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/diagnostics",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"diagnostics"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Endpoints",
+                    "request": {
+                        "description": "Analyzes the endpoints of the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/endpoints",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"endpoints"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Configuration",
+                    "request": {
+                        "description": "Analyzes the configuration of the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/configuration",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"configuration"
+							]
+                        }
+                    }
+                },
+                {
+                    "name": "Monitoring.Information",
+                    "request": {
+                        "description": "Retrieves information about the service.",
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{serverBaseAddress}}/.monitoring/info",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								".monitoring",
+								"info"
+							]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "id": "3483f3da-95f9-0c58-e539-53c7320c565c",
+			"key": "server",
+			"value": "https://localhost:20001",
+			"type": "string"
+        },
+        {
+            "id": "85b7bc52-baa6-050e-c863-0f3e547a97ac",
+			"key": "apiVersion",
+			"value": "1.0",
+			"type": "string"
+        }
+    ]
+}

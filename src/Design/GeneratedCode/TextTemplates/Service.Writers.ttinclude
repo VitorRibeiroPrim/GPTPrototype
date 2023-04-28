@@ -1,0 +1,364 @@
+﻿<#+
+
+// *** WriteServiceSpec
+
+public void WriteServiceSpec(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model == null)
+    {
+        return;
+    }
+
+    // Spec
+
+    ServiceSpec spec = new ServiceSpec();
+
+    // API Versions
+
+    this.AddApiVersions(spec, model);
+
+    // Application Settings
+
+    this.AddAppSettings(spec, model);
+
+    // Background Services
+
+    this.AddBackgroundServices(spec, model);
+
+    // Dependencies
+
+    this.AddDependencies(spec, model);
+
+    // Description
+
+    this.AddDescription(spec, model);
+
+    // Endpoints
+
+    this.AddEndpoints(spec, model);
+
+    // Features
+
+    this.AddFeatures(spec, model);
+
+    // Service Dependencies
+
+    this.AddServiceDependencies(spec, model);
+
+    // Webhooks
+
+    this.AddWebhooks(spec, model);
+
+    // Serialize
+
+    string json = spec.ToJson();
+
+    // Write
+
+    modelWriter.Append(json);
+}
+
+// *** AddApiVersions
+
+public void AddApiVersions(ServiceSpec spec, ServiceModel model)
+{
+    ApiVersionSpec defaultApiVersionSpec = new ApiVersionSpec(model.Version, true);
+    spec.ApiVersions.Add(defaultApiVersionSpec);
+
+    foreach (ApiVersion apiVersion in model.ApiVersions.OrderBy(a => a.NameProvider))
+    {
+        ApiVersionSpec apiVersionSpec = new ApiVersionSpec(apiVersion.Version);
+        spec.ApiVersions.Add(apiVersionSpec);
+    }
+}
+
+// *** AddAppSettings
+
+public void AddAppSettings(ServiceSpec spec, ServiceModel model)
+{
+    IList<AppSettingSpec> standard = GetAppSettings(model);
+    IList<AppSettingSpec> custom = GetAppSettingsCustom(model);
+
+    spec.AppSettings.Standard = standard;
+    spec.AppSettings.Custom = custom;
+}
+
+// *** AddBackgroundServices
+
+public void AddBackgroundServices(ServiceSpec spec, ServiceModel model)
+{
+    if (model.BackgroundServices.Count > 0)
+    {
+        foreach (BackgroundService service in model.BackgroundServices)
+        {
+            spec.BackgroundServices.Add(
+                new BackgroundServiceSpec()
+                {
+                    Name = service.Name,
+                    DisplayName = service.DisplayName,
+                    Summary = service.Summary
+                });
+        }
+    }
+}
+
+// *** AddDependencies
+
+public void AddDependencies(ServiceSpec spec, ServiceModel model)
+{
+    if (model.Dependencies.Count > 0)
+    {
+        foreach (Dependency dependency in model.Dependencies)
+        {
+            spec.Dependencies.Add(dependency.Kind.ToString());
+        }
+    }
+}
+
+// *** AddDescription
+
+public void AddDescription(ServiceSpec spec, ServiceModel model)
+{
+    spec.Description = new ServiceDescriptionSpec()
+    {
+        Id = model.GUID,
+        Name = model.Name,
+        DisplayName = model.DisplayName,
+        Summary = model.Summary
+    };
+}
+
+// *** AddEndpoints
+
+public void AddEndpoints(ServiceSpec spec, ServiceModel model)
+{
+    // Monitoring
+
+    EndpointSpec probeEndpoint = new EndpointSpec()
+    {
+        Controller = "Monitoring",
+        Name = "Probe",
+        Route = "GET /.monitoring/probe",
+        Summary = "Allows probing the health of the service."
+    };
+
+    this.AddEndpointApiVersions(probeEndpoint, model);
+
+    EndpointSpec diagnosticsEndpoint = new EndpointSpec()
+    {
+        Controller = "Monitoring",
+        Name = "Diagnostics",
+        Route = "GET /.monitoring/diagnostics",
+        Summary = "Allows diagnosing the health of the service."
+    };
+
+    this.AddEndpointApiVersions(diagnosticsEndpoint, model);
+
+    EndpointSpec endpointsEndpoint = new EndpointSpec()
+    {
+        Controller = "Monitoring",
+        Name = "Endpoints",
+        Route = "GET /.monitoring/endpoints",
+        Summary = "Allows verifying the endpoints of the service."
+    };
+
+    this.AddEndpointApiVersions(endpointsEndpoint, model);
+
+    EndpointSpec configurationEndpoint = new EndpointSpec()
+    {
+        Controller = "Monitoring",
+        Name = "Configuration",
+        Route = "GET /.monitoring/configuration",
+        Summary = "Allows verifying the configuration of the service."
+    };
+
+    this.AddEndpointApiVersions(configurationEndpoint, model);
+
+    EndpointSpec infoEndpoint = new EndpointSpec()
+    {
+        Controller = "Monitoring",
+        Name = "Information",
+        Route = "GET /.monitoring/info",
+        Summary = "Allows retrieving information about the service."
+    };
+
+    this.AddEndpointApiVersions(infoEndpoint, model);
+
+    spec.Endpoints.Add(probeEndpoint);
+    spec.Endpoints.Add(diagnosticsEndpoint);
+    spec.Endpoints.Add(endpointsEndpoint);
+    spec.Endpoints.Add(configurationEndpoint);
+    spec.Endpoints.Add(infoEndpoint);
+
+    // Controllers
+
+    foreach (ControllerType controllerType in model.Controllers
+        .Where(c => c.Visibility != ControllerTypeVisibility.ClientSide)
+        .OrderBy(c => c.Name))
+    {
+        if (controllerType.Extensions().HasODataServerSide)
+        {
+            string controllerRoute = new ControllerRouteBuilder(controllerType)
+                .Build(true);
+
+            EndpointSpec odataEndpoint1 = new EndpointSpec()
+            {
+                Controller = controllerType.Name,
+                Name = "OData",
+                Route = $"GET {controllerRoute}",
+                Summary = "Retrieves the OData service document."
+            };
+
+            this.AddEndpointApiVersions(odataEndpoint1, controllerType);
+
+            EndpointSpec odataEndpoint2 = new EndpointSpec()
+            {
+                Controller = controllerType.Name,
+                Name = "OData.Metadata",
+                Route = $"GET {controllerRoute}/$metadata",
+                Summary = "Retrieves the OData metadata."
+            };
+
+            this.AddEndpointApiVersions(odataEndpoint2, controllerType);
+
+            spec.Endpoints.Add(odataEndpoint1);
+            spec.Endpoints.Add(odataEndpoint2);
+        }
+
+        foreach (ControllerTypeAction controllerTypeAction in controllerType.ChildActions
+            .Where(a => a.Visibility != ControllerTypeActionVisibility.ClientSide)
+            .OrderBy(a => a.Name2))
+        {
+            EndpointSpec actionEndpoint = new EndpointSpec()
+            {
+                Controller = controllerType.Name,
+                Name = controllerTypeAction.Name2,
+                Route = controllerTypeAction.Route,
+                Summary = controllerTypeAction.Summary
+            };
+
+            this.AddEndpointApiVersions(actionEndpoint, controllerTypeAction);
+
+            spec.Endpoints.Add(actionEndpoint);
+        }
+    }
+}
+
+// *** AddEndpointApiVersions
+
+public void AddEndpointApiVersions(EndpointSpec spec, ServiceModel model)
+{
+    ApiVersionSpec defaultApiVersionSpec = new ApiVersionSpec(model.Version, true);
+    spec.ApiVersions.Add(defaultApiVersionSpec);
+
+    foreach (ApiVersion apiVersion in model.ApiVersions.OrderBy(a => a.NameProvider))
+    {
+        ApiVersionSpec apiVersionSpec = new ApiVersionSpec(apiVersion.Version);
+        spec.ApiVersions.Add(apiVersionSpec);
+    }
+}
+
+public void AddEndpointApiVersions(EndpointSpec spec, ControllerType controllerType)
+{
+    IList<string> versions = controllerType.GetApiVersionsInUse();
+
+    foreach (string version in versions.OrderByDescending(i => i))
+    {
+        ApiVersionSpec apiVersionSpec = new ApiVersionSpec(version, version == controllerType.ServiceModel.Version);
+        spec.ApiVersions.Add(apiVersionSpec);
+    }
+}
+
+public void AddEndpointApiVersions(EndpointSpec spec, ControllerTypeAction action)
+{
+    IList<string> versions = action.GetApiVersionsInUse();
+
+    foreach (string version in versions.OrderByDescending(i => i))
+    {
+        ApiVersionSpec apiVersionSpec = new ApiVersionSpec(version, version == action.ServiceModel.Version);
+        spec.ApiVersions.Add(apiVersionSpec);
+    }
+}
+
+// *** AddFeatures
+
+public void AddFeatures(ServiceSpec spec, ServiceModel model)
+{
+    // Has Webhooks?
+
+    spec.Features.Add(
+        new FeatureSpec()
+        {
+            Name = "Webhooks",
+            Summary = "Provides webhooks in the REST API.",
+            IsAvailable = model.Webhooks.Count > 0
+        });
+
+    // Has background services?
+
+    spec.Features.Add(
+        new FeatureSpec()
+        {
+            Name = "BackgroundServices",
+            Summary = "Includes background services has hosted services.",
+            IsAvailable = model.BackgroundServices.Count > 0
+        });
+
+    // Has OData
+
+    spec.Features.Add(
+        new FeatureSpec()
+        {
+            Name = "OData",
+            Summary = "Includes OData endpoints.",
+            IsAvailable = model.Extensions().HasODataServerSide
+        });
+
+    // Has OIDC
+
+    spec.Features.Add(
+        new FeatureSpec()
+        {
+            Name = "OidcAuthentication",
+            Summary = "Uses OIDC authentication.",
+            IsAvailable = model.Settings.GenerateOidcSupport
+        });
+}
+
+// *** AddServiceDependencies
+
+public void AddServiceDependencies(ServiceSpec spec, ServiceModel model)
+{
+    if (model.ServiceDependencies.Count > 0)
+    {
+        foreach (ServiceDependency serviceDependency in model.ServiceDependencies.Where(s => !string.IsNullOrEmpty(s.Service)).OrderBy(s => s.Service))
+        {
+            ServiceDescriptionData serviceInfo = ServiceCatalogServiceProxy.GetServiceByName(serviceDependency.Service);
+            if (serviceInfo != null)
+            {
+                spec.ServiceDependencies.Add(
+                    new ServiceDependencySpec()
+                    {
+                        ServiceId = serviceInfo.Id
+                    });
+            }
+        }
+    }
+}
+
+// *** AddWebhooks
+
+public void AddWebhooks(ServiceSpec spec, ServiceModel model)
+{
+    foreach (Webhook webhook in model.Webhooks.OrderBy(i => i.Name))
+    {
+        WebhookSpec webhookSpec = new WebhookSpec(
+            webhook.Name, 
+            webhook.EventDescription,
+            webhook.PayloadDescription);
+
+        spec.Webhooks.Add(webhookSpec);
+    }
+}
+
+#>

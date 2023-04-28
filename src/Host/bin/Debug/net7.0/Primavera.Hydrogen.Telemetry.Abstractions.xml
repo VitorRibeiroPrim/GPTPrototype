@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Telemetry.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Telemetry.IDependencyTelemetryOperation">
+            <summary>
+            Defines the interface of a dependency telemetry operation.
+            This operation writes dependency telemetry (correlated) during it's lifetime.
+            </summary>
+            <seealso cref="T:System.IDisposable" />
+            <example>
+            <code>
+            <![CDATA[
+            string operationId = (...);
+            string parentOperationId = (...);
+            ITelemetryClientService service = this.ServiceProvider.GetRequiredService<ITelemetryClientService>();
+            using (IDependencyTelemetryOperation operation = service.StartDependency("dependency", operationId, parentOperationId))
+            {
+                // Execute multiple operations that track
+                // telemetry which will be correlated...
+                
+                operation.Succeeded = true;
+            }
+            ]]>
+            </code>
+            </example>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IDependencyTelemetryOperation.Succeeded">
+            <summary>
+            Gets or sets a value indicating whether the request succeeded.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IDependencyTelemetryOperation.Type">
+            <summary>
+            Gets or sets the type of dependency.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IDependencyTelemetryOperation.Command">
+            <summary>
+            Gets or sets the command initiated by the dependency call.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Telemetry.IRequestTelemetry">
+            <summary>
+            Defines a request telemetry, which encapsulates information about the request
+            handled by the application.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetry.Id">
+            <summary>
+            Gets the identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetry.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetry.ResultCode">
+            <summary>
+            Gets the result code.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetry.Success">
+            <summary>
+            Gets a value indicating whether the request succeeded.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetry.OperationId">
+            <summary>
+            Gets the operation identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetry.OperationParentId">
+            <summary>
+            Gets the operation parent identifier.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Telemetry.IRequestTelemetryAccessor">
+            <summary>
+            Defines the interface of the request telemetry accessor.
+            Allows accessing the request telemetry active at any given moment
+            in the application (if available).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetryAccessor.Telemetry">
+            <summary>
+            Gets the request telemetry. May be null if no telemetry is active.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Telemetry.IRequestTelemetryOperation">
+            <summary>
+            Defines the interface of a request telemetry operation.
+            This operation writes request telemetry (correlated) during it's lifetime.
+            </summary>
+            <seealso cref="T:System.IDisposable" />
+            <example>
+            <code>
+            <![CDATA[
+            string operationId = (...);
+            string parentOperationId = (...);
+            ITelemetryClientService service = this.ServiceProvider.GetRequiredService<ITelemetryClientService>();
+            using (IRequestTelemetryOperation operation = service.StartRequest("request", operationId, parentOperationId))
+            {
+                // Execute multiple operations that track
+                // telemetry which will be correlated...
+                
+                operation.Succeeded = true;
+            }
+            ]]>
+            </code>
+            </example>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetryOperation.Succeeded">
+            <summary>
+            Gets or sets a value indicating whether the request succeeded.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetryOperation.ResponseCode">
+            <summary>
+            Gets or sets the request response code.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Telemetry.IRequestTelemetryOperation.Properties">
+            <summary>
+            Gets a dictionary of application-defined property names and values providing
+            additional information about this request.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Telemetry.ITelemetryClientService">
+            <summary>
+            Defines the interface of the telemetry client service.
+            This service allows creating clients to record telemetry (logging, metrics, etc.).
+            New instances of the service should be resolved via dependency injection to realize
+            the concrete implementation.
+            </summary>
+            <example>
+            <code>
+            <![CDATA[
+            ITelemetryClientService service = services.GetRequiredService<ITelemetryClientService>();
+            service.WriteTrace(TelemetrySeverityLevel.Verbose, "My trace message");
+            ]]>
+            </code>
+            </example>
+            <seealso cref="T:System.IDisposable"/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.WriteTrace(Primavera.Hydrogen.Telemetry.TelemetrySeverityLevel,System.String,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Writes a trace message to telemetry.
+            </summary>
+            <param name="severityLevel">The trace severity level.</param>
+            <param name="message">The trace message that should be written.</param>
+            <param name="properties">A dictionary containing named string values that can be used to search and classify traces.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.WriteMetric(System.String,System.Double,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Writes a metric to telemetry.
+            </summary>
+            <param name="name">The name of the metric that should be written.</param>
+            <param name="value">The value of the metric.</param>
+            <param name="properties">A dictionary containing named string values that can be used to search and classify metrics.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.WriteEvent(System.String,System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.Double})">
+            <summary>
+            Writes an event to telemetry.
+            </summary>
+            <param name="eventName">The name of the event that should be written.</param>
+            <param name="properties">A dictionary containing named string values that can be used to search and classify events.</param>
+            <param name="metrics">A dictionary containing metrics associated with the event.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.WriteException(System.Exception,System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,System.Double})">
+            <summary>
+            Writes an exception to telemetry.
+            </summary>
+            <param name="exception">The exception that should be written.</param>
+            <param name="properties">A dictionary containing named string values that can be used to search and classify exceptions.</param>
+            <param name="metrics">A dictionary containing metrics associated with the exception.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.WriteDependency(System.String,System.String,System.String,System.DateTimeOffset,System.TimeSpan,System.Boolean)">
+            <summary>
+            Writes a dependency to telemetry.
+            </summary>
+            <param name="dependencyType">The type of dependency.</param>
+            <param name="dependencyName">The name of the dependency that should be written.</param>
+            <param name="command">The command initiated by the dependency call.</param>
+            <param name="startTime">The time when the dependency was called.</param>
+            <param name="duration">The time taken by the external dependency to handle the call.</param>
+            <param name="succeeded">A value indicating whether the dependency call succeeded.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.WriteRequest(System.String,System.DateTimeOffset,System.TimeSpan,System.String,System.Boolean)">
+            <summary>
+            Writes a request to telemetry.
+            </summary>
+            <param name="requestName">The name of the request that should be written.</param>
+            <param name="startTime">The time when the request was called.</param>
+            <param name="duration">The time taken by the request to handle the call.</param>
+            <param name="responseCode">The response code.</param>
+            <param name="succeeded">A value indicating whether the dependency call succeeded.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.StartRequest(System.String,System.String,System.String)">
+            <summary>
+            Starts an operation to write telemetry for the specified request.
+            </summary>
+            <param name="requestName">The name of the request.</param>
+            <param name="operationId">The operation identifier.</param>
+            <param name="parentOperationId">The parent operation identifier.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Telemetry.IRequestTelemetryOperation"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.StartDependency(System.String,System.String,System.String)">
+            <summary>
+            Starts an operation to write telemetry for the specified dependency.
+            </summary>
+            <param name="dependencyName">The name of the dependency.</param>
+            <param name="operationId">The operation identifier.</param>
+            <param name="parentOperationId">The parent operation identifier.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Telemetry.IDependencyTelemetryOperation"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Telemetry.ITelemetryClientService.Flush">
+            <summary>
+            Flushes the service in-memory buffer.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Telemetry.TelemetrySeverityLevel">
+            <summary>
+            Defines the severity level of a telemetry trace.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Telemetry.TelemetrySeverityLevel.Verbose">
+            <summary>
+            Verbose severity level.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Telemetry.TelemetrySeverityLevel.Information">
+            <summary>
+            Information severity level.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Telemetry.TelemetrySeverityLevel.Warning">
+            <summary>
+            Warning severity level.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Telemetry.TelemetrySeverityLevel.Error">
+            <summary>
+            Error severity level.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Telemetry.TelemetrySeverityLevel.Critical">
+            <summary>
+            Critical severity level.
+            </summary>
+        </member>
+    </members>
+</doc>

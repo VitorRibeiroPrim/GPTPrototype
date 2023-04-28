@@ -1,0 +1,274 @@
+﻿<#+
+
+// *** WriteAddConfiguration
+
+public void WriteAddConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(services, nameof(services));
+
+        base.AddConfiguration(services);
+<#+
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.DistributedCache))
+    {
+
+#>
+
+        services.Configure<RedisCacheOptions>(this.ConfigureRedisCacheOptions);
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.SecretsStorage))
+    {
+
+#>
+
+        services.Configure<AzureKeyVaultSecretsStorageOptions>(this.ConfigureAzureKeyVaultSecretsStorageOptions);
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.TableStorage))
+    {
+
+#>
+
+        services.Configure<AzureTableStorageOptions>(this.ConfigureAzureTableStorageOptions);
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.BlobStorage))
+    {
+
+#>
+
+        services.Configure<AzureBlobStorageOptions>(this.ConfigureAzureBlobStorageOptions);
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.DataProtection))
+    {
+
+#>
+
+        services.Configure<AzureBlobStorageDataProtectionOptions>(this.ConfigureAzureBlobStorageDataProtectionOptions);
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.MessageBus))
+    {
+
+#>
+
+        services.Configure<AzureServiceBusMessageBusOptions>(this.ConfigureAzureServiceBusMessageBusOptions);
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.MultiModelDatabase))
+    {
+
+#>
+
+        services.Configure<CosmosDbMultiModelDatabaseOptions>(this.ConfigureCosmosDbMultiModelDatabaseOptions);
+<#+
+
+    }
+
+#>
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+        return provider.GetRequiredService<Common.Configuration.HostConfiguration>();
+<#+
+
+}
+
+// *** WriteConfigureHostConfiguration
+
+public void WriteConfigureHostConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        base.ConfigureHostConfiguration(configuration);
+
+<#+
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        configuration.IdentityServerBaseUri = "https://localhost";
+<#+
+
+    }
+
+#>
+        configuration.ServiceCatalogServiceBaseUri = "https://localhost/scs";
+<#+
+
+}
+
+// *** WriteConfigureRedisCacheOptions
+
+public void WriteConfigureRedisCacheOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        options.ConnectionString = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.Redis.ConnectionString;
+<#+
+
+}
+
+// *** WriteConfigureAzureKeyVaultSecretsStorageOptions
+
+public void WriteConfigureAzureKeyVaultSecretsStorageOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        options.Credentials.ManagedIdentity.Enabled = false;
+        options.Credentials.ClientSecret.Enabled = true;
+        options.Credentials.ClientSecret.TenantId = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.Identity.TenantId;
+        options.Credentials.ClientSecret.ClientId = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.Identity.ClientId;
+        options.Credentials.ClientSecret.ClientSecret = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.Identity.ClientSecret;
+<#+
+
+}
+
+// *** WriteConfigureAzureTableStorageOptions
+
+public void WriteConfigureAzureTableStorageOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        options.ConnectionString = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.TableStorage.ConnectionString;
+<#+
+
+}
+
+// *** WriteConfigureAzureBlobStorageOptions
+
+public void WriteConfigureAzureBlobStorageOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        options.ConnectionString = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.BlobStorage.ConnectionString;
+<#+
+
+}
+
+// *** WriteConfigureAzureServiceBusMessageBusOptions
+
+public void WriteConfigureAzureServiceBusMessageBusOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        options.ConnectionString = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.ServiceBus.ConnectionString;
+<#+
+
+}
+
+// *** WriteConfigureAzureBlobStorageDataProtectionOptions
+
+public void WriteConfigureAzureBlobStorageDataProtectionOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+    string applicationName = "lithium-{0}".Format(serviceModel.Name.Transform().ToLowerCase());
+
+#>
+        options.ApplicationName = "<#= applicationName #>";
+        options.UseBlobStorage = false;
+<#+
+
+}
+
+// *** WriteConfigureCosmosDbMultiModelDatabaseOptions
+
+public void WriteConfigureCosmosDbMultiModelDatabaseOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        options.ConnectionString = Primavera.Hydrogen.DesignTime.Testing.ExternalTestResources.Azure.CosmosDb.ConnectionString;
+<#+
+
+}
+
+// *** WriteConfigureMvc
+
+public void WriteConfigureMvc(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(builder, nameof(builder));
+
+        base.ConfigureMvc(builder, hostConfiguration);
+
+        builder
+            .AddApplicationPart(typeof(Server.Host.Startup).Assembly)
+            .AddApplicationPart(typeof(Server.RestApi.Startup).Assembly);
+<#+
+
+}
+
+// *** WriteOnJwtBearerAuthenticationFailed
+
+public void WriteOnJwtBearerAuthenticationFailed(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        await base.OnJwtBearerAuthenticationFailed(context).ConfigureAwait(false);
+
+        System.Diagnostics.Debugger.Break();
+<#+
+
+}
+
+// *** WriteConfigureJwtBearerOptions
+
+public void WriteConfigureJwtBearerOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Set the back-channel handler
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+            
+        Primavera.Hydrogen.DesignTime.Testing.AspNetCore.IdentityServer.IdentityServerTestHostAccessor accessor = provider.GetRequiredService<Primavera.Hydrogen.DesignTime.Testing.AspNetCore.IdentityServer.IdentityServerTestHostAccessor>();
+            
+        System.Net.Http.HttpMessageHandler handler = accessor.AuthorizationServer?.CreateHandler();
+        if (handler != null)
+        {
+            options.BackchannelHttpHandler = handler;
+        }
+<#+
+
+}
+
+#>

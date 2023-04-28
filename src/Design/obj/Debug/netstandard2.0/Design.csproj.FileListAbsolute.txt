@@ -1,0 +1,11 @@
+C:\VSProjects\ChatGPT\Design\bin\Debug\netstandard2.0\GeneratedCode\Service.gen.lsspec.json
+C:\VSProjects\ChatGPT\Design\bin\Debug\netstandard2.0\Design.deps.json
+C:\VSProjects\ChatGPT\Design\bin\Debug\netstandard2.0\Design.dll
+C:\VSProjects\ChatGPT\Design\bin\Debug\netstandard2.0\Design.pdb
+C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.csproj.AssemblyReference.cache
+C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.GeneratedMSBuildEditorConfig.editorconfig
+C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.AssemblyInfoInputs.cache
+C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.AssemblyInfo.cs
+C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.csproj.CoreCompileInputs.cache
+C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.dll
+C:\VSProjects\ChatGPT\Design\obj\Debug\netstandard2.0\Design.pdb

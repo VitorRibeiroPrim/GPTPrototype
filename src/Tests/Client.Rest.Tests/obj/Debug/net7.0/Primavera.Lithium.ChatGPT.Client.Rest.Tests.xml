@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Lithium.ChatGPT.Client.Rest.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.Models.SerializerContextTestsBase">
+            <summary>
+            Defines the base class for tests on SerializerContext.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.Models.SerializerContextTestsBase.SerializerContext_Request_Serialization">
+            <summary>
+            Tests the serialization of <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.Request"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.Models.SerializerContextTestsBase.CreateDefaultRequest">
+            <summary>
+            Initializes a default instance of <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.Request"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.Models.SerializerContextTestsBase.GetJsonSerializerOptions">
+            <summary>
+            Retrieves a default instance of System.Text.Json.JsonSerializerOptions.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.Models.SerializerContextTests">
+            <summary>
+            Provides tests for the SerializerContext type.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase">
+            <summary>
+            Defines the base class for <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase.TestAddChatGPTDefault">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase.TestAddChatGPTDefaultWithOptionsFactory">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions},System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase.TestAddChatGPTNamed">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase.TestAddChatGPTNamedWithOptionsFactory">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions},System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests">
+            <summary>
+            Provides tests for the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions"/> class.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTestsBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests.ServiceCollectionExtensions_AddChatGPTClient_Default">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests.ServiceCollectionExtensions_AddChatGPTClient_Default_WithOptionsFactory">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions},System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests.ServiceCollectionExtensions_AddChatGPTClient_Named">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Tests.ServiceCollectionExtensionsTests.ServiceCollectionExtensions_AddChatGPTClient_Named_WithOptionsFactory">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions},System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})"/> method.
+            </summary>
+        </member>
+    </members>
+</doc>

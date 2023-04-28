@@ -1,0 +1,231 @@
+﻿<#+
+
+public void ModelsTransformations(string project)
+{
+    // Build the transformations
+
+    ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(
+        this.ServiceModel);
+
+    transformations.Add(
+        new ModelsTransformation(project));
+
+    transformations.Add(
+        (s, t) => true,
+        (s, t) => { return s is ServiceModel; },
+        (s, t) =>
+        {
+            switch (project)
+            {
+                case "Client.Rest":
+                    TransformClientRest(t, (ServiceModel)s);
+                    break;
+                case "Domain":
+                    TransformDomain(t, (ServiceModel)s);
+                    break;
+                case "RestApi":
+                    TransformRestApi(t, (ServiceModel)s);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Invalid project name '{project}'");
+            }
+        });
+
+    // Transform
+
+    CSharpFileModel targetModel = new CSharpFileModel();
+    transformations.TransformTo(targetModel);
+
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Add writers
+
+    controller.AddModelWriter<ConstructorBodyModel>(
+        (w, m) =>
+        {
+            ConstructorModel parentConstructor = m.ParentModelAs<ConstructorModel>();
+            ClassModel parentClass = parentConstructor.ParentModelAs<ClassModel>();
+            return parentClass.Name.EndsWith("Base");
+        }, 
+        this.WriteBaseConstructor);
+
+    controller.AddModelWriter<MethodBodyModel>(
+        (w, m) =>
+        {
+            MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+            ClassModel parentClass = parentMethod.ParentModelAs<ClassModel>();
+            return parentMethod.Name.EqualsNoCase("SetDefaultValues");
+        }, 
+        this.WriteSetDefaultValues);
+
+    controller.AddModelWriter<PropertyGetAccessorModel>(
+        (w, m) =>
+        {
+            PropertyModel parentProperty = m.ParentModelAs<PropertyModel>();
+            ModelTypeProperty sourceModel = parentProperty.GetFacet<ModelTypeProperty>("ModelTypeProperty");
+            if (sourceModel != null)
+            {
+                return sourceModel.Kind == PropertyKind.Calculated;
+            }
+
+            return false;
+        },
+        this.WriteGetAccessor);
+
+    controller.AddModelWriter<PropertySetAccessorModel>(
+        (w, m) =>
+        {
+            PropertyModel parentProperty = m.ParentModelAs<PropertyModel>();
+            ModelTypeProperty sourceModel = parentProperty.GetFacet<ModelTypeProperty>("ModelTypeProperty");
+            if (sourceModel != null)
+            {
+                return sourceModel.Kind == PropertyKind.Calculated;
+            }
+
+            return false;
+        },
+        this.WriteSetAccessor);
+
+    controller.AddModelWriter<ConstructorBodyModel>(
+        (w, m) =>
+        {
+            ConstructorModel parentConstructor = m.ParentModelAs<ConstructorModel>();
+            ClassModel parentClass = parentConstructor.ParentModelAs<ClassModel>();
+            return parentClass.Name.EqualsNoCase("RestServiceErrorLegacy") && parentConstructor.Parameters.Any();
+        }, 
+        this.WriteRestServiceErrorLegacyConstructor);
+
+    // Generate code
+
+    controller.Write(targetModel);
+}
+
+private void TransformClientRest(CSharpFileModel target, ServiceModel serviceModel)
+{
+    if (!serviceModel.Models.Any(i => i.Extensions().IsVisibleClientSide))
+    {
+        target.WithEmptyComment("This file is empty because the service model does not include\nany models visible client-side.");
+        return;
+    }
+
+    target.Namespace = new NamespaceModel(serviceModel.Namespace + ".Client.Rest.Models");
+}
+
+private void TransformDomain(CSharpFileModel target, ServiceModel serviceModel)
+{
+    if (!serviceModel.Models.Any(i => i.Extensions().IsVisibleServerSide))
+    {
+        target.WithEmptyComment("This file is empty because the service model does not include\nany models visible server-side.");
+        return;
+    }
+
+    target.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.Domain");
+}
+
+private void TransformRestApi(CSharpFileModel target, ServiceModel serviceModel)
+{
+    bool hasErrorResponseCompatibility = serviceModel.ApiVersions.Any(i => i.ErrorResponse == ErrorResponseKind.RestServiceError);
+
+    if (!hasErrorResponseCompatibility && !serviceModel.Models.Any(i => i.Extensions().IsVisibleServerSide))
+    {
+        target.WithEmptyComment("This file is empty because the service model does not include\nany models visible server-side.");
+        return;
+    }
+
+    target.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.RestApi.Models");
+
+    if (hasErrorResponseCompatibility)
+    {
+        ClassModel classModel1 = target.Namespace.AddClass(
+            new ClassModel("RestServiceErrorLegacy")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the a model to deserialize legacy error responses.")
+            });
+
+        classModel1.AddProperty(
+            new PropertyModel("Code", "string?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the error code.")
+            })
+                .WithAttribute(
+                    new AttributeModel("System.Text.Json.Serialization.JsonPropertyName(\"code\")"));
+
+        classModel1.AddProperty(
+            new PropertyModel("Message", "string?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the error message.")
+            })
+                .WithAttribute(
+                    new AttributeModel("System.Text.Json.Serialization.JsonPropertyName(\"message\")"));
+
+        classModel1.AddProperty(
+            new PropertyModel("Details", "System.Collections.Generic.IList<RestServiceErrorDetailLegacy>?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the error details.")
+            })
+                .WithAttribute(
+                    new AttributeModel("System.Text.Json.Serialization.JsonPropertyName(\"details\")"));
+
+        classModel1.AddConstructor(
+            new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"RestServiceErrorLegacy\"/> class.")
+            });
+
+        classModel1.AddConstructor(
+            new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"RestServiceErrorLegacy\"/> class.")
+            })
+                .WithParameter(
+                    new MethodParameterModel("original", "Primavera.Hydrogen.Rest.RestProblemDetails")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                    });
+
+        ClassModel classModel2 = target.Namespace.AddClass(
+            new ClassModel("RestServiceErrorDetailLegacy")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the a model to deserialize legacy error response details.")
+            });
+
+        classModel2.AddProperty(
+            new PropertyModel("Code", "string?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the error code.")
+            })
+                .WithAttribute(
+                    new AttributeModel("System.Text.Json.Serialization.JsonPropertyName(\"code\")"));
+
+        classModel2.AddProperty(
+            new PropertyModel("Message", "string?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the error message.")
+            })
+                .WithAttribute(
+                    new AttributeModel("System.Text.Json.Serialization.JsonPropertyName(\"message\")"));
+    }
+}
+
+#>

@@ -1,0 +1,36 @@
+﻿<#+
+
+// *** NormalizeControllerActionParameterDefaultValue
+
+public string NormalizeControllerActionParameterDefaultValue(ControllerTypeActionParameter parameter, string namespacePart)
+{
+    string defaultValue = parameter.DefaultValue;
+    if (!string.IsNullOrEmpty(defaultValue))
+    {
+        if (parameter is ControllerTypeActionScalarParameter scalarParameter)
+        {
+            if (scalarParameter.Type == ScalarType.String)
+            {
+                if (!defaultValue.StartsWith("\""))
+                {
+                    defaultValue = "\"" + defaultValue + "\"";
+                }
+            }
+        }
+
+        if (parameter is ControllerTypeActionEnumParameter enumParameter)
+        {
+            string rootNamespace = parameter.GetRootNamespace();
+            string enumName = enumParameter.ReferencedEnum?.Name;
+
+            if (enumParameter.DefaultValue.StartsWith(enumName))
+            {
+                defaultValue = $"{rootNamespace}.{namespacePart}.{defaultValue}";
+            }
+        }
+    }
+
+    return defaultValue;
+}
+
+#>

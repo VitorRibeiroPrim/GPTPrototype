@@ -1,0 +1,18 @@
+﻿<#+
+
+// *** RequiresPhoneNumbersPrimitives
+
+public static bool RequiresPhoneNumbersPrimitives(ModelType modelType)
+{
+    foreach (ModelTypeScalarProperty scalarProperty in modelType.ChildProperties.OfType<ModelTypeScalarProperty>())
+    {
+        if (scalarProperty.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+#>

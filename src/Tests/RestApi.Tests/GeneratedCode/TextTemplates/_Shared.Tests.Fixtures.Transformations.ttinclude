@@ -1,0 +1,192 @@
+﻿<#+
+
+internal class FixtureTransformation : ServiceModelTransformation<CSharpFileModel>
+{
+    #region Public Properties
+
+    // NOTES:
+    // This property indicates the service project that is being transformed
+
+    public string Project
+    {
+        get;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public FixtureTransformation(string project)
+    {
+        this.Project = project;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (sourceElement is ServiceModel)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        ServiceModel sourceModel = sourceElement as ServiceModel;
+        if (sourceModel == null)
+        {
+            return;
+        }
+
+        targetModel.Facets["Project"] = this.Project;
+
+        string className = "[Error]";
+        string classDescription = "[Error]";
+        string classNamespace = "[Error]";
+
+        switch (this.Project)
+        {
+            case "Application.Tests":
+                classNamespace = "Application";
+                className = "ApplicationTestFixture";
+                classDescription = "application";
+                break;
+            case "Dependencies.Tests":
+                classNamespace = "Dependencies";
+                className = "DependenciesTestFixture";
+                classDescription = "dependencies";
+                break;
+            case "RestApi.Tests":
+                classNamespace = "RestApi";
+                className = "RestApiTestFixture";
+                classDescription = "REST API";
+                break;
+            case "Storage.Tests":
+                classNamespace = "Storage";
+                className = "StorageTestFixture";
+                classDescription = "storage";
+                break;
+            default:
+                break;
+        }
+
+        targetModel.Namespace = new NamespaceModel($"{sourceModel.Namespace}.Server.{classNamespace}.Tests");
+
+        targetModel.WithNamespaceImport(
+            new NamespaceImportModel("Primavera.Hydrogen.Configuration"));
+
+        if (sourceModel.Extensions().HasDomainLayer)
+        {
+            targetModel.WithNamespaceImport(
+                new NamespaceImportModel($"{sourceModel.Namespace}.Server.Domain"));
+        }
+
+        // Fixture
+
+        ClassModel baseFixtureClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel($"{className}Base")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                    Documentation = new DocumentationModel($"Defines the base class for a test fixture used for {classDescription} tests.")
+                })
+                .WithField(
+                    new FieldModel("configureServices", "System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection>"))
+                .WithField(
+                    new FieldModel("initialized", "bool"))
+                .WithField(
+                    new FieldModel("serviceProvider", "System.IServiceProvider"))
+                .WithProperty(
+                    new PropertyModel("ApplicationServices", "System.IServiceProvider")
+                    {
+                        Modifiers = PropertyModifiers.Public,
+                        GetAccessor = new PropertyGetAccessorModel(),
+                        Documentation = new DocumentationModel("Gets the application services.")
+                    })
+                .AddConstructor(new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel($"Initializes a new instance of the <see cref=\"{className}Base\"/> class.")
+                })
+                    .WithParameter(new MethodParameterModel("configureServices", "System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection>", "null")
+                    {
+                        Documentation = new DocumentationModel("Allows configuring services.")
+                    })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("Initialize", "void")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Initializes the fixture.")
+                })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("BuildServiceProvider", "System.IServiceProvider")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Initializes the service provider.")
+                })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("ConfigureServices", "void")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the services.")
+                })
+                    .WithParameter(new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("ConfigureAdditionalServices", "void")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the services.")
+                })
+                    .WithParameter(new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(new MethodModel("ConfigureHostConfiguration", "void")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the host configuration.")
+                })
+                    .WithParameter(new MethodParameterModel("hostConfiguration", $"{sourceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                    {
+                        Documentation = new DocumentationModel("The host configuration.")
+                    })
+                    .ParentModelAs<ClassModel>();
+
+        // Fixture
+
+        ClassModel fixtureClass = targetModel.Namespace
+            .AddClass(new ClassModel(className)
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = $"{className}Base",
+                Documentation = new DocumentationModel($"Defines a test fixture used for {classDescription} tests.")
+                {
+                    SeeAlso = new List<string> { $"{className}Base" }
+                }
+            })
+                .AddConstructor(new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base(configureServices)",
+                    Documentation = new DocumentationModel($"Initializes a new instance of the <see cref=\"{className}\"/> class.")
+                })
+                    .WithParameter(new MethodParameterModel("configureServices", "System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection>", "null")
+                    {
+                        Documentation = new DocumentationModel("Allows configuring services.")
+                    })
+                    .ParentModelAs<ClassModel>();
+    }
+
+    #endregion
+}
+
+#>

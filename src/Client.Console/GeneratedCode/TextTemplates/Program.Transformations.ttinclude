@@ -1,0 +1,138 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Console");
+
+    targetModel.Namespace
+        .AddClass(
+            new ClassModel("Program")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the starting point of the application.")
+            })
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Private
+                })
+            .WithField(
+                new FieldModel("instance", "Program?")
+                {
+                    Modifiers = FieldModifiers.Static
+                })
+            .WithProperty(
+                new PropertyModel("Instance", "Program")
+                {
+                    Modifiers = PropertyModifiers.Private | PropertyModifiers.Static,
+                    GetAccessor = new PropertyGetAccessorModel()
+                })
+            .AddMethod(
+                new MethodModel("Main", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel("Executes the application.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("args", "string[]")
+                    {
+                        Documentation = new DocumentationModel("The command line arguments.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureHostConfiguration")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Set up the configuration for the builder itself.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("builder", "Microsoft.Extensions.Configuration.IConfigurationBuilder")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Microsoft.Extensions.Configuration.IConfigurationBuilder\"/> instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("args", "string[]")
+                    {
+                        Documentation = new DocumentationModel("The command line arguments.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureAppConfiguration")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Sets up the configuration for the remainder of the build process and application.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("context", "Microsoft.Extensions.Hosting.HostBuilderContext")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Microsoft.Extensions.Hosting.HostBuilderContext\"/> instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("builder", "Microsoft.Extensions.Configuration.IConfigurationBuilder")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Microsoft.Extensions.Configuration.IConfigurationBuilder\"/> instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("args", "string[]")
+                    {
+                        Documentation = new DocumentationModel("The command line arguments.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureServices")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Adds services to the container.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("context", "Microsoft.Extensions.Hosting.HostBuilderContext")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Microsoft.Extensions.Hosting.HostBuilderContext\"/> instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Microsoft.Extensions.DependencyInjection.IServiceCollection\"/> instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("args", "string[]")
+                    {
+                        Documentation = new DocumentationModel("The command line arguments.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureLogging")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Adds a delegate for configuring the provided <see cref=\"Microsoft.Extensions.Logging.ILoggingBuilder\"/>.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("context", "Microsoft.Extensions.Hosting.HostBuilderContext")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Microsoft.Extensions.Hosting.HostBuilderContext\"/> instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("builder", "Microsoft.Extensions.Logging.ILoggingBuilder")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Microsoft.Extensions.Logging.ILoggingBuilder\"/> instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("args", "string[]")
+                    {
+                        Documentation = new DocumentationModel("The command line arguments.")
+                    })
+                .ParentModelAs<ClassModel>();
+}
+
+#>

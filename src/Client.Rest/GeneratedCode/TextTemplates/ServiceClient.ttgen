@@ -1,0 +1,68 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName='..'" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    this.TransformServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ControllerType; },
+    this.TransformController);
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel(this.ServiceModel);
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Add writers
+
+controller.AddModelWriter<PropertyGetAccessorModel>(
+    (w, m) =>
+    {
+        PropertyModel parentProperty = m.ParentModelAs<PropertyModel>();
+        return !parentProperty.Name.EqualsNoCase("DefaultApiVersion") && !parentProperty.Name.EqualsNoCase("PipelineInvoker");
+    }, 
+    this.WriteClientControllerProperty);
+
+controller.AddModelWriter<ConstructorBodyModel>(
+    (w, m) =>
+    {
+        ConstructorModel parentConstructor = m.ParentModelAs<ConstructorModel>();
+        ClassModel parentClass = parentConstructor.ParentModelAs<ClassModel>();
+        return parentClass.Name.EndsWith("Base") && parentConstructor.Parameters.Count == 3;
+    }, 
+    this.WriteConstructor);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("IsRetriable");
+    }, 
+    this.WriteIsRetriable);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("GetResponseClassifier");
+    }, 
+    this.WriteGetResponseClassifier);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

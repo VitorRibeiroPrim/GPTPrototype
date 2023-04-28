@@ -1,0 +1,72 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(new ScopesTransformation());
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    (s, t) =>
+    {
+        if (s is ServiceModel serviceModel)
+        {
+            // Empty?
+
+            if (serviceModel.AuthorizationMode.IsOff())
+            {
+                t.WithEmptyComment("This file is empty because the service model does not include\nany scopes.");
+                return;
+            }
+
+            // Namespace
+
+            t.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.RestApi.Metadata")
+                .WithClass(new ClassModel("Scopes")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Static | ClassModifiers.Partial,
+                    Documentation = new DocumentationModel("Defines constants that specify the scopes used by the REST API actions.")
+                });
+
+            // Class
+
+            ClassModel classModel = t.Namespace.Classes[0];
+
+            classModel.WithConstant(new ConstantModel("DefaultScope", "string", "\"{0}\"".Format(serviceModel.DefaultScope.ToLowerInvariant()))
+            {
+                Modifiers = ConstantModifiers.Public,
+                Documentation = new DocumentationModel(
+                    "Defines the name of the default scope used by the routes in the {0}.".Format(serviceModel.DisplayName))
+            });
+
+            if (serviceModel.Webhooks.Count > 0)
+            {
+                classModel.WithConstant(new ConstantModel("Webhooks", "string", "\"{0}-wh\"".Format(serviceModel.DefaultScope.ToLowerInvariant()))
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel(
+                        "Defines the name of the scope used by the webhooks routes in the {0}.".Format(serviceModel.DisplayName))
+                });
+            }
+        }
+    });
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel();
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

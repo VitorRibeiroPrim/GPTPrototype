@@ -1,0 +1,82 @@
+﻿<#+
+
+internal static partial class AuthorizationHelper
+{
+    // *** ControllerType.IsAuthorizationOn()
+
+    internal static bool IsAuthorizationOn(ControllerType controller)
+    {
+        if (controller.AuthorizationMode.IsOff())
+        {
+            return false;
+        }
+
+        if (controller.ServiceModel.AuthorizationMode.IsOff())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    // *** ControllerTypeAction.IsAuthorizationOn()
+
+    internal static bool IsAuthorizationOn(ControllerTypeAction action)
+    {
+        if (action.AuthorizationMode.IsOff())
+        {
+            return false;
+        }
+
+        return AuthorizationHelper.IsAuthorizationOn(action.ParentController);
+    }
+
+    // *** ControllerType.GetPolicy()
+
+    internal static string GetPolicy(ControllerType controller)
+    {
+        if (AuthorizationHelper.IsAuthorizationOn(controller))
+        {
+            if (controller.AuthorizationPolicy.EqualsNoCase("(default)"))
+            {
+                return "DefaultScope";
+            }
+
+            AuthorizationPolicy policy = controller.ServiceModel.AuthorizationPolicies.FirstOrDefault(i => i.Name.EqualsNoCase(controller.AuthorizationPolicy));
+            if (policy == null)
+            {
+                return "???";
+            }
+
+            return policy.Name;
+        }
+
+        return string.Empty;
+    }
+
+    // *** ControllerTypeAction.GetPolicy()
+
+    internal static string GetPolicy(ControllerTypeAction action)
+    {
+        if (AuthorizationHelper.IsAuthorizationOn(action))
+        {
+            if (action.AuthorizationPolicy.EqualsNoCase("(controller)"))
+            {
+                return AuthorizationHelper.GetPolicy(action.ParentController);
+            }
+
+            AuthorizationPolicy policy = action.ServiceModel.AuthorizationPolicies.FirstOrDefault(i => i.Name.EqualsNoCase(action.AuthorizationPolicy));
+            if (policy == null)
+            {
+                return "???";
+            }
+
+            return policy.Name;
+        }
+
+        return string.Empty;
+    }
+
+}
+
+#>

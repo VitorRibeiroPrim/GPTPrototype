@@ -1,0 +1,31 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.resx" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<ResourcesFileModel> transformations = new ServiceModelTransformations<ResourcesFileModel>(this.ServiceModel);
+
+transformations.Add(new ValidationResourcesServiceModelTransformation());
+transformations.Add(new ValidationResourcesControllersTransformation());
+
+// Transform
+
+ResourcesFileModel targetModel = new ResourcesFileModel(
+    "ValidationResources",
+    this.ServiceModel.Namespace + ".Server.RestApi.Localization",
+    this.ServiceModel.Namespace + ".Server.RestApi.GeneratedCode.ValidationResources.gen",
+    true);
+
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

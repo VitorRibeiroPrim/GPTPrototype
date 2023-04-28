@@ -1,0 +1,633 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Westwind.AspNetCore.Markdown</name>
+    </assembly>
+    <members>
+        <member name="T:Westwind.AspNetCore.Markdown.Markdown">
+            <summary>
+            Markdown Helper class that provides basic parsing features for 
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.Parse(System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Renders raw markdown from string to HTML
+            </summary>
+            <param name="markdown">The markdown to parse into HTML</param>
+            <param name="usePragmaLines">print line number ids into the document</param>
+            <param name="forceReload">forces the markdown parser to be reloaded</param>
+            <param name="sanitizeHtml">Remove script tags from HTML output</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseHtmlString(System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Renders raw Markdown from string to HTML.
+            </summary>
+            <param name="markdown">The markdown to parse into HTML</param>
+            <param name="usePragmaLines">print line number ids into the document</param>
+            <param name="forceReload">forces the markdown parser to be reloaded</param>
+            <param name="sanitizeHtml">Remove script tags from HTML output</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseFromFile(Microsoft.Extensions.FileProviders.IFileInfo,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to HTML.
+            </summary>
+            <param name="fileInfo">An <see cref="T:Microsoft.Extensions.FileProviders.IFileInfo"/> instance representing the file.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseFromFile(System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to HTML.
+            </summary>
+            <param name="filename">A physical or virtual filename path. If running under System.Web this method uses MapPath to resolve paths.
+            For non-HttpContext environments this file name needs to be fully qualified.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseFromFileAsync(Microsoft.Extensions.FileProviders.IFileInfo,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to HTML.
+            </summary>
+            <param name="fileInfo">An <see cref="T:Microsoft.Extensions.FileProviders.IFileInfo"/> instance representing the file.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseFromFileAsync(System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to HTML.
+            </summary>
+            <param name="filename">A physical or virtual filename path. If running under System.Web this method uses MapPath to resolve paths.
+            For non-HttpContext environments this file name needs to be fully qualified.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseHtmlStringFromFile(Microsoft.Extensions.FileProviders.IFileInfo,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to HTML.
+            </summary>
+            <param name="fileInfo">An <see cref="T:Microsoft.Extensions.FileProviders.IFileInfo"/> instance representing the file.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseHtmlStringFromFile(System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to HTML.
+            </summary>
+            <param name="filename">A physical or virtual filename path. If running under System.Web this method uses MapPath to resolve paths.
+            For non-HttpContext environments this file name needs to be fully qualified.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as an HTML string for embedding in Razor views</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseHtmlStringFromFileAsync(Microsoft.Extensions.FileProviders.IFileInfo,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to HTML.
+            </summary>
+            <param name="fileInfo">An <see cref="T:Microsoft.Extensions.FileProviders.IFileInfo"/> instance representing the file.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseHtmlStringFromFileAsync(System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a file on disk from Markdown to an HtmlString instance.
+            </summary>
+            <param name="filename">A physical or virtual filename path. If running under System.Web this method uses MapPath to resolve paths.
+            For non-HttpContext environments this file name needs to be fully qualified.</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseFromUrl(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a url as Markdown to HTML.
+            </summary>
+            <param name="url">A Url that contains Markdown</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <param name="fixupBaseUrl">Flag that determines whether relative Markdown images and links are fixed up with the document's base path</param>
+            <param name="noHttpException">If true returns null instead of throwing an Excpetion for URL not found</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseFromUrlAsync(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a url as Markdown to HTML.
+            </summary>
+            <param name="url">A Url that contains Markdown</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <param name="fixupBaseUrl">Flag that determines whether relative Markdown images and links are fixed up with the document's base path</param>
+            <param name="noHttpException">If true returns null instead of throwing a URL load exception</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseHtmlStringFromUrl(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a url as Markdown to HTML.
+            </summary>
+            <param name="url">A Url that contains Markdown</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <param name="fixupBaseUrl">Flag that determines whether relative Markdown images and links are fixed up with the document's base path</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Markdown.ParseHtmlStringFromUrlAsync(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Parses content from a url as Markdown to an HTML string.
+            </summary>
+            <param name="url">A Url that contains Markdown</param>
+            <param name="usePragmaLines">Generates line numbers as ids into headers and paragraphs. Useful for previewers to match line numbers to rendered output</param>
+            <param name="forceReload">Forces the parser to reloaded. Otherwise cached instance is used</param>
+            <param name="sanitizeHtml">Strips out scriptable tags and attributes for prevent XSS attacks. Minimal implementation.</param>
+            <param name="fixupBaseUrl">Flag that determines whether relative Markdown images and links are fixed up with the document's base path</param>
+            <returns>HTML result as a string</returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownConfiguration">
+            <summary>
+            Holds configuration information about the MarkdownPageProcessor
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownConfiguration.MarkdownProcessingFolders">
+            <summary>
+            List of relative virtual folders where any extensionless URL is
+            matched to an .md file on disk
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownConfiguration.ConfigureMarkdigPipeline">
+            <summary>
+            Optional global configuration for setting up the Markdig Pipeline
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownConfiguration.HtmlTagBlackList">
+            <summary>
+            Global HtmlTagBlackList when StripScriptTags is set for Markdown parsing
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownConfiguration.AddMarkdownProcessingFolder(System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Adds a folder to the list of folders that are to be
+            processed by this middleware.
+            </summary>
+            <param name="path">The path to work on. Examples: /docs/ or /classes/docs/.</param>
+            <param name="viewTemplate">Path to a View Template. Defaults to: ~/Views/__MarkdownPageTemplate.cshtml</param>
+            <param name="processMdFiles">Process files with an .md extension</param>
+            <param name="processExtensionlessUrls">Process extensionless Urls as Markdown. Assume matching .md file is available that holds the actual Markdown text</param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder">
+            <summary>
+            Configures an individual Folder that is to be processed
+            by the Markdown Page Processor
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.RelativePath">
+            <summary>
+            Site Relative path where this folder processes markdown files.
+            Can use ~ virtual path syntax.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.BasePath">
+             <summary>
+             An optional Base Path that can be set on the model to embed in a
+             Markdown page template.
+            
+             This can be useful if you are retrieving content from another site,
+             and you need to locate depedent resources from the same location as
+             the source file.
+            
+             You can also specify `basePath: &lt;path&gt;` in the Yaml header of the
+             the rendered Markdown document.
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.ViewTemplate">
+            <summary>
+            View Template to use to render the Markdown page
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.ProcessMdFiles">
+            <summary>
+            If true processes files with .md extension
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.ProcessExtensionlessUrls">
+            <summary>
+            If true processes extensionless Urls in the the folder hierarchy as Markdown
+            and expects a matching .md file
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.ExtractTitle">
+            <summary>
+            Determines whether pages try to find the Title inside of the Markdown text
+            either from YAML content or from first # HEADER tag.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.SanitizeHtml">
+            <summary>
+            Removes script tags and javascript directives
+            from generated HTML content
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.RenderTheme">
+            <summary>
+            Optional theme - set during middleware initialization
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.SyntaxTheme">
+            <summary>
+            Optional syntaxTheme - set during middleware initialization
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownProcessingFolder.PreProcess">
+            <summary>
+            Function that can be set to be called before the Markdown View is fired.
+            Use this method to potentially add additional data into the ViewBag you
+            might want access to in the Markdown template you create that renders
+            the final HTML output.
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownComponentState">
+            <summary>
+            Internally held references that made accessible to the static Markdown functions
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownComponentState.GetHttpContext">
+            <summary>
+            Retrieves an HTTP Context instance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownMiddlewareExtensions">
+            <summary>
+            The Middleware Hookup extensions.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownMiddlewareExtensions.AddMarkdown(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Westwind.AspNetCore.Markdown.MarkdownConfiguration})">
+            <summary>
+            Configure the MarkdownPageProcessor in Startup.ConfigureServices.
+            </summary>
+            <param name="services"></param>
+            <param name="configAction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownMiddlewareExtensions.UseMarkdown(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Hook up the Markdown Page Processing functionality in the Startup.Configure method
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.Title">
+            <summary>
+            Title extracted from the document. Title source is
+            either a YAML title attribute or the first # element
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.BasePath">
+            <summary>
+            An optional base Url that can is embedded into the rendered template page
+            when rendering through the page middleware.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.RenderedMarkdown">
+            <summary>
+            HTML output from the rendered markdown text
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.RawMarkdown">
+            <summary>
+            The raw Markdown Document text. May include a Yaml header
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.YamlHeader">
+            <summary>
+            If there is a Yaml header on the document it's set here
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.RelativePath">
+            <summary>
+            Relative Path of the Markdown File served
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.PhysicalPath">
+            <summary>
+            Relative Path of the Markdown File served
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownModel.FolderConfiguration">
+            <summary>
+            Folder configuration 
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownPageProcessorController">
+            <summary>
+            A generic controller implementation for processing Markdown
+            files directly as HTML content
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownPageProcessorMiddleware">
+            <summary>
+            Middleware that allows you to serve static Markdown files from disk
+            and merge them using a configurable View template.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.PathHelper.NormalizePath(System.String)">
+            <summary>
+            Normalizes a file path to the operating system default
+            slashes.
+            </summary>
+            <param name="path"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.IMarkdownParser.Parse(System.String,System.Boolean)">
+            <summary>
+            Returns parsed markdown
+            </summary>
+            <param name="markdown"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownParserBase">
+            <summary>
+            Base class that includes various fix up methods for custom parsing
+            that can be called by the specific implementations.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownParserBase.Parse(System.String,System.Boolean)">
+            <summary>
+            Parses markdown
+            </summary>
+            <param name="markdown"></param>
+            <param name="sanitizeHtml">If true sanitizes the generated HTML by removing script tags and other common XSS issues.
+            Note: Not a complete XSS solution but addresses the most obvious vulnerabilities. For more thourough HTML sanitation
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownParserBase.ParseStrikeout(System.String)">
+            <summary>
+            Parses strikeout text ~~text~~. Single line (to linebreak) allowed only.
+            </summary>
+            <param name="html"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownParserBase.StripFrontMatter(System.String)">
+            <summary>
+            Strips 
+            </summary>
+            <param name="markdown"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownParserBase.HtmlSanitizeTagBlackList">
+             <summary>
+             Global list of tags that are cleaned up by the script sanitation
+             as a pipe separated list.
+            
+             You can change this value which applies to the scriptScriptTags
+             option, but it is an application wide global setting.
+             
+             Default: script|iframe|object|embed|form
+             </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownParserBase.Sanitize(System.String)">
+            <summary>
+            Parses out script tags that might not be encoded yet
+            </summary>
+            <param name="html"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownParserBase.ParseFontAwesomeIcons(System.String)">
+            <summary>
+            Post processing routine that post-processes the HTML and 
+            replaces @icon- with fontawesome icons
+            </summary>
+            <param name="html"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdigMarkdownParserFactory">
+            <summary>
+            Retrieves an instance of a markdown parser
+            </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.Markdown.MarkdigMarkdownParserFactory.CurrentParser">
+            <summary>
+            Use a cached instance of the Markdown Parser to keep alive
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdigMarkdownParserFactory.GetParser(System.Boolean,System.Boolean)">
+            <summary>
+            Retrieves a cached instance of the markdown parser
+            </summary>                
+            <param name="forceLoad">Forces the parser to be reloaded - otherwise previously loaded instance is used</param>
+            <param name="usePragmaLines">If true adds pragma line ids into the document that the editor can sync to</param>
+            <param name="parserAddinId">optional addin id that checks for a registered Markdown parser</param>
+            <returns>Mardown Parser Interface</returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownParserMarkdig">
+            <summary>
+            Wrapper around the MarkDig parser that provides a cached
+            instance of the Markdown parser. Hooks up custom processing.
+            </summary>
+        </member>
+        <member name="F:Westwind.AspNetCore.Markdown.MarkdownParserMarkdig.Pipeline">
+            <summary>
+            Cached pipeline instance
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownParserMarkdig.StripScriptCode">
+            <summary>
+            Removes script code if set
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownParserMarkdig.ConfigurePipelineBuilder">
+            <summary>
+            Optional global configuration for setting up the Markdig Pipeline
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownParserMarkdig.Parse(System.String,System.Boolean)">
+            <summary>
+            Parses the actual markdown down to html
+            </summary>
+            <param name="markdown"></param>
+            <param name="sanitizeHtml">If true strips script tags and javascript: directives</param>
+            <returns></returns>        
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.MarkdownTagHelper">
+            <summary>
+            &lt;markdown&gt; TagHelper that lets you embed Markdown text directly
+            into your Razor page. Razor expressions are evaluated **before**
+            Markdown is parsed.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownTagHelper.NormalizeWhitespace">
+            <summary>
+            When set to true (default) strips leading white space based
+            on the first line of non-empty content. The first line of
+            content determines the format of the white spacing and removes
+            it from all other lines.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownTagHelper.SanitizeHtml">
+            <summary>
+            Scripts `script` tags and `javascript:` directive
+            from the generated HTML content
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownTagHelper.Markdown">
+             <summary>
+             Optional Content property that allows you to bind a
+             Markdown model expression to the content.
+            
+             This Markdown content takes priority over the
+             body content of the control.
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownTagHelper.Filename">
+            <summary>
+            Optional file to load content. Use
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.MarkdownTagHelper.Url">
+            <summary>
+            When set allows loading content from a url
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownTagHelper.ProcessAsync(Microsoft.AspNetCore.Razor.TagHelpers.TagHelperContext,Microsoft.AspNetCore.Razor.TagHelpers.TagHelperOutput)">
+            <summary>
+            Process markdown and generate HTML output
+            </summary>
+            <param name="context"></param>
+            <param name="output"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownTagHelper.GetLines(System.String,System.Int32)">
+            <summary>
+            Parses a string into an array of lines broken
+            by \r\n or \n
+            </summary>
+            <param name="s">String to check for lines</param>
+            <param name="maxLines">Optional - max number of lines to return</param>
+            <returns>array of strings, or null if the string passed was a null</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.HttpRequestExtensions.GetRawBodyStringAsync(Microsoft.AspNetCore.Http.HttpRequest,System.Text.Encoding,System.IO.Stream)">
+            <summary>
+            Retrieve the raw body as a string from the Request.Body stream
+            </summary>
+            <param name="request">Request instance to apply to</param>
+            <param name="encoding">Optional - Encoding, defaults to UTF8</param>
+            <param name="inputStream">Optional - Pass in the stream to retrieve from. Other Request.Body</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.HttpRequestExtensions.GetRawBodyBytesAsync(Microsoft.AspNetCore.Http.HttpRequest,System.IO.Stream)">
+            <summary>
+            Retrieves the raw body as a byte array from the Request.Body stream
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.HttpRequestExtensions.MapPath(Microsoft.AspNetCore.Http.HttpRequest,System.String,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,System.String)">
+            <summary>
+            Maps a virtual or relative path to a physical path in a Web site
+            </summary>
+            <param name="request"></param>
+            <param name="relativePath"></param>
+            <param name="host">Optional - IHostingEnvironment instance. If not passed retrieved from RequestServices DI</param>
+            <param name="basePath">Optional - Optional physical base path. By default host.WebRootPath</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.HttpRequestExtensions.GetUrl(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Returns the absolute Url of the current request as a string.
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.HttpRequestExtensions.Params(Microsoft.AspNetCore.Http.HttpRequest,System.String)">
+            <summary>
+            Returns a value based on a key against the Form, Query and Session collections
+            </summary>
+            <param name="request"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.Markdown.Utilities.StringUtils">
+            <summary>
+            String utility class that provides several string related operations.
+            
+            Extracted from: westwind.utilities and internalized to avoid dependency
+            For more info see relevant methods in that library
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.StringUtils.ExtractString(System.String,System.String,System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Extracts a string from between a pair of delimiters. Only the first 
+            instance is found.
+            </summary>
+            <param name="source">Input String to work on</param>
+            <param name="StartDelim">Beginning delimiter</param>
+            <param name="endDelim">ending delimiter</param>
+            <param name="CaseInsensitive">Determines whether the search for delimiters is case sensitive</param>
+            <returns>Extracted string or ""</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.StringUtils.GetLines(System.String,System.Int32)">
+            <summary>
+            Parses a string into an array of lines broken
+            by \r\n or \n
+            </summary>
+            <param name="s">String to check for lines</param>
+            <param name="maxLines">Optional - max number of lines to return</param>
+            <returns>array of strings, or empty array if the string passed was a null</returns>
+        </member>
+        <member name="P:Westwind.AspNetCore.Markdown.Utilities.StringUtils.DefaultHtmlSanitizeTagBlackList">
+            <summary>
+            Note: this is an internal implementation which should duplicate what
+            Westwind.Utilities.HtmlUtils.SanitizeHtml() does. Avoids dependency
+            
+            https://github.com/RickStrahl/Westwind.Utilities/blob/master/Westwind.Utilities/Utilities/HtmlUtils.cs#L255
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.Utilities.StringUtils.SanitizeHtml(System.String,System.String)">
+            <summary>
+            Sanitizes HTML to some of the most of 
+            </summary>
+            <remarks>
+            This provides rudimentary HTML sanitation catching the most obvious
+            XSS script attack vectors. For mroe complete HTML Sanitation please look into
+            a dedicated HTML Sanitizer.
+            </remarks>
+            <param name="html">input html</param>
+            <param name="htmlTagBlacklist">A list of HTML tags that are stripped.</param>
+            <returns>Sanitized HTML</returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownUtilities.ParseMarkdownUrl(System.String)">
+            <summary>
+            Tries to fix up Markdown files for common doc and server
+            platforms like Github, Gists, BitBucket and a few others
+            </summary>
+            <param name="url"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.Markdown.MarkdownUtilities.FixupMarkdownRelativePaths(System.String,System.String)">
+            <summary>
+            Fixes up relative paths in the generated Markdown based on a base URL
+            passed in. Typically pass in the URL to the host document to fix up any
+            relative links in relation to the base Url.
+            </summary>
+            <param name="markdown"></param>
+            <param name="basePath"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

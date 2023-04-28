@@ -1,0 +1,166 @@
+﻿<#+
+
+public void ModelsResourcesTransformations(string project)
+{
+    bool clientSide = project == "Client.Rest";
+    
+    // Empty?
+
+    if (clientSide)
+    {
+        if (!this.ServiceModel.Models.Any(i => i.Extensions().IsVisibleClientSide))
+        {
+            this.GenerationEnvironment.Clear();
+            this.GenerationEnvironment.Append("IGNORE");
+            return;
+        }
+    }
+    else
+    {
+        if (!this.ServiceModel.Models.Any(i => i.Extensions().IsVisibleClientSide))
+        {
+            this.GenerationEnvironment.Clear();
+            this.GenerationEnvironment.Append("IGNORE");
+            return;
+        }
+    }
+
+    // Build the transformations
+
+    ServiceModelTransformations<ResourcesFileModel> transformations = new ServiceModelTransformations<ResourcesFileModel>(this.ServiceModel);
+
+    transformations.Add(
+        new ModelsResourcesTransformation(clientSide));
+
+    // Transform
+
+    string name;
+    string namespacePart1;
+    string namespacePart2;
+    
+    switch (project)
+    {
+        case "Client.Rest":
+            name = "ModelsResources";
+            namespacePart1 = ".Client.Rest.Localization";
+            namespacePart2 = ".Client.Rest.GeneratedCode.ModelsResources.gen";
+            break;
+        case "RestApi":
+            name = "ModelsResources";
+            namespacePart1 = ".Server.RestApi.Localization";
+            namespacePart2 = ".Server.RestApi.GeneratedCode.ModelsResources.gen";
+            break;
+        case "Domain":
+            name = "EntitiesResources";
+            namespacePart1 = ".Server.Domain.Localization";
+            namespacePart2 = ".Server.Domain.GeneratedCode.ModelsResources.gen";
+            break;
+        default:
+            throw new InvalidOperationException($"Invalid project name '{project}'");
+    }
+
+    ResourcesFileModel targetModel = new ResourcesFileModel(
+        name,
+        this.ServiceModel.Namespace + namespacePart1,
+        this.ServiceModel.Namespace + namespacePart2,
+        true);
+
+    transformations.TransformTo(targetModel);
+
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Generate code
+
+    controller.Write(targetModel);
+}
+
+public void ModelsResourcesDesignerTransformations(string project)
+{
+    bool clientSide = project == "Client.Rest";
+    
+    // Empty?
+
+    if (clientSide)
+    {
+        if (!this.ServiceModel.Models.Any(i => i.Extensions().IsVisibleClientSide))
+        {
+            this.GenerationEnvironment.Clear();
+            this.GenerationEnvironment.Append("IGNORE");
+            return;
+        }
+    }
+    else
+    {
+        if (!this.ServiceModel.Models.Any(i => i.Extensions().IsVisibleClientSide))
+        {
+            this.GenerationEnvironment.Clear();
+            this.GenerationEnvironment.Append("IGNORE");
+            return;
+        }
+    }
+
+    // Build the transformations
+
+    ServiceModelTransformations<ResourcesFileModel> transformations1 = new ServiceModelTransformations<ResourcesFileModel>(this.ServiceModel);
+
+    transformations1.Add(
+        new ModelsResourcesTransformation(clientSide));
+
+    // Transform
+
+    string name;
+    string namespacePart1;
+    string namespacePart2;
+    
+    switch (project)
+    {
+        case "Client.Rest":
+            name = "ModelsResources";
+            namespacePart1 = ".Client.Rest.Localization";
+            namespacePart2 = ".Client.Rest.GeneratedCode.ModelsResources.gen";
+            break;
+        case "RestApi":
+            name = "ModelsResources";
+            namespacePart1 = ".Server.RestApi.Localization";
+            namespacePart2 = ".Server.RestApi.GeneratedCode.ModelsResources.gen";
+            break;
+        case "Domain":
+            name = "EntitiesResources";
+            namespacePart1 = ".Server.Domain.Localization";
+            namespacePart2 = ".Server.Domain.GeneratedCode.ModelsResources.gen";
+            break;
+        default:
+            throw new InvalidOperationException($"Invalid project name '{project}'");
+    }
+
+    ResourcesFileModel intermediateModel = new ResourcesFileModel(
+        name,
+        this.ServiceModel.Namespace + namespacePart1,
+        this.ServiceModel.Namespace + namespacePart2,
+        true);
+
+    transformations1.TransformTo(intermediateModel);
+
+    // Second transformation
+
+    ResourcesFileModelTransformations<CSharpFileModel> transformations2 = new ResourcesFileModelTransformations<CSharpFileModel>(intermediateModel);
+
+    transformations2.Add(new ResourcesFileModelToCSharpCodeFileModelTransformation());
+
+    // Transform
+
+    CSharpFileModel targetModel = new CSharpFileModel();
+    transformations2.TransformTo(targetModel);
+
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Generate code
+
+    controller.Write(targetModel);
+}
+
+#>

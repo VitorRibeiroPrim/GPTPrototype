@@ -1,0 +1,68 @@
+﻿<#+
+
+// *** WriteAddCommonPart
+
+public void WriteAddCommonPart(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        <#= serviceModel.Namespace #>.Server.Common.Startup instance = new <#= serviceModel.Namespace #>.Server.Common.Startup(hostConfiguration);
+
+        instance
+            .AddServices(services);
+
+        instance
+            .AddMapper(services);
+
+        return services;
+<#+
+
+}
+
+// *** WriteConstructor
+
+public void WriteConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.HostConfiguration = hostConfiguration;
+<#+
+
+}
+
+// *** WriteAddServices
+
+public void WriteAddServices(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddLogging();
+<#+
+
+}
+
+// *** WriteAddMapper
+
+public void WriteAddMapper(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddAutoMapper(
+                (provider, options) =>
+                {
+                    System.Collections.Generic.IEnumerable<AutoMapper.Profile> profiles = provider.GetServices<AutoMapper.Profile>();
+
+                    foreach (AutoMapper.Profile profile in profiles)
+                    {
+                        options.AddProfile(profile);
+                    }
+                },
+                assemblies: null);
+<#+
+
+}
+
+#>

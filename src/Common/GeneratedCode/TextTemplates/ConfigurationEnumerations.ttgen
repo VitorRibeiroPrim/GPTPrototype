@@ -1,0 +1,48 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations =
+    new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(
+    new ConfigurationEnumerationsTransformation());
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    (s, t) =>
+    {
+        if (s is ServiceModel serviceModel)
+        {
+            // Empty?
+
+            if (serviceModel.ConfigurationEnumerations.Count == 0)
+            {
+                t.WithEmptyComment("This file is empty because the service model does not include\nany configuration enumerations.");
+                return;
+            }
+                        
+            // Namespace
+
+            t.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.Common.Configuration");
+        }
+    });
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel();
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

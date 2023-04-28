@@ -1,0 +1,76 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.RestApi.Tests");
+
+    ClassModel testBaseClass = targetModel.Namespace
+        .AddClass(new ClassModel("StartupTestsBase")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+            Documentation = new DocumentationModel("Defines the base class for <see cref=\"StartupTests\"/>.")
+        })
+            .AddMethod(new MethodModel("CreateServiceCollection", "Microsoft.Extensions.DependencyInjection.ServiceCollection")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Creates the service collection instance.")
+                {
+                    Returns = "The service collection."
+                }
+            })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("TestAddRestApiPart")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Tests the AddRestApiPart method.")
+            })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("TestAddRestApiPartServices")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Tests the services registered in the AddRestApiPart method.")
+            })
+                .WithParameter(new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Documentation = new DocumentationModel("The service collection.")
+                })
+                .WithParameter(new MethodParameterModel("provider", "System.IServiceProvider")
+                {
+                    Documentation = new DocumentationModel("The service provider.")
+                })
+                .ParentModelAs<ClassModel>();
+
+    ClassModel testClass = targetModel.Namespace
+        .AddClass(new ClassModel("StartupTests")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Sealed | ClassModifiers.Partial,
+            Inheritance = "StartupTestsBase",
+            Documentation = new DocumentationModel("Provides integration tests for <see cref=\"Startup\"/>.")
+            {
+                SeeAlso = new List<string> { "StartupTests" }
+            }
+        })
+            .WithConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base()",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"StartupTests\"/> class.")
+            })
+            .AddMethod(new MethodModel("StartupTests_AddRestApiPart")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the AddRestApiPart method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>();
+}
+
+#>

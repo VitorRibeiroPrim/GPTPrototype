@@ -1,0 +1,828 @@
+﻿<#+
+
+internal class ModelsTransformation : ServiceModelTransformation<CSharpFileModel>
+{
+    #region Public Properties
+
+    // NOTES:
+    // This property indicates the service project that is being transformed
+
+    public string Project
+    {
+        get;
+    }
+
+    // NOTES:
+    // This property indicates that the transformation is being used to generate client-side code
+    // Otherwise it is server-side
+
+    public bool ClientSide
+    {
+        get;
+    }
+
+    public string NamespacePart
+    {
+        get;
+    }
+
+    public string ResourcesName
+    {
+        get;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public ModelsTransformation(string project)
+    {
+        this.Project = project;
+        this.ClientSide = project == "Client.Rest";
+
+        switch (project)
+        {
+            case "Client.Rest":
+                this.NamespacePart = "Client.Rest.Models";
+                this.ResourcesName = "ModelsResources";
+                break;
+            case "RestApi":
+                this.NamespacePart = "Server.RestApi.Models";
+                this.ResourcesName = "ModelsResources";
+                break;
+            default:
+                this.NamespacePart = "Server.Domain";
+                this.ResourcesName = "EntitiesResources";
+                break;
+        }
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (sourceElement is ModelType modelType)
+        {
+            if (this.ClientSide)
+            {
+                return modelType.Extensions().IsVisibleClientSide;
+            }
+            else
+            {
+                return modelType.Extensions().IsVisibleServerSide;
+            }
+        }
+
+        return false;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (targetModel == null)
+        {
+            return;
+        }
+
+        targetModel.Facets["ClientSide"] = this.ClientSide;
+        targetModel.Facets["NamespacePart"] = this.NamespacePart;
+
+        if (sourceElement is ModelType modelType)
+        {
+            // Namespaces
+
+            string baseNamespace = modelType.ServiceModel.Namespace + (this.ClientSide ? ".Client.Rest" : ".Server.RestApi");
+
+            // Class modifiers
+
+            ClassModifiers baseClassModifiers = ClassModifiers.Abstract | ClassModifiers.Partial;
+            ClassModifiers classModifiers = ClassModifiers.Partial;
+
+            if (modelType.InheritanceModifier == ModelTypeInheritanceModifier.Abstract)
+            {
+                classModifiers = ClassModifiers.Abstract | ClassModifiers.Partial;
+            }
+
+            baseClassModifiers = baseClassModifiers | ClassModifiers.Public;
+            classModifiers = classModifiers | ClassModifiers.Public;
+
+            // Model base class
+
+            string inheritance = "";
+            if (modelType.BaseModel != null)
+            {
+                inheritance = modelType.BaseModel.Name;
+            }
+
+            ClassModel baseClassModel = targetModel.Namespace.AddClass(
+                new ClassModel(modelType.Name + "Base")
+                {
+                    Modifiers = baseClassModifiers,
+                    Inheritance = inheritance,
+                    Documentation = new DocumentationModel("Defines the base class for <see cref=\"{0}\"/>.".Format(modelType.Name))
+                });
+
+            if (!string.IsNullOrEmpty(modelType.CustomAttributes))
+            {
+                IEnumerable<string> customAttributes = modelType.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(i => i.Trim())
+                    .Where(i => !string.IsNullOrEmpty(i));
+
+                foreach (string customAttribute in customAttributes)
+                {
+                    baseClassModel.WithAttribute(
+                        new AttributeModel(customAttribute));
+                }
+            }
+
+            foreach (ModelTypeProperty modelTypeProperty in modelType.ChildProperties.OrderBy(m => m.Name))
+            {
+                string propertyType = modelTypeProperty.Extensions().AsCSharpType(this.NamespacePart, true, true);
+
+                PropertyModel propertyModel = baseClassModel.AddProperty(
+                    new PropertyModel(modelTypeProperty.Name, propertyType)
+                    {
+                        Documentation = new DocumentationModel(modelTypeProperty.Summary)
+                        {
+                            Remarks = modelTypeProperty.Remarks
+                        }
+                    });
+
+                this.AddPropertyAttribute(
+                    propertyModel, 
+                    "Display",
+                    "System.ComponentModel.DataAnnotations.Display(Name = nameof(Localization.{0}.RES_Display_{1}_{2}), ResourceType = typeof(Localization.{0}))"
+                        .Format(this.ResourcesName, modelType.Name, modelTypeProperty.Name));
+
+                this.AddPropertyAttribute(
+                    propertyModel, 
+                    "JsonPropertyName",
+                    "System.Text.Json.Serialization.JsonPropertyName(\"{0}\")".Format(modelTypeProperty.Extensions().SerializationPropertyName));
+
+                if (!string.IsNullOrEmpty(modelTypeProperty.CustomAttributes))
+                {
+                    IEnumerable<string> customAttributes = modelTypeProperty.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(i => i.Trim())
+                        .Where(i => !string.IsNullOrEmpty(i));
+
+                    foreach (string customAttribute in customAttributes)
+                    {
+                        propertyModel.WithAttribute(
+                            new AttributeModel(customAttribute));
+                    }
+                }
+
+                propertyModel.Modifiers = this.GetModelTypePropertyModifier(modelTypeProperty) | PropertyModifiers.Virtual;
+
+                propertyModel.GetAccessor = new PropertyGetAccessorModel()
+                {
+                    Modifiers = this.GetModelTypePropertyGetAccessorModifier(modelTypeProperty)
+                };
+
+                propertyModel.SetAccessor = new PropertySetAccessorModel()
+                {
+                    Modifiers = this.GetModelTypePropertySetAccessorModifier(modelTypeProperty)
+                };
+
+                this.TransformModelTypePropertyValidation(modelTypeProperty, propertyModel);
+
+                propertyModel.Facets["ModelTypeProperty"] = modelTypeProperty;
+
+                if (modelTypeProperty.Kind == PropertyKind.Calculated)
+                {
+                    baseClassModel
+                        .AddMethod(
+                            new MethodModel("Get{0}Value".Format(modelTypeProperty.Name), propertyType)
+                            {
+                                Modifiers = MethodModifiers.Protected | MethodModifiers.Abstract,
+                                Documentation = new DocumentationModel("Retrieves the value of the {0} property.".Format(modelTypeProperty.Name))
+                                {
+                                    Returns = "The property value."
+                                }
+                            });
+
+                    baseClassModel
+                        .AddMethod(
+                            new MethodModel("Set{0}Value".Format(modelTypeProperty.Name))
+                            {
+                                Modifiers = MethodModifiers.Protected | MethodModifiers.Abstract,
+                                Documentation = new DocumentationModel("Retrieves the value of the {0} property.".Format(modelTypeProperty.Name))
+                            })
+                            .WithParameter(new MethodParameterModel("value", propertyType)
+                            {
+                                Documentation = new DocumentationModel("The new property value.")
+                            });
+                }
+            }
+
+            ConstructorModel constructorModel = baseClassModel.AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}\"/> class.".Format(modelType.Name + "Base"))
+                });
+
+            constructorModel.Facets["ModelType"] = modelType;
+
+            MethodModifiers setDefaultValuesModifiers = MethodModifiers.Protected | MethodModifiers.Virtual;
+            if (modelType.BaseModel != null)
+            {
+                setDefaultValuesModifiers = MethodModifiers.Protected | MethodModifiers.Override;
+            }
+
+            MethodModel setDefaultValuesModel = baseClassModel.AddMethod(
+                new MethodModel("SetDefaultValues")
+                {
+                    Modifiers = setDefaultValuesModifiers,
+                    Documentation = new DocumentationModel("Sets the default values.")
+                    {
+                        Remarks = "This method should be overridden to set the default values of properties."
+                    }
+                });
+
+            setDefaultValuesModel.Facets["ModelType"] = modelType;
+
+            // Model class
+
+            ConstructorModifiers constructorModifiers = ConstructorModifiers.Public;
+            if (modelType.InheritanceModifier == ModelTypeInheritanceModifier.Abstract)
+            {
+                constructorModifiers = ConstructorModifiers.Protected;
+            }
+
+            ClassModel classModel = targetModel.Namespace.AddClass(
+                new ClassModel(modelType.Name)
+                {
+                    Modifiers = classModifiers,
+                    Inheritance = modelType.Name + "Base",
+                    Documentation = new DocumentationModel(modelType.Summary)
+                });
+
+            classModel.WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = constructorModifiers,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}\"/> class.".Format(modelType.Name))
+                });
+
+            // Serializer context
+
+            ClassModel serializerContextClass = targetModel.Namespace.Classes.FirstOrDefault(i => i.Name.EqualsNoCase("SerializerContext"));
+            if (serializerContextClass == null)
+            {
+                serializerContextClass = targetModel.Namespace.AddClass(
+                    new ClassModel("SerializerContext")
+                    {
+                        Modifiers = ClassModifiers.Partial | ClassModifiers.Internal,
+                        Inheritance = "System.Text.Json.Serialization.JsonSerializerContext",
+                        Documentation = new DocumentationModel("Defines the serializer context."),
+                        IsGeneratedCode = false
+                    });
+
+                if (this.Project == "RestApi" && modelType.ServiceModel.ApiVersions.Any(i => i.ErrorResponse == ErrorResponseKind.RestServiceError))
+                {
+                    serializerContextClass.WithAttribute(
+                        new AttributeModel($"System.Text.Json.Serialization.JsonSerializable(typeof({modelType.ServiceModel.Namespace}.{this.NamespacePart}.RestServiceErrorLegacy))"));
+                    serializerContextClass.WithAttribute(
+                        new AttributeModel($"System.Text.Json.Serialization.JsonSerializable(typeof({modelType.ServiceModel.Namespace}.{this.NamespacePart}.RestServiceErrorDetailLegacy))"));
+                }
+            }
+
+            serializerContextClass.WithAttribute(
+                new AttributeModel($"System.Text.Json.Serialization.JsonSerializable(typeof({modelType.ServiceModel.Namespace}.{this.NamespacePart}.{modelType.Name}))"));
+            serializerContextClass.WithAttribute(
+                new AttributeModel($"System.Text.Json.Serialization.JsonSerializable(typeof(System.Collections.Generic.List<{modelType.ServiceModel.Namespace}.{this.NamespacePart}.{modelType.Name}>))"));
+            serializerContextClass.WithAttribute(
+                new AttributeModel($"System.Text.Json.Serialization.JsonSerializable(typeof(System.Collections.Generic.IList<{modelType.ServiceModel.Namespace}.{this.NamespacePart}.{modelType.Name}>))"));
+            serializerContextClass.WithAttribute(
+                new AttributeModel($"System.Text.Json.Serialization.JsonSerializable(typeof(System.Collections.Generic.IEnumerable<{modelType.ServiceModel.Namespace}.{this.NamespacePart}.{modelType.Name}>))"));
+        }
+    }
+
+    #endregion
+
+    // *** TransformModelTypePropertyValidation
+
+    private void TransformModelTypePropertyValidation(ModelTypeProperty modelTypeProperty, PropertyModel property)
+    {
+        this.TransformModelTypePropertyValidation(modelTypeProperty as ModelTypeScalarProperty, property);
+        this.TransformModelTypePropertyValidation(modelTypeProperty as ModelTypeEnumProperty, property);
+        this.TransformModelTypePropertyValidation(modelTypeProperty as ModelTypeModelProperty, property);
+        this.TransformModelTypePropertyValidation(modelTypeProperty as ModelTypeJsonProperty, property);
+    }
+
+    // *** TransformModelTypePropertyValidation (ModelTypeScalarProperty)
+
+    private void TransformModelTypePropertyValidation(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        if (modelTypeProperty == null)
+        {
+            return;
+        }
+
+        if (!modelTypeProperty.IsNullableValue.GetValueOrDefault(false))
+        {
+            this.AddIsRequired(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsNotEmptyValue.GetValueOrDefault(false))
+        {
+            this.AddNotEmpty(modelTypeProperty, property);
+        }
+    
+        if (modelTypeProperty.IsEmailValue.GetValueOrDefault(false))
+        {
+            this.AddEmail(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsMinLengthValue != null)
+        {
+            this.AddMinLength(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsMaxLengthValue != null)
+        {
+            this.AddMaxLength(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsRegularExpressionValue != null)
+        {
+            this.AddRegularExpression(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsLessThanValue != null)
+        {
+            this.AddLessThan(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsLessThanOrEqualToValue != null)
+        {
+            this.AddLessThanOrEqualTo(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsGreaterThanValue != null)
+        {
+            this.AddGreaterThan(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsGreaterThanOrEqualToValue != null)
+        {
+            this.AddGreaterThanOrEqualTo(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsPhoneNumberValue.GetValueOrDefault(false) || modelTypeProperty.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+        {
+            this.AddPhone(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.Type == ScalarType.Url)
+        {
+            this.AddAbsoluteUri(modelTypeProperty, property);
+        }
+    }
+
+    // *** TransformModelTypePropertyValidation (ModelTypeEnumProperty)
+
+    private void TransformModelTypePropertyValidation(ModelTypeEnumProperty modelTypeProperty, PropertyModel property)
+    {
+        if (modelTypeProperty == null)
+        {
+            return;
+        }
+
+        if (!modelTypeProperty.IsNullableValue.GetValueOrDefault(false))
+        {
+            this.AddIsRequired(modelTypeProperty, property);
+            this.AddMaybeNull(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsNotEmptyValue.GetValueOrDefault(false))
+        {
+            this.AddNotEmpty(modelTypeProperty, property);
+        }
+    }
+
+    // *** TransformModelTypePropertyValidation (ModelTypeModelProperty)
+
+    private void TransformModelTypePropertyValidation(ModelTypeModelProperty modelTypeProperty, PropertyModel property)
+    {
+        if (modelTypeProperty == null)
+        {
+            return;
+        }
+
+        if (!modelTypeProperty.IsNullableValue.GetValueOrDefault(false))
+        {
+            this.AddIsRequired(modelTypeProperty, property);
+            this.AddMaybeNull(modelTypeProperty, property);
+        }
+
+        if (modelTypeProperty.IsNotEmptyValue.GetValueOrDefault(false))
+        {
+            this.AddNotEmpty(modelTypeProperty, property);
+        }
+    }
+
+    // *** TransformModelTypePropertyValidation (ModelTypeJsonProperty)
+
+    private void TransformModelTypePropertyValidation(ModelTypeJsonProperty modelTypeProperty, PropertyModel property)
+    {
+        if (modelTypeProperty == null)
+        {
+            return;
+        }
+
+        if (!modelTypeProperty.IsNullableValue.GetValueOrDefault(false))
+        {
+            this.AddIsRequired(modelTypeProperty, property);
+            this.AddMaybeNull(modelTypeProperty, property);
+        }
+    }
+
+    // *** AddIsRequired (ModelTypeScalarProperty)
+
+    private void AddIsRequired(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        if (modelTypeProperty.Cardinality == Cardinality.Single)
+        {
+            this.AddIsRequiredSingle(modelTypeProperty, property);
+        }
+        else
+        {
+            this.AddIsRequiredMultiple(modelTypeProperty, property);
+        }
+    }
+
+    // *** AddIsRequiredSingle (ModelTypeScalarProperty)
+
+    private void AddIsRequiredSingle(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        switch (modelTypeProperty.Type)
+        {
+            case ScalarType.Boolean:
+            case ScalarType.DateTime:
+            case ScalarType.DateTimeOffset:
+            case ScalarType.Decimal:
+            case ScalarType.Double:
+            case ScalarType.Guid:
+            case ScalarType.Integer:
+            case ScalarType.Long:
+            case ScalarType.Time:
+                break;
+            case ScalarType.ByteArray:
+            case ScalarType.Url:
+                this.AddPropertyAttribute(
+                    property, 
+                    "Required",
+                    "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+                this.AddMaybeNull(modelTypeProperty, property);
+                break;
+            default:
+                this.AddPropertyAttribute(
+                    property, 
+                    "Required",
+                    "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = false)");
+                this.AddMaybeNull(modelTypeProperty, property);
+                break;
+        }
+    }
+
+    // *** AddIsRequiredMultiple (ModelTypeScalarProperty)
+
+    private void AddIsRequiredMultiple(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        switch (modelTypeProperty.Type)
+        {
+            case ScalarType.Boolean:
+            case ScalarType.ByteArray:
+            case ScalarType.DateTime:
+            case ScalarType.DateTimeOffset:
+            case ScalarType.Decimal:
+            case ScalarType.Double:
+            case ScalarType.Guid:
+            case ScalarType.Integer:
+            case ScalarType.Long:
+            case ScalarType.Time:
+            case ScalarType.Url:
+                this.AddPropertyAttribute(
+                    property, 
+                    "Required",
+                    "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+                break;
+            default:
+                this.AddPropertyAttribute(
+                    property, 
+                    "Required",
+                    "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = false)");
+                break;
+        }
+
+        this.AddMaybeNull(modelTypeProperty, property);
+    }
+
+    // *** AddIsRequired (ModelTypeEnumProperty)
+
+    private void AddIsRequired(ModelTypeEnumProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "Required",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+    }
+
+    // *** AddIsRequired (ModelTypeModelProperty)
+
+    private void AddIsRequired(ModelTypeModelProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "Required",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+    }
+
+    // *** AddIsRequired (ModelTypeJsonProperty)
+
+    private void AddIsRequired(ModelTypeJsonProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "Required",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+    }
+
+    // *** AddMaybeNull (ModelTypeScalarProperty)
+
+    private void AddMaybeNull(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "MaybeNull",
+            "System.Diagnostics.CodeAnalysis.MaybeNull");
+    }
+
+    // *** AddMaybeNull (ModelTypeEnumProperty)
+
+    private void AddMaybeNull(ModelTypeEnumProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "MaybeNull",
+            "System.Diagnostics.CodeAnalysis.MaybeNull");
+    }
+
+    // *** AddMaybeNull (ModelTypeModelProperty)
+
+    private void AddMaybeNull(ModelTypeModelProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "MaybeNull",
+            "System.Diagnostics.CodeAnalysis.MaybeNull");
+    }
+
+    // *** AddMaybeNull (ModelTypeJsonProperty)
+
+    private void AddMaybeNull(ModelTypeJsonProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "MaybeNull",
+            "System.Diagnostics.CodeAnalysis.MaybeNull");
+    }
+
+    // *** AddNotEmpty (Scalar)
+
+    private void AddNotEmpty(ModelTypeModelProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "NotEmpty",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.NotEmpty");
+    }
+
+    // *** AddNotEmpty (Enum)
+
+    private void AddNotEmpty(ModelTypeEnumProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "NotEmpty",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.NotEmpty");
+    }
+
+    // *** AddNotEmpty (Model)
+
+    private void AddNotEmpty(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "NotEmpty",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.NotEmpty");
+    }
+
+    // *** AddEmail
+
+    private void AddEmail(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "Email",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.Email");
+    }
+
+    // *** AddPhone
+
+    private void AddPhone(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        if (modelTypeProperty.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+        {
+            this.AddPropertyAttribute(
+                property, 
+                "InternationalPhoneNumber",
+                "Primavera.Hydrogen.ComponentModel.DataAnnotations.InternationalPhoneNumber");
+
+            return;
+        }
+
+        this.AddPropertyAttribute(
+            property, 
+            "Phone",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.Phone");
+    }
+
+    // *** AddAbsoluteUri
+
+    private void AddAbsoluteUri(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        if (modelTypeProperty.IsAbsoluteUriValue.GetValueOrDefault(false))
+        {
+            this.AddPropertyAttribute(
+                property, 
+                "Uri",
+                "Primavera.Hydrogen.ComponentModel.DataAnnotations.Uri(true)");
+        }
+        else
+        {
+            this.AddPropertyAttribute(
+                property, 
+                "Uri",
+                "Primavera.Hydrogen.ComponentModel.DataAnnotations.Uri(false)");
+        }
+    }
+
+    // *** AddMinLength
+
+    private void AddMinLength(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "TextMinLength",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.TextMinLength({0})"
+                .Format(
+                    modelTypeProperty.IsMinLengthValue.Value));
+    }
+
+    // *** AddMaxLength
+
+    private void AddMaxLength(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "TextMaxLength",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.TextMaxLength({0})"
+                .Format(
+                    modelTypeProperty.IsMaxLengthValue.Value));
+    }
+
+    // *** AddLessThan
+
+    private void AddLessThan(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "LessThan",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.LessThan({0})"
+                .Format(
+                    modelTypeProperty.IsLessThanValue.Value));
+    }
+
+    // *** AddLessThanOrEqualTo
+
+    private void AddLessThanOrEqualTo(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "LessThanOrEqualTo",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.LessThanOrEqualTo({0})"
+                .Format(
+                    modelTypeProperty.IsLessThanOrEqualToValue.Value));
+    }
+
+    // *** AddGreaterThan
+
+    private void AddGreaterThan(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "GreaterThan",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.GreaterThan({0})"
+                .Format(
+                    modelTypeProperty.IsGreaterThanValue.Value));
+    }
+
+    // *** AddGreaterThanOrEqualTo
+
+    private void AddGreaterThanOrEqualTo(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "GreaterThanOrEqualTo",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.GreaterThanOrEqualTo({0})"
+                .Format(
+                    modelTypeProperty.IsGreaterThanOrEqualToValue.Value));
+    }
+
+    // *** AddRegularExpression
+
+    private void AddRegularExpression(ModelTypeScalarProperty modelTypeProperty, PropertyModel property)
+    {
+        this.AddPropertyAttribute(
+            property, 
+            "RegularExpression",
+            "Primavera.Hydrogen.ComponentModel.DataAnnotations.RegularExpression({0}.RegularExpressions.{1}Value)"
+                .Format(
+                    this.ClientSide ? "Client.Rest.Metadata" : "Common.Metadata",
+                    this.FindRegularExpression(modelTypeProperty.IsRegularExpressionValue, modelTypeProperty)));
+    }
+
+    // *** FindRegularExpression
+
+    private string FindRegularExpression(string name, ModelTypeScalarProperty modelTypeProperty)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return "unknown";
+        }
+
+        if (modelTypeProperty == null || modelTypeProperty.ParentModel == null || modelTypeProperty.ParentModel.ServiceModel == null)
+        {
+            return "unknown";
+        }
+
+        RegularExpression regularExpression = modelTypeProperty.ParentModel.ServiceModel.RegularExpressions.FirstOrDefault(r => r.Name.EqualsNoCase(name));
+        if (regularExpression == null)
+        {
+            return "unknown";
+        }
+
+        return regularExpression.Name;
+    }
+
+    // *** GetModelTypePropertyGetAccessorModifier
+
+    private PropertyAccessorModifiers GetModelTypePropertyGetAccessorModifier(ModelTypeProperty property)
+    {
+        PropertyAccessorModifiers result = PropertyAccessorModifiers.None;
+
+        return result;
+    }
+
+    // *** GetModelTypePropertySetAccessorModifier
+
+    private PropertyAccessorModifiers GetModelTypePropertySetAccessorModifier(ModelTypeProperty property)
+    {
+        PropertyAccessorModifiers result = PropertyAccessorModifiers.None;
+
+        return result;
+    }
+
+    // *** GetModelTypePropertyModifier
+
+    private PropertyModifiers GetModelTypePropertyModifier(ModelTypeProperty property)
+    {
+        PropertyModifiers result = PropertyModifiers.Public;
+
+        return result;
+    }
+
+    // *** AddPropertyAttribute
+
+    private void AddPropertyAttribute(PropertyModel propertyModel, string name, string attribute)
+    {
+        if (propertyModel.Attributes != null)
+        {
+            if (propertyModel.Attributes.Any(a => a.Name.EqualsNoCase(name) || a.Name.StartsWith(name + "(", StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+        }
+
+        propertyModel.WithAttribute(
+            new AttributeModel(
+                attribute));
+    }
+}
+
+#>

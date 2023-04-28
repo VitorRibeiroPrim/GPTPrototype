@@ -1,0 +1,152 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    string serviceVersionString = VersioningHelper.GetApiVersionString(sourceModel);
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Rest");
+
+    // Class
+
+    ClassModel classModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel($"{sourceModel.Name}ServiceCollectionExtensions")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Static | ClassModifiers.Partial,
+                Documentation = new DocumentationModel($"Defines extension methods for the <see cref=\"Microsoft.Extensions.DependencyInjection.IServiceCollection\"/> type\nthat allow registered <see cref=\"{sourceModel.Name}Client\"/> instances.")
+            })
+            .AddMethod(
+                new MethodModel($"Add{sourceModel.Name}Client", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel($"Adds the default {sourceModel.Name} service client to the service collection.")
+                    {
+                        Returns = "The <see cref=\"Microsoft.Extensions.DependencyInjection.IServiceCollection\"/> instance.",
+                        Remarks = "The service client is registered by default as a singleton."
+                    },
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "MethodKind", "1" }
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Modifiers = MethodParameterModifiers.This,
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientFactory", $"Func<System.IServiceProvider, {sourceModel.Name}ClientOptions, {sourceModel.Name}Client>")
+                    {
+                        Documentation = new DocumentationModel("The delegate that should be used to create the service client instance.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"Add{sourceModel.Name}Client", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel($"Adds the default {sourceModel.Name} service client to the service collection.")
+                    {
+                        Returns = "The <see cref=\"Microsoft.Extensions.DependencyInjection.IServiceCollection\"/> instance.",
+                        Remarks = "The service client is registered by default as a singleton."
+                    },
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "MethodKind", "2" }
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Modifiers = MethodParameterModifiers.This,
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientOptionsFactory", $"Func<System.IServiceProvider, {sourceModel.Name}ClientOptions>")
+                    {
+                        Documentation = new DocumentationModel("The delegate that should be used to create the service client options instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientFactory", $"Func<System.IServiceProvider, {sourceModel.Name}ClientOptions, {sourceModel.Name}Client>")
+                    {
+                        Documentation = new DocumentationModel("The delegate that should be used to create the service client instance.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"Add{sourceModel.Name}Client", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel($"Adds the default {sourceModel.Name} service client to the service collection.")
+                    {
+                        Returns = "The <see cref=\"Microsoft.Extensions.DependencyInjection.IServiceCollection\"/> instance.",
+                        Remarks = "The service client is registered by default as a singleton."
+                    },
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "MethodKind", "3" }
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Modifiers = MethodParameterModifiers.This,
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("name", "string")
+                    {
+                        Documentation = new DocumentationModel("The service client name.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientFactory", $"Func<System.IServiceProvider, {sourceModel.Name}ClientOptions, {sourceModel.Name}Client>")
+                    {
+                        Documentation = new DocumentationModel("The delegate that should be used to create the service client instance.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"Add{sourceModel.Name}Client", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                    Documentation = new DocumentationModel($"Adds the default {sourceModel.Name} service client to the service collection.")
+                    {
+                        Returns = "The <see cref=\"Microsoft.Extensions.DependencyInjection.IServiceCollection\"/> instance.",
+                        Remarks = "The service client is registered by default as a singleton."
+                    },
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "MethodKind", "4" }
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Modifiers = MethodParameterModifiers.This,
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("name", "string")
+                    {
+                        Documentation = new DocumentationModel("The service client name.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientOptionsFactory", $"Func<System.IServiceProvider, {sourceModel.Name}ClientOptions>")
+                    {
+                        Documentation = new DocumentationModel("The delegate that should be used to create the service client options instance.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientFactory", $"Func<System.IServiceProvider, {sourceModel.Name}ClientOptions, {sourceModel.Name}Client>")
+                    {
+                        Documentation = new DocumentationModel("The delegate that should be used to create the service client instance.")
+                    })
+                .ParentModelAs<ClassModel>();
+}
+
+#>

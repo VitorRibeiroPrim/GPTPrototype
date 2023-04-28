@@ -1,0 +1,14 @@
+﻿<#+
+
+public void WriteAttributes(ModelWriter modelWriter, ServiceModel model)
+{
+    this.WriteAssemblyInfoShared(
+        modelWriter, 
+        model,
+        $"{model.Product} {model.DisplayName} REST API",
+        $"Class library that provides the {model.DisplayName} REST API.",
+        $"{model.Namespace}.Server.RestApi.Tests",
+        $"{model.Namespace}.Server.Integration.Tests");
+}
+
+#>

@@ -1,0 +1,210 @@
+﻿<#+
+
+internal class RoutesTransformation : ServiceModelTransformation<CSharpFileModel>
+{
+    #region Public Properties
+
+    // NOTES:
+    // This property indicates that the transformation is being used to generate client-side code
+    // Otherwise it is server-side
+
+    public bool ClientSide
+    {
+        get;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public RoutesTransformation(bool clientSide)
+    {
+        this.ClientSide = clientSide;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        return sourceElement is ControllerType;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (targetModel == null)
+        {
+            return;
+        }
+
+        if (sourceElement is ControllerType controllerType)
+        {
+            bool generate = this.ClientSide ? RouteVisibleClientSide(controllerType) : RouteVisibleServerSide(controllerType);
+            if (!generate)
+            {
+                return;
+            }
+
+            ClassModel parentClassModel = targetModel.Namespace.Classes.FirstOrDefault(c => c.Name.EqualsNoCase("Routes"));
+
+            ClassModel classModel = parentClassModel.AddClass(new ClassModel(controllerType.Name)
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Static | ClassModifiers.Partial,
+                Documentation = new DocumentationModel(
+                    "Defines constants that specify the routes used by the {0} actions.".Format(controllerType.Name))
+            });
+
+            if (controllerType.Extensions().HasODataServerSide)
+            {
+                ControllerTypeAction oneAction = controllerType.ChildActions.FirstOrDefault(i => i.ODataEnabled && i.Extensions().IsVisibleServerSide);
+
+                string route = new ActionRouteBuilder(oneAction)
+                    .Build();
+
+                string[] parts = route.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+                route = string.Join("/", parts.Take(parts.Length - 1));
+
+                classModel.WithConstant(
+                    new ConstantModel("OData", "string", $"\"{route}\"")
+                    {
+                        Modifiers = ConstantModifiers.Internal,
+                        Documentation = new DocumentationModel("Defines the base OData route.")
+                    });
+            }
+
+            IEnumerable<ControllerTypeAction> qsActions = controllerType.ChildActions
+                .Where(
+                    a => a.ChildParameters.Any(
+                        p =>
+                        {
+                            if (p is ControllerTypeActionScalarParameter scalarParameter)
+                            {
+                                return scalarParameter.Binding == BindingKind.FromQuery;
+                            }
+                            else if (p is ControllerTypeActionEnumParameter enumParameter)
+                            {
+                                return enumParameter.Binding == BindingKind.FromQuery;
+                            }
+
+                            return false;
+                        }));
+
+            if (this.ClientSide)
+            {
+                qsActions = qsActions
+                    .Where(i => RouteVisibleClientSide(i));
+            }
+            else
+            {
+                qsActions = qsActions
+                    .Where(i => RouteVisibleServerSide(i));
+            }
+
+            if (qsActions.Any())
+            {
+                ClassModel qsClassModel = classModel.AddClass(new ClassModel("WithQueryString")
+                {
+                    Modifiers = ClassModifiers.Internal | ClassModifiers.Static | ClassModifiers.Partial,
+                    Documentation = new DocumentationModel(
+                        "Defines constants that specify the routes used by the {0} actions, including the query string parameters.".Format(controllerType.Name))
+                });
+
+                foreach (ControllerTypeAction controllerAction in qsActions
+                    .OrderBy(i => i.Name2))
+                {
+                    string route = new ActionRouteBuilder(controllerAction)
+                        .Build(true, false, false);
+
+                    qsClassModel.WithConstant(new ConstantModel(controllerAction.Name2, "string", "\"{0}\"".Format(route))
+                    {
+                        Modifiers = ConstantModifiers.Internal,
+                        Documentation = new DocumentationModel("Defines the route for the following action: {0}.".Format(controllerAction.Name))
+                    });
+                }
+            }
+
+            IEnumerable<ControllerTypeAction> actions = null;
+
+            if (this.ClientSide)
+            {
+                actions = controllerType.ChildActions
+                    .Where(i => RouteVisibleClientSide(i));
+            }
+            else
+            {
+                actions = controllerType.ChildActions
+                    .Where(i => RouteVisibleServerSide(i));
+            }
+
+            foreach (ControllerTypeAction controllerAction in actions
+                .OrderBy(n => n.Name2))
+            {
+                string route = new ActionRouteBuilder(controllerAction)
+                    .Build();
+
+                classModel.WithConstant(
+                    new ConstantModel(controllerAction.Name2, "string", "\"{0}\"".Format(route))
+                    {
+                        Modifiers = ConstantModifiers.Internal,
+                        Documentation = new DocumentationModel("Defines the route for the following action: {0}.".Format(controllerAction.Name))
+                    });
+            }
+        }
+    }
+
+    private static bool RouteVisibleClientSide(ControllerType controller)
+    {
+        return controller.ChildActions.Any(i => RouteVisibleClientSide(i));
+    }
+
+    private static bool RouteVisibleServerSide(ControllerType controller)
+    {
+        return controller.ChildActions.Any(i => RouteVisibleServerSide(i));
+    }
+
+    private static bool RouteVisibleClientSide(ControllerTypeAction action)
+    {
+        if (action.ParentController.Visibility == ControllerTypeVisibility.ServerSide)
+        {
+            return false;
+        }
+
+        if (action.Visibility == ControllerTypeActionVisibility.All)
+        {
+            return true;
+        }
+
+        if (action.Visibility == ControllerTypeActionVisibility.ClientSide)
+        {
+            if (!action.ParentController.GenerateClientSideImplementation)
+            {
+                return false;
+            }
+
+            if (!action.GenerateClientSideImplementation)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool RouteVisibleServerSide(ControllerTypeAction action)
+    {
+        if (action.ParentController.Visibility == ControllerTypeVisibility.ClientSide)
+        {
+            return false;
+        }
+
+        return action.Visibility != ControllerTypeActionVisibility.ClientSide;
+    }
+
+    #endregion
+}
+
+#>

@@ -1,0 +1,53 @@
+﻿<Project>
+
+    <!-- Assembly name and namespace -->
+
+    <PropertyGroup>
+        <RootNamespace>Primavera.Lithium.ChatGPT.Server.Common</RootNamespace>
+        <AssemblyName>Primavera.Lithium.ChatGPT.Server.Common</AssemblyName>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Nullable reference types -->
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <!-- Global implicit using statements -->
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System" />
+        <Using Include="System.Collections" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Globalization" />
+        <Using Include="Microsoft.AspNetCore.Http" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Include="Microsoft.Extensions.Hosting" />
+        <Using Include="Microsoft.Extensions.Logging" />
+        <Using Include="Primavera.Hydrogen" />
+    </ItemGroup>
+
+    <!-- NuGet properties -->
+
+    <!-- Ignore Spelling: Copyright © 2018-2023 Grupo Primavera -->
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <Authors>Grupo Primavera</Authors>
+        <Company>Grupo Primavera</Company>
+        <Copyright>Copyright © 2018-2023 Grupo Primavera</Copyright>
+        <Description>Class library that provides common types used by the Chat Gpt Service.</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Primavera;Lithium</PackageTags>
+        <Product>Lithium</Product>
+    </PropertyGroup>
+
+</Project>

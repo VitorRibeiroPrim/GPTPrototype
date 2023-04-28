@@ -1,0 +1,555 @@
+﻿<#+
+
+// *** WriteConstructor
+
+public void WriteConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.SetDefaultValues();
+<#+
+
+}
+
+// *** WriteSetDefaultValues
+
+public void WriteSetDefaultValues(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Standard options
+
+        this.Information = new InformationOptions();
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        this.Authorization = new AuthorizationOptions();
+<#+
+
+    }
+
+#>
+        this.Cors = new CorsOptions();
+<#+
+
+    ConfigurationModelType hostConfigurationModel = sourceModel.ConfigurationModels.FirstOrDefault(i => i.Name.EqualsNoCase("HostConfiguration"));
+    if (hostConfigurationModel != null)
+    {
+        IEnumerable<ConfigurationModelTypeProperty> properties = hostConfigurationModel.ChildProperties
+            .Where(i => i.Kind != PropertyKind.Calculated)
+            .OrderBy(i => i.Name);
+
+        if (properties.Any(
+            i =>
+            {
+                if (i is ConfigurationModelTypeScalarProperty scalarProperty)
+                {
+                    if (!string.IsNullOrEmpty(scalarProperty.DefaultValue))
+                    {
+                        return true;
+                    }
+                    else if (scalarProperty.Cardinality != Cardinality.Single)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                if (i is ConfigurationModelTypeConfigurationModelProperty configurationModelProperty)
+                {
+                    return true;
+                }
+
+                return false;
+            }))
+        {
+
+#>
+
+        // Custom options
+
+<#+
+
+        }
+
+        foreach (ConfigurationModelTypeProperty property in properties)
+        {
+            string propertyType = property.Extensions().AsCSharpType("Server.Common.Configuration", false, false);
+
+            if (property is ConfigurationModelTypeScalarProperty configurationScalarProperty)
+            {
+                if (!string.IsNullOrEmpty(configurationScalarProperty.DefaultValue))
+                {
+
+#>
+        this.<#= configurationScalarProperty.Name #> = <#= configurationScalarProperty.DefaultValue #>;
+<#+
+
+                }
+
+                if (configurationScalarProperty.Cardinality == Cardinality.List)
+                {
+
+#>
+        this.<#= configurationScalarProperty.Name #> = new <#= propertyType #>();
+<#+
+
+                }
+
+                if (configurationScalarProperty.Cardinality == Cardinality.Dictionary)
+                {
+
+#>
+        this.<#= configurationScalarProperty.Name #> = new <#= propertyType #>(System.StringComparer.OrdinalIgnoreCase);
+<#+
+
+                }
+            }
+
+            if (property is ConfigurationModelTypeConfigurationModelProperty configurationModelProperty)
+            {
+
+                if (configurationModelProperty.Cardinality == Cardinality.Dictionary)
+                {
+
+#>
+        this.<#= configurationModelProperty.Name #> = new <#= propertyType #>(System.StringComparer.OrdinalIgnoreCase);
+<#+
+
+                }
+                else
+                {
+#>
+        this.<#= configurationModelProperty.Name #> = new <#= propertyType #>();
+<#+
+
+                }
+            }
+        }
+    }
+}
+
+// *** WriteProductName
+
+public void WriteProductName(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            // Ignore Spelling: Lithium
+
+            if (this.productName == null)
+            {
+                System.Reflection.Assembly assembly = this.GetType().Assembly;
+                this.productName = assembly.Reflector().AssemblyProduct;
+            }
+
+            return this.productName ?? "Lithium";
+        }
+<#+
+
+}
+
+// *** WriteHostTitle
+
+public void WriteHostTitle(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        get
+        {
+            // Ignore Spelling: <#= sourceModel.Product #>
+            // Ignore Spelling: <#= sourceModel.DisplayName #>
+
+            if (this.hostTitle == null)
+            {
+                this.hostTitle = "<#= sourceModel.Product #> <#= sourceModel.DisplayName #>";
+            }
+
+            return this.hostTitle;
+        }
+<#+
+
+}
+
+// *** WriteCompany
+
+public void WriteCompany(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            if (this.company == null)
+            {
+                System.Reflection.Assembly assembly = this.GetType().Assembly;
+                this.company = assembly.Reflector().AssemblyCompany;
+            }
+
+            return this.company;
+        }
+<#+
+
+}
+
+// *** WriteCopyright
+
+public void WriteCopyright(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            if (this.copyright == null)
+            {
+                System.Reflection.Assembly assembly = this.GetType().Assembly;
+                this.copyright = assembly.Reflector().AssemblyCopyright;
+            }
+
+            return this.copyright;
+        }
+<#+
+
+}
+
+// *** WriteVersion
+
+public void WriteVersion(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            if (this.version == null)
+            {
+                System.Reflection.Assembly assembly = this.GetType().Assembly;
+                this.version = assembly.Reflector().AssemblyFileVersion.ToString();
+            }
+
+            return this.version;
+        }
+<#+
+
+}
+
+// *** WriteInformationalVersion
+
+public void WriteInformationalVersion(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            if (this.informationalVersion == null)
+            {
+                System.Reflection.Assembly assembly = this.GetType().Assembly;
+                this.informationalVersion = assembly.Reflector().AssemblyInformationalVersion;
+            }
+
+            return this.informationalVersion;
+        }
+<#+
+
+}
+
+// *** WriteSetDefaultValuesAuthorization
+
+public void WriteSetDefaultValuesAuthorization(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+#>
+        this.Credentials = new CredentialsOptions();
+<#+
+
+}
+
+// *** WriteSetDefaultValuesCredentials
+
+public void WriteSetDefaultValuesCredentials(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+    // Client credentials
+
+    OAuthClient oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.ClientCredentials);
+    if (oauthClient != null)
+    {
+
+#>
+        this.ClientCredentials = new ClientCredentialsOptions();
+<#+
+
+    }
+
+    // Hybrid
+
+    oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.Hybrid);
+    if (oauthClient != null)
+    {
+
+#>
+        this.Hybrid = new HybridCredentialsOptions();
+<#+
+
+    }
+
+    // Authorization code
+
+    oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCode);
+    if (oauthClient != null)
+    {
+
+#>
+        this.AuthorizationCode = new AuthorizationCodeCredentialsOptions();
+<#+
+
+    }
+
+    // Authorization code with PKCE
+
+    oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCodeWithPkce);
+    if (oauthClient != null)
+    {
+
+#>
+        this.AuthorizationCodeWithPkce = new AuthorizationCodeWithPkceCredentialsOptions();
+<#+
+
+    }
+
+}
+
+// *** WriteSetDefaultValuesClientCredentials
+
+public void WriteSetDefaultValuesClientCredentials(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+    OAuthClient oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.ClientCredentials);
+
+    if (oauthClient == null)
+    {
+        return;
+    }
+
+#>
+        // Ignore Spelling: <#= oauthClient.Name #>
+        // Ignore Spelling: <#= oauthClient.Secret #>
+
+        this.ClientId = "<#= oauthClient.Name #>";
+        this.ClientSecret = "<#= oauthClient.Secret #>";
+<#+
+
+}
+
+// *** WriteSetDefaultValuesHybridCredentials
+
+public void WriteSetDefaultValuesHybridCredentials(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+    OAuthClient oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.Hybrid);
+
+    if (oauthClient == null)
+    {
+        return;
+    }
+
+#>
+        // Ignore Spelling: <#= oauthClient.Name #>
+        // Ignore Spelling: <#= oauthClient.Secret #>
+
+        this.ClientId = "<#= oauthClient.Name #>";
+        this.ClientSecret = "<#= oauthClient.Secret #>";
+<#+
+
+}
+
+// *** WriteSetDefaultValuesAuthorizationCode
+
+public void WriteSetDefaultValuesAuthorizationCode(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+    OAuthClient oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCode);
+
+    if (oauthClient == null)
+    {
+        return;
+    }
+
+#>
+        // Ignore Spelling: <#= oauthClient.Name #>
+        // Ignore Spelling: <#= oauthClient.Secret #>
+
+        this.ClientId = "<#= oauthClient.Name #>";
+        this.ClientSecret = "<#= oauthClient.Secret #>";
+<#+
+
+}
+
+// *** WriteSetDefaultValuesAuthorizationCodeWithPkce
+
+public void WriteSetDefaultValuesAuthorizationCodeWithPkce(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+    OAuthClient oauthClient = sourceModel.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.AuthorizationCodeWithPkce);
+
+    if (oauthClient == null)
+    {
+        return;
+    }
+
+#>
+        // Ignore Spelling: <#= oauthClient.Name #>
+        // Ignore Spelling: <#= oauthClient.Secret #>
+
+        this.ClientId = "<#= oauthClient.Name #>";
+        this.ClientSecret = "<#= oauthClient.Secret #>";
+<#+
+
+}
+
+// *** WriteSetDefaultValuesCustomConfigurationModel
+
+public void WriteSetDefaultValuesCustomConfigurationModel(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+
+    ConfigurationModelType configurationModel = model.ParentModelAs<MethodModel>().Facets["CustomConfigurationModel"] as ConfigurationModelType;
+    
+    if (configurationModel == null)
+    {
+        return;
+    }
+
+    IEnumerable<ConfigurationModelTypeProperty> properties = configurationModel.ChildProperties
+        .Where(i => i.Kind != PropertyKind.Calculated)
+        .OrderBy(i => i.Name);
+
+    foreach (ConfigurationModelTypeProperty property in properties)
+    {
+        string propertyType = property.Extensions().AsCSharpType("Server.Common.Configuration", false, false);
+
+        if (property is ConfigurationModelTypeScalarProperty configurationScalarProperty)
+        {
+            if (!string.IsNullOrEmpty(configurationScalarProperty.DefaultValue))
+            {
+
+#>
+        this.<#= configurationScalarProperty.Name #> = <#= configurationScalarProperty.DefaultValue #>;
+<#+
+
+            }
+
+            if (configurationScalarProperty.Cardinality == Cardinality.List)
+            {
+
+#>
+        this.<#= configurationScalarProperty.Name #> = new <#= propertyType #>();
+<#+
+
+            }
+
+            if (configurationScalarProperty.Cardinality == Cardinality.Dictionary)
+            {
+
+#>
+        this.<#= configurationScalarProperty.Name #> = new <#= propertyType #>(System.StringComparer.OrdinalIgnoreCase);
+<#+
+
+            }
+        }
+
+        if (property is ConfigurationModelTypeConfigurationModelProperty configurationModelProperty)
+        {
+
+#>
+        this.<#= configurationModelProperty.Name #> = new <#= propertyType #>();
+<#+
+
+        }
+    }
+}
+
+// *** WriteValidate
+
+public void WriteValidate(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.Validation.ObjectGraphValidator validator = new Primavera.Hydrogen.Validation.ObjectGraphValidator()
+        {
+            MaxValidationDepth = 5,
+            ThrowOnMaxValidationDepth = false,
+            MaxErrors = 20,
+            MaxEnumerableElements = 100
+        };
+
+        Primavera.Hydrogen.Validation.ObjectValidationResult result = validator.Validate(this);
+        if (!result.IsValid)
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+            sb.AppendLines(
+                result.ValidationResults
+                    .Select(i => i.ErrorMessage!)
+                    .Reverse(),
+                false);
+
+            string error = $"Invalid host configuration.\r\n{sb.ToString()}";
+
+            throw new System.Configuration.ConfigurationErrorsException(error);
+        }
+<#+
+
+}
+
+#>

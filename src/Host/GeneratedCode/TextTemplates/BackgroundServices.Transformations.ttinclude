@@ -1,0 +1,140 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    // Empty?
+
+    if (sourceModel.BackgroundServices.Count == 0)
+    {
+        targetModel.WithEmptyComment("This file is empty because the service model does not include\nany background services.");
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Host.BackgroundServices");
+}
+
+// *** TransformBackgroundService
+
+public void TransformBackgroundService(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    BackgroundService sourceModel = sourceElement as BackgroundService;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    bool useLocking = sourceModel.UseLocking;
+
+    TimedBackgroundService timedBackgroundService = sourceModel as TimedBackgroundService;
+    QueueBackgroundService queueBackgroundService = sourceModel as QueueBackgroundService;
+
+    // Background service base class
+
+    string inheritance = "Primavera.Hydrogen.AspNetCore.Hosting.SimpleBackgroundService";
+    if (timedBackgroundService != null)
+    {
+        inheritance = "Primavera.Hydrogen.AspNetCore.Hosting.TimedBackgroundService";
+    }
+    else if (queueBackgroundService != null)
+    {
+        inheritance = $"Primavera.Hydrogen.AspNetCore.Hosting.QueuedBackgroundService<{sourceModel.ServiceModel.Namespace}.Server.Common.{sourceModel.Name}WorkItem>";
+    }
+
+    ClassModel baseClassModel = targetModel.Namespace
+        .AddClass(new ClassModel("{0}ServiceBase".Format(sourceModel.Name))
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Abstract | ClassModifiers.Partial,
+            Inheritance = inheritance,
+            Documentation = new DocumentationModel("Defines the base class for the <see cref=\"{0}Service\" /> background service.".Format(sourceModel.Name))
+        })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithProperty(
+                new PropertyModel("HandleExceptions", "bool", "true")
+                {
+                    Modifiers = PropertyModifiers.Protected | PropertyModifiers.Override,
+                    Documentation = new DocumentationModel()
+                    {
+                        InheritDoc = true,
+                    }
+                })
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Protected,
+                Inheritance = "base(serviceProvider, logger)",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ServiceBase\" /> class.".Format(sourceModel.Name))
+            })
+                .WithParameter(new MethodParameterModel("serviceProvider", "System.IServiceProvider")
+                {
+                    Documentation = new DocumentationModel("The service provider.")
+                })
+                .WithParameter(new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger")
+                {
+                    Documentation = new DocumentationModel("The logger instance.")
+                })
+                .ParentModelAs<ClassModel>();
+
+    if (queueBackgroundService == null)
+    {
+        baseClassModel
+            .WithProperty(
+                new PropertyModel("UseLocking", "bool", useLocking ? "true" : "false")
+                {
+                    Modifiers = PropertyModifiers.Protected | PropertyModifiers.Override,
+                    Documentation = new DocumentationModel(true)
+                });
+    }
+
+    // Background service class
+
+    ClassModel classModel = targetModel.Namespace
+        .AddClass(new ClassModel("{0}Service".Format(sourceModel.Name))
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+            Inheritance = "{0}ServiceBase".Format(sourceModel.Name),
+            Documentation = new DocumentationModel(sourceModel.Summary)
+        })
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1812:AvoidUninstantiatedInternalClasses\", Justification = \"Created via dependency injection.\")"))
+            .WithProperty(
+                new PropertyModel("Name", "string", $"\"{sourceModel.Name}\"")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Override,
+                    Documentation = new DocumentationModel()
+                    {
+                        InheritDoc = true,
+                    }
+                })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base(serviceProvider, logger)",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}Service\" /> class.".Format(sourceModel.Name))
+                })
+                .WithParameter(
+                    new MethodParameterModel("serviceProvider", "System.IServiceProvider")
+                    {
+                        Documentation = new DocumentationModel("The service provider.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger<{0}Service>".Format(sourceModel.Name))
+                    {
+                        Documentation = new DocumentationModel("The logger instance.")
+                    })
+                .ParentModelAs<ClassModel>();
+
+    baseClassModel.Facets["BackgroundService"] = sourceModel;
+    classModel.Facets["BackgroundService"] = sourceModel;
+}
+
+#>

@@ -1,0 +1,1864 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Messaging.Azure</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessage">
+            <summary>
+            Describes a message received by <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService" />.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IMessage" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessage.Message">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessage.Properties">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessage.ReceivedMessage">
+            <summary>
+            Gets the received message.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessage.#ctor(Azure.Messaging.ServiceBus.ServiceBusReceivedMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessage"/> class.
+            </summary>
+            <param name="receivedMessage">The received message.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> that uses
+            Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IMessageBusService" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.Options">
+            <summary>
+            Gets the configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.Logger">
+            <summary>
+            Gets the logger.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.ExceptionsHandler">
+            <summary>
+            Gets the exceptions handler.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.ServiceClient">
+            <summary>
+            Gets the underlying <see cref="T:Azure.Messaging.ServiceBus.Administration.ServiceBusAdministrationClient"/> instance.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.#ctor(System.IServiceProvider,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="name">The service name.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateTopicAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateTopicIfNotExistsAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateSubscriptionAsync(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateSubscriptionIfNotExistsAsync(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateSubscriptionRuleAsync(System.String,System.String,System.String,Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateSubscriptionRuleIfNotExistsAsync(System.String,System.String,System.String,Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetTopicAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetTopicsPageAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetSubscriptionsPageAsync(System.String,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetSubscriptionRuleAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetSubscriptionRulesPageAsync(System.String,System.String,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteTopicAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteTopicIfExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteSubscriptionIfExistsAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteSubscriptionRuleAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteSubscriptionRuleIfExistsAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.TopicExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.SubscriptionExistsAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.SubscriptionRuleExistsAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateQueueAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.CreateQueueIfNotExistsAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueOptions},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetQueueAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.GetQueuesPageAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteQueueAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.DeleteQueueIfExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.QueueExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.__LogRetrievedTopicSubscriptionsStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService.__LogRetrievedTopicSubscriptionRulesStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> that uses
+            Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IMessageBusService" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService"/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.Options">
+            <summary>
+            Gets the configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.Logger">
+            <summary>
+            Gets the logger.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.ExceptionsHandler">
+            <summary>
+            Gets the exceptions handler.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.#ctor(System.IServiceProvider,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="name">The service name.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.CreateTopicPublisher(System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.CreateTopicReceiver(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.CreateTopicSubscriber(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.CreateQueuePublisher(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.CreateQueueReceiver(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.CreateQueueSubscriber(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService.DisposeAsync">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
+            </summary>
+            <returns>
+            A task that represents the asynchronous dispose operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException">
+            <summary>
+            Represents errors raised by the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService" />.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="innerException">The exception that caused this error.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException.#ctor(Primavera.Hydrogen.Messaging.MessageBusServiceError)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException" /> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException.#ctor(Primavera.Hydrogen.Messaging.MessageBusServiceError,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException" /> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException.#ctor(Primavera.Hydrogen.Messaging.MessageBusServiceError,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException"/> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+            <param name="message">The error message.</param>
+            <param name="innerException">The exception that caused this error.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceExceptionHandler">
+            <summary>
+            Provides a default exceptions handler that converts Azure Service Bus
+            related exceptions to <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceException"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceExceptionHandler.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceExceptionHandler"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceExceptionHandler.HandleAsync(System.String,System.Func{System.Threading.Tasks.Task},Primavera.Hydrogen.Messaging.Azure.Target,System.Object[])">
+            <summary>
+            Handles exceptions raised by the specified action.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <param name="action">The action that should be executed.</param>
+            <param name="target">The target of the operation.</param>
+            <param name="args">The additional arguments.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous task.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceExceptionHandler.HandleAsync``1(System.String,System.Func{System.Threading.Tasks.Task{``0}},Primavera.Hydrogen.Messaging.Azure.Target,System.Object[])">
+            <summary>
+            Handles exceptions raised by the specified action.
+            </summary>
+            <typeparam name="T">The type of the result.</typeparam>
+            <param name="serviceName">The service name.</param>
+            <param name="action">The action that should be executed.</param>
+            <param name="target">The target of the operation.</param>
+            <param name="args">The additional arguments.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous task.
+            The action result.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties">
+            <summary>
+            Describes the common properties of a <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessage"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IMessageProperties" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.TimeToLive">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.PartitionKey">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.CorrelationId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Subject">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.To">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.ContentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.ReplyTo">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.DeadLetterSource">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.DeadLetterErrorDescription">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.DeadLetterReason">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.State">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.ExpiresAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.EnqueuedTime">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.SequenceNumber">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.DeliveryCount">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.LockToken">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Keys">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Values">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.IsReadOnly">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Item(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties" /> class.
+            </summary>
+            <param name="id">The message identifier.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Add(System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.ContainsKey(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Remove(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.TryGetValue(System.String,System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Add(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Contains(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Object}[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageProperties.ToServiceBusMessage(System.BinaryData)">
+            <summary>
+            Converts this instance to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusMessage"/>.
+            </summary>
+            <param name="body">The message body.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusMessage"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementServiceFactory">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory"/> that resolves
+            <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService"/> instances.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementServiceFactory.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementServiceFactory"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementServiceFactory.GetService(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementServiceFactory.GetServiceOrDefault(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions">
+            <summary>
+            Defines the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService"/> configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.Services">
+            <summary>
+            Gets the named services configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.ConnectionString">
+            <summary>
+            Gets or sets the connection string that should be used to connect to the service.
+            If set, <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.ServiceNamespace"/> will not be considered.
+            </summary>
+            <remarks>
+            Setting to 'Ignore' forces the use of <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.ServiceNamespace"/>.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.ServiceNamespace">
+            <summary>
+            Gets or sets the service fully-qualified namespace that should be used to connect to the service.
+            When set, credentials should be set using <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.Credentials"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.Credentials">
+            <summary>
+            Gets or sets the credentials that should be used to connect to the storage service.
+            This value is required only when the connection is established using <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.ServiceNamespace"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.RetryPolicy">
+            <summary>
+            Gets or sets the retry policy that should be used to connect to the storage service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type
+            that allow configuring the <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> to use
+            Azure Service Bus.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceCollectionExtensions.AddAzureServiceBusMessageBus(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the default <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/>
+            to the service collection using configuration defined by <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions"/>.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> (by name)
+            are registered as singletons.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory"/> and
+            <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceCollectionExtensions.AddAzureServiceBusMessageBus(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions})">
+            <summary>
+            Adds the default <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/>
+            using the specified configuration options.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> (by name)
+            are registered as singletons.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory"/> and
+            <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceCollectionExtensions.AddAzureServiceBusMessageBus(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            Adds the named <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> 
+            to the service collection using configuration defined by <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions"/>.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="name">The service name.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> (by name)
+            are registered as singletons.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory"/> and
+            <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceCollectionExtensions.AddAzureServiceBusMessageBus(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions})">
+            <summary>
+            Adds the named <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/>
+            to the service collection using the specified configuration options.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="name">The service name.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> (by name)
+            are registered as singletons.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory"/> and
+            <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceFactory">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory"/> that resolves
+            <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService"/> instances.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceFactory.DefaultServiceName">
+            <summary>
+            The default service name.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceFactory.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceFactory"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceFactory.GetService(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceFactory.GetServiceOrDefault(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions">
+            <summary>
+            Defines the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService"/> configuration options for a specific
+            named service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.ConnectionString">
+            <summary>
+            Gets or sets the connection string that should be used to connect to the service.
+            If set, <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.ServiceNamespace"/> will not be considered.
+            </summary>
+            <remarks>
+            Setting to 'Ignore' forces the use of <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.ServiceNamespace"/>.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.ServiceNamespace">
+            <summary>
+            Gets or sets the service fully-qualified namespace that should be used to connect to the service.
+            When set, credentials should be set using <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.Credentials"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.Credentials">
+            <summary>
+            Gets or sets the credentials that should be used to connect to the storage service.
+            This value is required only when the connection is established using <see cref="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.ServiceNamespace"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.RetryPolicy">
+            <summary>
+            Gets or sets the retry policy that should be used to connect to the storage service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.OnInitializeServiceClient(Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith@)">
+            <summary>
+            Called when the service client is initialized.
+            </summary>
+            <param name="initializedWith">A value indicating how the service client was initialized.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.OnInitializeAdministrationServiceClient(Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith@)">
+            <summary>
+            Called when the administration service client is initialized.
+            </summary>
+            <param name="initializedWith">A value indicating how the administration service client was initialized.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.Administration.ServiceBusAdministrationClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.Primavera#Hydrogen#Messaging#Azure#IProvideServiceBusServiceClients#InitializeServiceClient(Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.Primavera#Hydrogen#Messaging#Azure#IProvideServiceBusServiceClients#InitializeAdministrationServiceClient(Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceOptions.Primavera#Hydrogen#Messaging#Azure#IProvideServiceBusServiceClients#GetServiceClientConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceRegistration">
+            <summary>
+            Describes the registration of a named <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceRegistration.Name">
+            <summary>
+            Gets the service name.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceRegistration.#ctor(System.String,System.Func{System.IServiceProvider,Primavera.Hydrogen.Messaging.IMessageBusService},System.Func{System.IServiceProvider,Primavera.Hydrogen.Messaging.IMessageBusManagementService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceRegistration"/> class.
+            </summary>
+            <param name="name">The service name.</param>
+            <param name="serviceFactory">The delegate that should be used to create the service instance.</param>
+            <param name="managementServiceFactory">The delegate that should be used to create the management service instance.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceRegistration.GetService(System.IServiceProvider)">
+            <summary>
+            Gets the service instance.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceRegistration.GetManagementService(System.IServiceProvider)">
+            <summary>
+            Gets the management service instance.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.IProvideServiceBusServiceClients">
+            <summary>
+            Defines a type that is capable of initializing instances
+            of Azure Service Bus SDK service clients depending on configuration options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.IProvideServiceBusServiceClients.InitializeServiceClient(Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith@)">
+            <summary>
+            Initializes the service client.
+            </summary>
+            <param name="initializedWith">Indicates how the service client was initialized.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.IProvideServiceBusServiceClients.InitializeAdministrationServiceClient(Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith@)">
+            <summary>
+            Initializes the administration service client.
+            </summary>
+            <param name="initializedWith">Indicates how the service client was initialized.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.Administration.ServiceBusAdministrationClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.IProvideServiceBusServiceClients.GetServiceClientConnectionInfo">
+            <summary>
+            Gets a string that describes how the service client was initialized.
+            </summary>
+            <returns>
+            A string that describes how the service client was initialized.
+            </returns>
+            <remarks>
+            This information is useful to diagnose unauthorized and/or forbidden errors.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith">
+            <summary>
+            Defines how the service client was initialized
+            by <see cref="T:Primavera.Hydrogen.Messaging.Azure.IProvideServiceBusServiceClients"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith.ConnectionString">
+            <summary>
+            The service client was initialized with a connection string.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.ServiceBusServiceClientInitializedWith.ServiceNamespace">
+            <summary>
+            The service client was initialized with a service namespace (and credential).
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.ExtensionsMessageBusReceiveMode">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusReceiveMode"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ExtensionsMessageBusReceiveMode.ToServiceBusReceiveMode(Primavera.Hydrogen.Messaging.MessageBusReceiveMode)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.MessageBusReceiveMode"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusReceiveMode"/>.
+            </summary>
+            <param name="mode">The <see cref="T:Primavera.Hydrogen.Messaging.MessageBusReceiveMode"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusReceiveMode"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.ExtensionsMessageBusSubQueue">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusSubQueue"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ExtensionsMessageBusSubQueue.ToSubQueue(System.Nullable{Primavera.Hydrogen.Messaging.MessageBusSubQueue})">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.MessageBusSubQueue"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.SubQueue"/>.
+            </summary>
+            <param name="subQueue">The <see cref="T:Primavera.Hydrogen.Messaging.MessageBusSubQueue"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.SubQueue"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.ExtensionsServiceBusErrorSource">
+            <summary>
+            Defines extension methods for the <see cref="T:Azure.Messaging.ServiceBus.ServiceBusErrorSource"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ExtensionsServiceBusErrorSource.ToMessageBusErrorSource(Azure.Messaging.ServiceBus.ServiceBusErrorSource)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Messaging.ServiceBus.ServiceBusErrorSource"/> to the corresponding
+            <see cref="T:Primavera.Hydrogen.Messaging.MessageBusErrorSource"/>.
+            </summary>
+            <param name="state">The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusErrorSource"/>.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.MessageBusErrorSource"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.ExtensionsServiceBusMessageState">
+            <summary>
+            Defines extension methods for the <see cref="T:Azure.Messaging.ServiceBus.ServiceBusMessageState"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ExtensionsServiceBusMessageState.ToMessageState(Azure.Messaging.ServiceBus.ServiceBusMessageState)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Messaging.ServiceBus.ServiceBusMessageState"/> to the corresponding
+            <see cref="T:Primavera.Hydrogen.Messaging.MessageState"/>.
+            </summary>
+            <param name="state">The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusMessageState"/>.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.MessageState"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.DefaultProbeName">
+            <summary>
+            The default name used for probes.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.DefaultDiagnosticName">
+            <summary>
+            The default name used for diagnostics.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.AddAzureServiceBusMessageBusProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a probe for Azure Service Bus Message Bus.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="serviceName">The service name. If null, the default service will be probed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.DefaultProbeName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This probe executes an operation on <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService"/> to
+            retrieve the underlying Service Bus namespace properties.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.AddAzureServiceBusMessageBusQueueDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure Service Bus Message Bus queue.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="queueName">The name of the queue that should be diagnosed.</param>
+            <param name="serviceName">The service name. If null, the default service will be probed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService"/> to
+            retrieve the specified queue runtime properties.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.AddAzureServiceBusMessageBusTopicDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure Service Bus Message Bus topic.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="topicName">The name of the topic that should be diagnosed.</param>
+            <param name="serviceName">The service name. If null, the default service will be probed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService"/> to
+            retrieve the specified topic runtime properties.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.AddAzureServiceBusMessageBusSubscriptionDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure Service Bus Message Bus topic subscription.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="topicName">The name of the topic that should be diagnosed.</param>
+            <param name="subscriptionName">The name of the subscription that should be diagnosed.</param>
+            <param name="serviceName">The service name. If null, the default service will be probed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusManagementService"/> to
+            retrieve the specified topic runtime properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase">
+            <summary>
+            Defines the base class for publishers.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IPublisher" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.EntityKind">
+            <summary>
+            Gets the kind of entity which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.EntityName">
+            <summary>
+            Gets the name of the entity which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.Target">
+            <summary>
+            Gets the target which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.TargetArguments">
+            <summary>
+            Gets the target arguments which this publisher is working on.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,Azure.Messaging.ServiceBus.ServiceBusSender)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="sender">The sender.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.PublishMessageAsync(System.BinaryData,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.PublishMessageAsync``1(``0,System.Text.Json.JsonSerializerOptions,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.PublishMessagesAsync(System.Collections.Generic.IEnumerable{System.BinaryData},System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.PublishMessagesAsync``1(System.Collections.Generic.IEnumerable{``0},System.Text.Json.JsonSerializerOptions,System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.ScheduleMessageAsync(System.BinaryData,System.DateTimeOffset,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.ScheduleMessageAsync``1(``0,System.Text.Json.JsonSerializerOptions,System.DateTimeOffset,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.ScheduleMessagesAsync(System.Collections.Generic.IEnumerable{System.BinaryData},System.DateTimeOffset,System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.ScheduleMessagesAsync``1(System.Collections.Generic.IEnumerable{``0},System.Text.Json.JsonSerializerOptions,System.DateTimeOffset,System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.DisposeAsync">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
+            </summary>
+            <returns>
+            A task that represents the asynchronous dispose operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.DisposeCoreAsync">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.ValueTask"/> that represents the asynchronous dispose operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.__LogPublishedMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.__LogScheduledMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.__LogPublishedMessagesStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase.__LogScheduledMessagesStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase">
+            <summary>
+            Defines the base class for receivers.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IReceiver" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.EntityKind">
+            <summary>
+            Gets the kind of entity which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.EntityName">
+            <summary>
+            Gets the name of the entity which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.Target">
+            <summary>
+            Gets the target which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.TargetArguments">
+            <summary>
+            Gets the target arguments which this publisher is working on.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,Azure.Messaging.ServiceBus.ServiceBusReceiver)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="receiver">The receiver.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.PeekMessageAsync(System.Nullable{System.Int64},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.PeekMessagesAsync(System.Int32,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.ReceiveMessageAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.ReceiveMessagesAsync(System.Int32,System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.CompleteMessageAsync(Primavera.Hydrogen.Messaging.IMessage,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.AbandonMessageAsync(Primavera.Hydrogen.Messaging.IMessage,System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.DeadLetterMessageAsync(Primavera.Hydrogen.Messaging.IMessage,System.Collections.Generic.IDictionary{System.String,System.Object},System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.RenewMessageLockAsync(Primavera.Hydrogen.Messaging.IMessage,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.DisposeAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.DisposeCoreAsync">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.ValueTask"/> that represents the asynchronous dispose operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogReceivedMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogPeekedMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogReceivedMessagesStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogPeekedMessagesStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogCompletedMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogAbandonedMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogDeadLetteredMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase.__LogRenewedMessageLockStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase">
+            <summary>
+            Defines the base class for subscribers.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.ISubscriber" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.IsStarted">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.EntityKind">
+            <summary>
+            Gets the kind of entity which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.EntityName">
+            <summary>
+            Gets the name of the entity which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.Target">
+            <summary>
+            Gets the target which this publisher is working on.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.TargetArguments">
+            <summary>
+            Gets the target arguments which this publisher is working on.
+            </summary>
+        </member>
+        <member name="E:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.ProcessMessageAsync">
+            <inheritdoc/>
+        </member>
+        <member name="E:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.ProcessErrorAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,Azure.Messaging.ServiceBus.ServiceBusProcessor)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="processor">The processor.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.StartAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.StopAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.DisposeAsync">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.__LogProcessedErrorStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase.__LogProcessedMessageStruct">
+            <summary> This API supports the logging infrastructure and is not intended to be used directly from your code. It is subject to change in the future. </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs">
+            <summary>
+            Provides a default implementation of the <see cref="T:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.Message">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.CancellationToken">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.#ctor(System.String,System.String,Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceExceptionHandler,Microsoft.Extensions.Logging.ILogger,Azure.Messaging.ServiceBus.ProcessMessageEventArgs)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs"/> class.
+            </summary>
+            <param name="name">The service name.</param>
+            <param name="queueName">The queue name.</param>
+            <param name="exceptionsHandler">The exceptions handler.</param>
+            <param name="serviceArgs">The <see cref="T:Azure.Messaging.ServiceBus.ProcessMessageEventArgs"/> instance containing the event data.</param>
+            <param name="logger">The parent logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.#ctor(System.String,System.String,System.String,Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusServiceExceptionHandler,Microsoft.Extensions.Logging.ILogger,Azure.Messaging.ServiceBus.ProcessMessageEventArgs)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs"/> class.
+            </summary>
+            <param name="name">The service name.</param>
+            <param name="topicName">The topic name.</param>
+            <param name="subscriptionName">The subscription name.</param>
+            <param name="exceptionsHandler">The exceptions handler.</param>
+            <param name="serviceArgs">The <see cref="T:Azure.Messaging.ServiceBus.ProcessMessageEventArgs"/> instance containing the event data.</param>
+            <param name="logger">The parent logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.CompleteMessageAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.AbandonMessageAsync(System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.DeadLetterMessageAsync(System.Collections.Generic.IDictionary{System.String,System.Object},System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ProcessIncomingMessageEventArgs.RenewMessageLockAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.ProcessUnhandledErrorEventArgs">
+            <summary>
+            Provides a default implementation of the <see cref="T:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.ProcessUnhandledErrorEventArgs.Exception">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.ProcessUnhandledErrorEventArgs.CancellationToken">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.ProcessUnhandledErrorEventArgs.ErrorSource">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.ProcessUnhandledErrorEventArgs.Identifier">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.ProcessUnhandledErrorEventArgs.#ctor(Azure.Messaging.ServiceBus.ProcessErrorEventArgs)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.ProcessUnhandledErrorEventArgs"/> class.
+            </summary>
+            <param name="serviceArgs">The <see cref="T:Azure.Messaging.ServiceBus.ProcessErrorEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_EntityAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Messaging entity does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_EntityDisabled">
+            <summary>
+              Looks up a localized string similar to Messaging entity is disabled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_EntityNotFound">
+            <summary>
+              Looks up a localized string similar to Messaging entity does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_ErrorConnectingToServer">
+            <summary>
+              Looks up a localized string similar to Could not connect to server..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_InvalidApplicationIdentity">
+            <summary>
+              Looks up a localized string similar to A valid application identity could not be set from configuration options..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_MaximumCapacityExceeded">
+            <summary>
+              Looks up a localized string similar to The service resource has exceeeded the maximum capacity..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_MessageLockLost">
+            <summary>
+              Looks up a localized string similar to The message lock has expired..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_MessageNotFound">
+            <summary>
+              Looks up a localized string similar to The message does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_MessageSizeExceeded">
+            <summary>
+              Looks up a localized string similar to The maximum message size was exceeded..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_OperationCanceled">
+            <summary>
+              Looks up a localized string similar to An operation was canceled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_OperationTimeout">
+            <summary>
+              Looks up a localized string similar to An operation timed out..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_QueueAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Queue &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_QueueDisabled">
+            <summary>
+              Looks up a localized string similar to Queue &apos;{0}&apos; is disabled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_QueueNotFound">
+            <summary>
+              Looks up a localized string similar to Queue &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_ServiceBusy">
+            <summary>
+              Looks up a localized string similar to The service is busy and cannot perform the requested operation..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_ServiceTimeout">
+            <summary>
+              Looks up a localized string similar to The operation timed out while interacting with the service..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SessionLockLost">
+            <summary>
+              Looks up a localized string similar to The session lock has expired..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SessionNotLocked">
+            <summary>
+              Looks up a localized string similar to The sesssion cannot be locked..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SocketFailure">
+            <summary>
+              Looks up a localized string similar to There was an error in the underlying socket..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SubscriptionAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Subscription &apos;{0}/{1}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SubscriptionDisabled">
+            <summary>
+              Looks up a localized string similar to Subscription &apos;{0}/{1}&apos; is disabled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SubscriptionNotFound">
+            <summary>
+              Looks up a localized string similar to Subscription &apos;{0}/{1}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SubscriptionRuleAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Subscription rule &apos;{0}/{1}/{2}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SubscriptionRuleDisabled">
+            <summary>
+              Looks up a localized string similar to Subscription rule &apos;{0}/{1}/{2}&apos; is disabled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_SubscriptionRuleNotFound">
+            <summary>
+              Looks up a localized string similar to Subscription rule &apos;{0}/{1}/{2}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_TopicAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Topic &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_TopicDisabled">
+            <summary>
+              Looks up a localized string similar to Topic &apos;{0}&apos; is disabled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_TopicNotFound">
+            <summary>
+              Looks up a localized string similar to Topic &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_TransactionFailure">
+            <summary>
+              Looks up a localized string similar to There was an error with the transaction..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_Unauthorized">
+            <summary>
+              Looks up a localized string similar to Access to the service is unauthorized. Service client connection: {0}..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Error_UnexpectedError">
+            <summary>
+              Looks up a localized string similar to An unexpected error has occurred..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_InvalidArguments">
+            <summary>
+              Looks up a localized string similar to Invalid argument count in exception handler error message..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_InvalidMessageType">
+            <summary>
+              Looks up a localized string similar to Operation is only supported on messages of type &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_Options_ConnectionStringOrServiceNamespaceUnspecified">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. Please specify the service namespace and credentials or the connection string..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_Options_CredentialsInvalid">
+            <summary>
+              Looks up a localized string similar to The credentials configuration options are invalid. At least one kind of credential should be activated..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_Options_CredentialsMissing">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. Please specify the credentials..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_Options_ServiceNamespaceUnspecified">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. Please specify the service namespace and credentials..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_ProcessErrorHandlerAlreadyAssigned">
+            <summary>
+              Looks up a localized string similar to The process error handler has already been assigned. Assigning multiple handlers is not supported..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_ProcessErrorHandlerNotAssigned">
+            <summary>
+              Looks up a localized string similar to The process error handler was not assigned..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_ProcessMessageHandlerAlreadyAssigned">
+            <summary>
+              Looks up a localized string similar to The process message handler has already been assigned. Assigning multiple handlers is not supported..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_ProcessMessageHandlerNotAssigned">
+            <summary>
+              Looks up a localized string similar to The process message handler was not assigned..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_UnableToFindServiceRegistration">
+            <summary>
+              Looks up a localized string similar to Unable to find neither a service registration with name &apos;{0}&apos; or the default service registration..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_UnableToFindServiceRegistrationOrDefault">
+            <summary>
+              Looks up a localized string similar to Unable to find service registration with name &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Properties.Resources.RES_Exception_UnderlyingServiceComponentDisposed">
+            <summary>
+              Looks up a localized string similar to The underlying service component was disposed..
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueOptions.ToCreateQueueOptions(Primavera.Hydrogen.Messaging.Queues.QueueOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateQueueOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateQueueOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueProperties">
+            <summary>
+            Defines extension methods for the <see cref="T:Azure.Messaging.ServiceBus.Administration.QueueProperties"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueProperties.ToQueueOptions(Azure.Messaging.ServiceBus.Administration.QueueProperties)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Messaging.ServiceBus.Administration.QueueProperties"/> to the corresponding
+            <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueOptions"/>.
+            </summary>
+            <param name="properties">The <see cref="T:Azure.Messaging.ServiceBus.Administration.QueueProperties"/>.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueuePublisherOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueuePublisherOptions.ToServiceBusSenderOptions(Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusSenderOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusSenderOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueReceiverOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueReceiverOptions.ToServiceBusReceiverOptions(Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusReceiverOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusReceiverOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueSubscriberOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.ExtensionsQueueSubscriberOptions.ToServiceBusProcessorOptions(Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusProcessorOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusProcessorOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher">
+            <summary>
+            Provides an implementation of <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueuePublisher"/> that
+            uses Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Queues.IQueuePublisher" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher.QueueName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher.EntityKind">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher.EntityName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher.Target">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher.TargetArguments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,System.String,Azure.Messaging.ServiceBus.ServiceBusSender)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Queues.QueuePublisher" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="queueName">The queue name.</param>
+            <param name="sender">The sender.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver">
+            <summary>
+            Provides an implementation of <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueReceiver"/> that
+            uses Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueReceiver" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver.QueueName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver.EntityKind">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver.EntityName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver.Target">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver.TargetArguments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,System.String,Azure.Messaging.ServiceBus.ServiceBusReceiver)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Queues.QueueReceiver" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="queueName">The queue name.</param>
+            <param name="receiver">The receiver.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber">
+            <summary>
+            Provides an implementation of <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueSubscriber"/> that
+            uses Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueSubscriber" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber.QueueName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber.EntityKind">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber.EntityName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber.Target">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber.TargetArguments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,System.String,Azure.Messaging.ServiceBus.ServiceBusProcessor)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Queues.QueueSubscriber" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="queueName">The queue name.</param>
+            <param name="processor">The processor.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Target">
+            <summary>
+            Defines the target of an operation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.Target.Service">
+            <summary>
+            The target is the service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.Target.Topic">
+            <summary>
+            The target is a topic.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.Target.Subscription">
+            <summary>
+            The target is a topic subscription.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.Target.SubscriptionRule">
+            <summary>
+            The target is a subscription rule.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.Azure.Target.Queue">
+            <summary>
+            The target is a queue.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsCorrelationSubscriptionRuleFilter">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsCorrelationSubscriptionRuleFilter.ToCorrelationRuleFilter(Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.Administration.CorrelationRuleFilter"/>.
+            </summary>
+            <param name="filter">The topic subscription rule filter.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.Administration.CorrelationRuleFilter"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsRuleProperties">
+            <summary>
+            Defines extension methods for the <see cref="T:Azure.Messaging.ServiceBus.Administration.RuleProperties"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsRuleProperties.ToSubscriptionRuleOptions(Azure.Messaging.ServiceBus.Administration.RuleProperties,System.String,System.String)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Messaging.ServiceBus.Administration.RuleProperties"/> to the corresponding
+            <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/>.
+            </summary>
+            <param name="properties">The <see cref="T:Azure.Messaging.ServiceBus.Administration.RuleProperties"/>.</param>
+            <param name="topicName">The topic name.</param>
+            <param name="subscriptionName">The topic subscription name.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsSubscriptionOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsSubscriptionOptions.ToCreateSubscriptionOptions(Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateSubscriptionOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateSubscriptionOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsSubscriptionProperties">
+            <summary>
+            Defines extension methods for the <see cref="T:Azure.Messaging.ServiceBus.Administration.SubscriptionProperties"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsSubscriptionProperties.ToSubscriptionOptions(Azure.Messaging.ServiceBus.Administration.SubscriptionProperties)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Messaging.ServiceBus.Administration.SubscriptionProperties"/> to the corresponding
+            <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/>.
+            </summary>
+            <param name="properties">The <see cref="T:Azure.Messaging.ServiceBus.Administration.SubscriptionProperties"/>.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsSubscriptionRuleOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsSubscriptionRuleOptions.ToCreateRuleOptions(Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions,Azure.Messaging.ServiceBus.Administration.RuleFilter)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateRuleOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions"/>.</param>
+            <param name="filter">The topic subscription rule filter.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateRuleOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicOptions.ToCreateTopicOptions(Primavera.Hydrogen.Messaging.Topics.TopicOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateTopicOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.Administration.CreateTopicOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicProperties">
+            <summary>
+            Defines extension methods for the <see cref="T:Azure.Messaging.ServiceBus.Administration.TopicProperties"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicProperties.ToTopicOptions(Azure.Messaging.ServiceBus.Administration.TopicProperties)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Messaging.ServiceBus.Administration.TopicProperties"/> to the corresponding
+            <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/>.
+            </summary>
+            <param name="properties">The <see cref="T:Azure.Messaging.ServiceBus.Administration.TopicProperties"/>.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicPublisherOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicPublisherOptions.ToServiceBusSenderOptions(Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusSenderOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusSenderOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicReceiverOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicReceiverOptions.ToServiceBusReceiverOptions(Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusReceiverOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusReceiverOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicSubscriberOptions">
+            <summary>
+            Defines extension methods for the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.ExtensionsTopicSubscriberOptions.ToServiceBusProcessorOptions(Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions"/> to the corresponding
+            <see cref="T:Azure.Messaging.ServiceBus.ServiceBusProcessorOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions"/>.</param>
+            <returns>
+            The <see cref="T:Azure.Messaging.ServiceBus.ServiceBusProcessorOptions"/>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher">
+            <summary>
+            Provides an implementation of <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicPublisher"/> that
+            uses Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.PublisherBase" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicPublisher" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher.TopicName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher.EntityKind">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher.EntityName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher.Target">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher.TargetArguments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,System.String,Azure.Messaging.ServiceBus.ServiceBusSender)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Topics.TopicPublisher" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="topicName">The topic name.</param>
+            <param name="sender">The sender.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver">
+            <summary>
+            Provides an implementation of <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicReceiver"/> that
+            uses Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.ReceiverBase" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicReceiver" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver.TopicName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver.SubscriptionName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver.EntityKind">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver.EntityName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver.Target">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver.TargetArguments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,System.String,System.String,Azure.Messaging.ServiceBus.ServiceBusReceiver)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Topics.TopicReceiver" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="topicName">The topic name.</param>
+            <param name="subscriptionName">The subscription name.</param>
+            <param name="receiver">The receiver.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber">
+            <summary>
+            Provides an implementation of <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicSubscriber"/> that
+            uses Azure Service Bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Azure.Internal.SubscriberBase" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicSubscriber" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber.TopicName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber.SubscriptionName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber.EntityKind">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber.EntityName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber.Target">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber.TargetArguments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber.#ctor(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusService,System.String,System.String,Azure.Messaging.ServiceBus.ServiceBusProcessor)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Azure.Topics.TopicSubscriber" /> class.
+            </summary>
+            <param name="service">The parent service.</param>
+            <param name="topicName">The topic name.</param>
+            <param name="subscriptionName">The subscription name.</param>
+            <param name="processor">The processor.</param>
+        </member>
+    </members>
+</doc>

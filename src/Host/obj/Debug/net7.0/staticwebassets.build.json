@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "Hash": "P5doQiBWG9zsL21s1obPJ/Si17Oi/yzcXD6AoZdKMYI=",
+  "Source": "Primavera.Lithium.ChatGPT.Server.Host",
+  "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Primavera.Lithium.ChatGPT.Server.Host\\wwwroot",
+      "Source": "Primavera.Lithium.ChatGPT.Server.Host",
+      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\chat.js",
+      "SourceId": "Primavera.Lithium.ChatGPT.Server.Host",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
+      "RelativePath": "js/chat.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\chat.js"
+    },
+    {
+      "Identity": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.js",
+      "SourceId": "Primavera.Lithium.ChatGPT.Server.Host",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
+      "RelativePath": "js/signalr/dist/browser/signalr.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\signalr\\dist\\browser\\signalr.js"
+    },
+    {
+      "Identity": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js",
+      "SourceId": "Primavera.Lithium.ChatGPT.Server.Host",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\VSProjects\\ChatGPT\\Host\\wwwroot\\",
+      "BasePath": "_content/Primavera.Lithium.ChatGPT.Server.Host",
+      "RelativePath": "js/signalr/dist/browser/signalr.min.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js"
+    }
+  ]
+}

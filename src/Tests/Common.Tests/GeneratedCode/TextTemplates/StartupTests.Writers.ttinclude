@@ -1,0 +1,52 @@
+﻿<#+
+
+// *** WriteStartupAddCommonPart
+
+public void WriteStartupAddCommonPart(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.TestAddCommonPart();
+<#+
+
+}
+
+// *** WriteTestAddCommonPart
+
+public void WriteTestAddCommonPart(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        <#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration hostConfiguration = new <#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration();
+
+        ServiceCollection services = this.CreateServiceCollection();
+
+        services.AddCommonPart(hostConfiguration);
+
+        IServiceProvider provider = services.BuildServiceProvider();
+
+        provider.GetRequiredService<AutoMapper.IMapper>();
+
+        this.TestAddCommonPartServices(services, provider);
+<#+
+
+}
+
+// *** WriteCreateServiceCollection
+
+public void WriteCreateServiceCollection(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+         return new ServiceCollection();
+<#+
+
+}
+
+#>

@@ -1,0 +1,28 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Common");
+
+    targetModel.Namespace
+        .AddClass(new ClassModel("ErrorCodes")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+            Documentation = new DocumentationModel("Defines constants that specify application error codes.")
+        })
+            .WithConstant(new ConstantModel("RequestArgsInvalid", "string", "nameof(RequestArgsInvalid)")
+            {
+                Modifiers = ConstantModifiers.Public,
+                Documentation = new DocumentationModel("The request arguments are invalid.")
+            });
+}
+
+#>

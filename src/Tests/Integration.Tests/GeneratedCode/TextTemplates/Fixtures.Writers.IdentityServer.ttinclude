@@ -1,0 +1,68 @@
+﻿<#+
+
+// *** WriteBuildAuthorizationServerIdentityServer
+
+public void WriteBuildAuthorizationServerIdentityServer(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        System.Collections.Generic.IList<Duende.IdentityServer.Models.ApiScope> apiScopes = new System.Collections.Generic.List<Duende.IdentityServer.Models.ApiScope>()
+        {
+            new Duende.IdentityServer.Models.ApiScope(RestApi.Metadata.Scopes.DefaultScope),
+<#+
+
+    foreach (AuthorizationPolicy authorizationPolicy in serviceModel.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Name))
+    {
+
+#>
+            new Duende.IdentityServer.Models.ApiScope(RestApi.Metadata.Scopes.<#= authorizationPolicy.Name #>),
+<#+
+
+    }
+
+#>
+        };
+
+        this.AddAdditionalApiScopes(apiScopes);
+
+        System.Collections.Generic.IList<Duende.IdentityServer.Models.ApiResource> apiResources = new System.Collections.Generic.List<Duende.IdentityServer.Models.ApiResource>()
+        {
+            new Duende.IdentityServer.Models.ApiResource(RestApi.Metadata.Scopes.DefaultScope)
+            {
+                Scopes = apiScopes.Select(i => i.Name).ToArray()
+            }
+        };
+
+        this.AddAdditionalApiResources(apiResources);
+
+        System.Collections.Generic.IList<Duende.IdentityServer.Models.Client> clients = new System.Collections.Generic.List<Duende.IdentityServer.Models.Client>()
+        {
+            new Duende.IdentityServer.Models.Client()
+            {
+                ClientId = clientId,
+                ClientSecrets = new System.Collections.Generic.List<Duende.IdentityServer.Models.Secret>()
+                {
+                    new Duende.IdentityServer.Models.Secret(
+                        Primavera.Hydrogen.Security.Cryptography.ComputeHashString.Sha256(
+                            clientSecret))
+                },
+                AllowedGrantTypes = Duende.IdentityServer.Models.GrantTypes.ClientCredentials,
+                AllowedScopes = apiScopes.Select(i => i.Name).ToArray()
+            }
+        };
+
+        this.AddAdditionalClients(clients);
+
+        return Primavera.Hydrogen.DesignTime.Testing.AspNetCore.IdentityServer.IdentityServerTestHostBuilder
+            .Create()
+            .UseApiScopes(apiScopes)
+            .UseApiResources(apiResources)
+            .UseClients(clients)
+            .Build();
+<#+
+
+}
+
+#>

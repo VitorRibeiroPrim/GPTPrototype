@@ -1,0 +1,358 @@
+﻿<#+
+
+// *** TransformMonitoringController
+
+public void TransformMonitoringController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    targetModel
+        .WithNamespaceImport(
+            new NamespaceImportModel("Primavera.Hydrogen.Reflection"));
+
+    // Base class
+
+    ClassModel baseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("MonitoringControllerBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+                Inheritance = "AppControllerBase, IMonitoringController",
+                Documentation = new DocumentationModel("Defines the base class for the controller that provides monitoring routes.")
+                {
+                    Remarks = "This is the base class of the MVC controller."
+                }
+            })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Inheritance = "base(logger)",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"MonitoringControllerBase\" /> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger")
+                    {
+                        Documentation = new DocumentationModel("The logger.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ProbeAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Monitoring.Routes.Probe)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Monitoring.Actions.Probe)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.HealthMonitoring.HealthResult), (int)System.Net.HttpStatusCode.OK)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.HealthMonitoring.HealthResult), (int)System.Net.HttpStatusCode.ServiceUnavailable)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("DiagnosticsAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Monitoring.Routes.Diagnostics)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Monitoring.Actions.Diagnostics)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.HealthMonitoring.HealthResult), (int)System.Net.HttpStatusCode.OK)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.HealthMonitoring.HealthResult), (int)System.Net.HttpStatusCode.ServiceUnavailable)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("EndpointsAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Monitoring.Routes.Endpoints)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Monitoring.Actions.Endpoints)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>), (int)System.Net.HttpStatusCode.OK)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigurationAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Monitoring.Routes.Configuration)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Monitoring.Actions.Configuration)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation), (int)System.Net.HttpStatusCode.OK)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("InformationAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Monitoring.Routes.Information)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Monitoring.Actions.Information)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.Description.ServiceInfo), (int)System.Net.HttpStatusCode.OK)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("GetInformationFromAssembly")
+                {
+                    Modifiers = MethodModifiers.Private
+                })
+                .WithParameter(
+                    new MethodParameterModel("version", "string")
+                    {
+                        Modifiers = MethodParameterModifiers.Out
+                    })
+                .WithParameter(
+                    new MethodParameterModel("build", "string")
+                    {
+                        Modifiers = MethodParameterModifiers.Out
+                    })
+                .WithParameter(
+                    new MethodParameterModel("copyright", "string")
+                    {
+                        Modifiers = MethodParameterModifiers.Out
+                    })
+                .ParentModelAs<ClassModel>();
+
+    baseClass
+        .AddMethod(new MethodModel("AddAzureManagedConfigurationProbes", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Adds probes for the Azure Managed Configuration service, as part of the Probe endpoint.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    baseClass
+        .AddMethod(new MethodModel("AddAzureManagedConfigurationDiagnostics", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Adds diagnostics for the Azure Managed Configuration service, as part of the Diagnostics endpoint.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    baseClass
+        .AddMethod(new MethodModel("AddDependenciesProbes", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Adds probes for the dependencies of the service, as part of the Probe endpoint.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    baseClass
+        .AddMethod(new MethodModel("AddDependenciesDiagnostics", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Adds diagnostics for the dependencies of the service, as part of the Diagnostics endpoint.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    if (serviceModel.BackgroundServices.Any(i => i.PerformsInitialization.IsTrue()))
+    {
+        baseClass
+            .AddMethod(new MethodModel("AddBackgroundServicesProbes", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Adds probes for the initialization background services of the service, as part of the Probe endpoint.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+                }
+            })
+                .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+                {
+                    Documentation = new DocumentationModel("The probes builder.")
+                });
+
+        baseClass
+            .AddMethod(new MethodModel("AddBackgroundServicesDiagnostics", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Adds diagnostics for the initialization background services of the service, as part of the Diagnostics endpoint.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+                }
+            })
+                .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+                {
+                    Documentation = new DocumentationModel("The probes builder.")
+                });
+    }
+
+    baseClass
+        .AddMethod(new MethodModel("AddServiceDependenciesDiagnostics", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Adds diagnostics for the service dependencies of the service, as part of the Diagnostics endpoint.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    baseClass
+        .AddMethod(new MethodModel("AddAdditionalProbes", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Adds additional probes for the service, as part of the Probe endpoint.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    baseClass
+        .AddMethod(new MethodModel("AddAdditionalDiagnostics", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Adds additional diagnostics for the service, as part of the Diagnostics endpoint.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    this.AddDependency(serviceModel, baseClass, DependencyKind.DistributedCache, "DistributedCache", "distributed cache");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.TableStorage, "TableStorage", "table storage");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.BlobStorage, "BlobStorage", "blob storage");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.Search, "Search", "search");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.SecretsStorage, "SecretsStorage", "secrets storage");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.MessageBus, "MessageBus", "message bus");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.MultiModelDatabase, "MultiModelDatabase", "multi-model database");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.Taskbox, "Taskbox", "task box");
+    this.AddDependency(serviceModel, baseClass, DependencyKind.DataProtection, "DataProtection", "data protection");
+
+    this.AddWebhooks(serviceModel, baseClass);
+
+    // Controller
+
+    ClassModel controllerClass = targetModel.Namespace
+        .AddClass(new ClassModel("MonitoringController")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+            Inheritance = "MonitoringControllerBase",
+            Documentation = new DocumentationModel("Defines the controller that provides monitoring routes.")
+        })
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ControllerName(Common.Constants.Controllers.Monitoring.Name)"))
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)"))
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base(logger)",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"MonitoringController\" /> class.")
+            })
+                .WithParameter(new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger<MonitoringController>")
+                {
+                    Documentation = new DocumentationModel("The logger.")
+                })
+                .ParentModelAs<ClassModel>();
+
+}
+
+private void AddDependency(ServiceModel serviceModel, ClassModel baseClass, DependencyKind kind, string name, string description)
+{
+    if (serviceModel.Dependencies.Any(d => d.Kind == kind))
+    {
+        baseClass
+            .AddMethod(new MethodModel($"AddProbe{name}", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel($"Adds a probe for the {description} dependency.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+                }
+            })
+                .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+                {
+                    Documentation = new DocumentationModel("The probes builder.")
+                });
+
+        baseClass
+            .AddMethod(new MethodModel($"AddDiagnostic{name}", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel($"Adds a diagnostic for the {description} dependency.")
+                {
+                    Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+                }
+            })
+                .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+                {
+                    Documentation = new DocumentationModel("The probes builder.")
+                });
+    }
+}
+
+private void AddWebhooks(ServiceModel serviceModel, ClassModel baseClass)
+{
+    if (!serviceModel.Webhooks.Any())
+    {
+        return;
+    }
+
+    baseClass
+        .AddMethod(new MethodModel($"AddWebhooksProbes", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel($"Adds probes for the webhooks services.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+
+    baseClass
+        .AddMethod(new MethodModel($"AddWebhooksDiagnostics", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel($"Adds diagnostics for the webhooks services.")
+            {
+                Returns = "The <see cref=\"Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder\"/> instance."
+            }
+        })
+            .WithParameter(new MethodParameterModel("builder", "Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder")
+            {
+                Documentation = new DocumentationModel("The probes builder.")
+            });
+}
+
+#>

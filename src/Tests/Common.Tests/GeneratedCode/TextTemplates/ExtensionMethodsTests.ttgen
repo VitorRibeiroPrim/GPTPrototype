@@ -1,0 +1,366 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    this.TransformServiceModel);
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel(this.ServiceModel, false);
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Add writers
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetId_Principal_Null");
+    }, 
+    this.WriteGetIdPrincipalNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetId_Subject");
+    }, 
+    this.WriteGetIdSubject);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetId_NameIdentifier");
+    }, 
+    this.WriteGetIdNameIdentifier);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetId_NotFound");
+    }, 
+    this.WriteGetIdNotFound);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetEmail_Principal_Null");
+    }, 
+    this.WriteGetEmailPrincipalNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetEmail_Email1");
+    }, 
+    this.WriteGetEmailEmail1);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetEmail_Email2");
+    }, 
+    this.WriteGetEmailEmail2);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetEmail_NotFound");
+    }, 
+    this.WriteGetEmailNotFound);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetClientId_Principal_Null");
+    }, 
+    this.WriteGetClientIdPrincipalNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetClientId_ClientId");
+    }, 
+    this.WriteGetClientIdClientId);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetClientId_NotFound");
+    }, 
+    this.WriteGetClientIdNotFound);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetDisplayName_Principal_Null");
+    }, 
+    this.WriteGetDisplayNamePrincipalNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetDisplayName_DisplayName");
+    }, 
+    this.WriteGetDisplayNameDisplayName);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetDisplayName_Email");
+    }, 
+    this.WriteGetDisplayNameEmail);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetDisplayName_NotFound");
+    }, 
+    this.WriteGetDisplayNameNotFound);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsApi_Request_Null");
+    }, 
+    this.WritePathIsApiRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsApi_True");
+    }, 
+    this.WritePathIsApiTrue);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsApi_False");
+    }, 
+    this.WritePathIsApiFalse);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsMonitoring_Request_Null");
+    }, 
+    this.WritePathIsMonitoringRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsMonitoring_Monitoring");
+    }, 
+    this.WritePathIsMonitoringMonitoring);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsMonitoring_AdminFunctions");
+    }, 
+    this.WritePathIsMonitoringAdminFunctions);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsMonitoring_False");
+    }, 
+    this.WritePathIsMonitoringFalse);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsDocumentation_Request_Null");
+    }, 
+    this.WritePathIsDocumentationRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsDocumentation_True");
+    }, 
+    this.WritePathIsDocumentationTrue);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsDocumentation_False");
+    }, 
+    this.WritePathIsDocumentationFalse);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsRestApiDocumentation_Request_Null");
+    }, 
+    this.WritePathIsRestApiDocumentationRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsRestApiDocumentation_True");
+    }, 
+    this.WritePathIsRestApiDocumentationTrue);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsRestApiDocumentation_False");
+    }, 
+    this.WritePathIsRestApiDocumentationFalse);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsRestApiDocumentationCustomization_Request_Null");
+    }, 
+    this.WritePathIsRestApiDocumentationCustomizationRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsRestApiDocumentationCustomization_True");
+    }, 
+    this.WritePathIsRestApiDocumentationCustomizationTrue);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsRestApiDocumentationCustomization_False");
+    }, 
+    this.WritePathIsRestApiDocumentationCustomizationFalse);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsContent_Request_Null");
+    }, 
+    this.WritePathIsContentRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsContent_Css");
+    }, 
+    this.WritePathIsContentCss);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsContent_Fonts");
+    }, 
+    this.WritePathIsContentFonts);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsContent_Img");
+    }, 
+    this.WritePathIsContentImg);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsContent_Lib");
+    }, 
+    this.WritePathIsContentLib);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_PathIsContent_False");
+    }, 
+    this.WritePathIsContentFalse);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetBaseUri_Request_Null");
+    }, 
+    this.WriteGetBaseUriRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetBaseUri");
+    }, 
+    this.WriteGetBaseUri);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetRestProblemDetailsType_Request_Null");
+    }, 
+    this.WriteGetRestProblemDetailsTypeRequestNull);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetRestProblemDetailsType_ErrorCode_NullOrWhiteSpace");
+    }, 
+    this.WriteGetRestProblemDetailsTypeErrorCodeNullOrWhiteSpace);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        return parentMethod.Name.EqualsNoCase("ExtensionMethods_GetRestProblemDetailsType");
+    }, 
+    this.WriteGetRestProblemDetailsType);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

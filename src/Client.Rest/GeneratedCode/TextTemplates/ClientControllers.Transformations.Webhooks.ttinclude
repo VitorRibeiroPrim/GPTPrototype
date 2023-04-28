@@ -1,0 +1,323 @@
+﻿<#+
+
+// *** TransformWebhooksController
+
+public void TransformWebhooksController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (!sourceModel.Webhooks.Any())
+    {
+        return;
+    }
+
+    // Webhooks classes
+
+    ClassModel baseClassModel = targetModel.Namespace.AddClass(new ClassModel("WebhooksClientControllerBase")
+    {
+        Modifiers = ClassModifiers.Internal | ClassModifiers.Abstract | ClassModifiers.Partial,
+        Inheritance = "IWebhooksClientController",
+        Documentation = new DocumentationModel("Defines the base class for the type that manages webhooks on the service.")
+        {
+            SeeAlso = new List<string>(new string[] { "IWebhooksClientController" })
+        }
+    })
+        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+        .WithField(new FieldModel("client", "{0}ClientBase".Format(sourceModel.Name))
+        {
+            Modifiers = FieldModifiers.Protected,
+            Documentation = new DocumentationModel("The service client instance.")
+        })
+        .AddConstructor(new ConstructorModel()
+        {
+            Modifiers = ConstructorModifiers.Protected,
+            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"WebhooksClientControllerBase\" /> class.")
+        })
+            .WithParameter(new MethodParameterModel("client", "{0}ClientBase".Format(sourceModel.Name))
+            {
+                Documentation = new DocumentationModel("The service client.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("Initialize", "void")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Performs additional initialization.")
+        })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("CreateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<string>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("UpdateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscriptionIfExistsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscriptionsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscriptionsIfExistAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetSubscriptionsAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("ActivateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("ActivateSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("PingSubscriptionAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetWebhooksMetadataAsync", "System.Threading.Tasks.Task<Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata>>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+            {
+                DefaultValue = "default"
+            })
+            .ParentModelAs<ClassModel>();
+
+    baseClassModel
+        .AddMethod(new MethodModel("CreateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<string>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("UpdateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscriptionIfExists", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscriptions", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("DeleteSubscriptionsIfExist", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetSubscriptions", "Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("ActivateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("ActivateSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("eventNames", "System.Collections.Generic.IEnumerable<string>"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("PingSubscription", "Primavera.Hydrogen.Rest.Client.RestServiceResult")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .WithParameter(new MethodParameterModel("clientId", "string"))
+            .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetWebhooksMetadata", "Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata>>")
+        {
+            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel(true)
+        })
+            .ParentModelAs<ClassModel>();
+
+    ClassModel classModel = targetModel.Namespace.AddClass(new ClassModel("WebhooksClientController")
+    {
+        Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+        Inheritance = "WebhooksClientControllerBase",
+        Documentation = new DocumentationModel("Provides operations to manage webhooks on the service.")
+        {
+            SeeAlso = new List<string>(new string[] { "WebhooksClientControllerBase" })
+        }
+    })
+        .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+        .AddConstructor(new ConstructorModel()
+        {
+            Modifiers = ConstructorModifiers.Public,
+            Inheritance = "base(client)",
+            Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"WebhooksClientController\" /> class.")
+        })
+            .WithParameter(new MethodParameterModel("client", "{0}ClientBase".Format(sourceModel.Name))
+            {
+                Documentation = new DocumentationModel("The service client.")
+            })
+            .ParentModelAs<ClassModel>();
+}
+
+#>

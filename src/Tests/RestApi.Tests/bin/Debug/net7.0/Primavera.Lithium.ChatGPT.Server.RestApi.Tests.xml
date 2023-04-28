@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Lithium.ChatGPT.Server.RestApi.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase">
+            <summary>
+            Defines the base class for a test fixture used for REST API tests.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase.ApplicationServices">
+            <summary>
+            Gets the application services.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase.#ctor(System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase"/> class.
+            </summary>
+            <param name="configureServices">Allows configuring services.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase.Initialize">
+            <summary>
+            Initializes the fixture.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase.BuildServiceProvider">
+            <summary>
+            Initializes the service provider.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services.
+            </summary>
+            <param name="services">The service collection.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase.ConfigureAdditionalServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services.
+            </summary>
+            <param name="services">The service collection.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase.ConfigureHostConfiguration(Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration)">
+            <summary>
+            Configures the host configuration.
+            </summary>
+            <param name="hostConfiguration">The host configuration.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixture">
+            <summary>
+            Defines a test fixture used for REST API tests.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixtureBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixture.#ctor(System.Action{Microsoft.Extensions.DependencyInjection.IServiceCollection})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.RestApiTestFixture"/> class.
+            </summary>
+            <param name="configureServices">Allows configuring services.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.Models.SerializerContextTestsBase">
+            <summary>
+            Defines the base class for tests on SerializerContext.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.Models.SerializerContextTestsBase.SerializerContext_Request_Serialization">
+            <summary>
+            Tests the serialization of <see cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Models.Request"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.Models.SerializerContextTestsBase.CreateDefaultRequest">
+            <summary>
+            Initializes a default instance of <see cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Models.Request"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.Models.SerializerContextTestsBase.GetJsonSerializerOptions">
+            <summary>
+            Retrieves a default instance of System.Text.Json.JsonSerializerOptions.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.Models.SerializerContextTests">
+            <summary>
+            Provides tests for the SerializerContext type.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTestsBase">
+            <summary>
+            Defines the base class for <see cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTests"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTestsBase.CreateServiceCollection">
+            <summary>
+            Creates the service collection instance.
+            </summary>
+            <returns>
+            The service collection.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTestsBase.TestAddRestApiPart">
+            <summary>
+            Tests the AddRestApiPart method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTestsBase.TestAddRestApiPartServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.IServiceProvider)">
+            <summary>
+            Tests the services registered in the AddRestApiPart method.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="provider">The service provider.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTests">
+            <summary>
+            Provides integration tests for <see cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Startup"/>.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTests" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTests"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.RestApi.Tests.StartupTests.StartupTests_AddRestApiPart">
+            <summary>
+            Tests the AddRestApiPart method.
+            </summary>
+        </member>
+    </members>
+</doc>

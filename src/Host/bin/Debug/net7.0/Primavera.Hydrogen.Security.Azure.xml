@@ -1,0 +1,645 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Security.Azure</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_Secrets_UnableToFindServiceRegistration">
+            <summary>
+              Looks up a localized string similar to Unable to find service registration with name &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_Secrets_UnableToFindServiceRegistrationOrDefault">
+            <summary>
+              Looks up a localized string similar to Unable to find neither a service registration with name &apos;{0}&apos; or the default service registration..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_CertificateExpired">
+            <summary>
+              Looks up a localized string similar to Certificate &apos;{0}&apos; expired in {1}..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_CertificateNotFound">
+            <summary>
+              Looks up a localized string similar to Certificate &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_ErrorExecutingOperation">
+            <summary>
+              Looks up a localized string similar to Error executing the operation. See inner exception for more information..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_Forbidden">
+            <summary>
+              Looks up a localized string similar to Access to the secrets storage service &apos;{0}&apos; is forbidden. Service client connection: {1}..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_InvalidApplicationIdentity">
+            <summary>
+              Looks up a localized string similar to A valid application identity could not be set from configuration options..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_KeyNotFound">
+            <summary>
+              Looks up a localized string similar to Key &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_Options_CredentialsInvalid">
+            <summary>
+              Looks up a localized string similar to The credentials configuration options are invalid. At least one kind of credential should be activated..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_Options_CredentialsMissing">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. Please specify the credentials..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_Options_ServiceUriUnspecified">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. Please specify the service URI and credentials..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_SecretConflict">
+            <summary>
+              Looks up a localized string similar to Secret &apos;{0}&apos; cannot be set. This is because it is being deleted or because it was deleted and now can only be recovered..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_SecretNotFound">
+            <summary>
+              Looks up a localized string similar to Secret &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Properties.Resources.RES_Exception_SecretsStorage_ServerNotFound">
+            <summary>
+              Looks up a localized string similar to The secrets storage server was not found..
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService">
+            <summary>
+            Defines a implementation of the <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService" /> that uses
+            Azure KeyVault.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService" />
+            <remarks>
+            More information on the KeyVault REST API
+            <see href="https://docs.microsoft.com/en-us/rest/api/keyvault/">here</see>.
+            More information on the Azure SDK for .NET (on KeyVault)
+            <see href="https://docs.microsoft.com/en-us/dotnet/api/overview/azure/key-vault">here</see>.
+            More information on the Azure SDK authentication
+            <see href="https://github.com/Azure/azure-sdk-for-net/tree/Azure.Identity_1.2.3/sdk/identity/Azure.Identity/">here</see>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.DeleteCertificateAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetCertificateAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetCertificateAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetCertificatesAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetCertificatesPageAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.CertificateClient">
+            <summary>
+            Gets the <see cref="T:Azure.Security.KeyVault.Certificates.CertificateClient"/> object associated with this instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.KeyClient">
+            <summary>
+            Gets the <see cref="T:Azure.Security.KeyVault.Keys.KeyClient"/> object associated with this instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.SecretClient">
+            <summary>
+            Gets the <see cref="T:Azure.Security.KeyVault.Secrets.SecretClient"/> object associated with this instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.Options">
+            <summary>
+            Gets the options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.Logger">
+            <summary>
+            Gets the logger.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.ExceptionsHandler">
+            <summary>
+            Gets the exceptions handler.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.#ctor(System.IServiceProvider,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService" /> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="name">The service name.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.DeleteKeyAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetKeyAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetKeyAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetKeysAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetKeysPageAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.DeleteSecretAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetSecretAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetSecretAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetSecretsAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.GetSecretsPageAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService.SetSecretAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions">
+            <summary>
+            Defines the options used to configure new <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService"/> instances.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions.Services">
+            <summary>
+            Gets the named services configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions.ServiceUri">
+            <summary>
+            Gets or sets the service URI that should be used to connect to the secrets storage service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions.Credentials">
+            <summary>
+            Gets or sets the options that should be used to set the credentials to access the service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions.RetryPolicy">
+            <summary>
+            Gets or sets the options that should be used to set the retry policy to access the service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions.GetServiceOptions(System.String)">
+            <summary>
+            Gets the configuration options for the specified service.
+            </summary>
+            <param name="name">The service name.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type
+            that allows configuring the <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> to use
+            Azure KeyVault.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceCollectionExtensions.AddAzureSecretsStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the default <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> to the service collection using
+            configuration defined by <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions"/>.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> (by name) is registered as a singleton service.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceCollectionExtensions.AddAzureSecretsStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions})">
+            <summary>
+            Adds the default <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> to the service collection using the
+            specified configuration options.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> (by name) is registered as a singleton service.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceCollectionExtensions.AddAzureSecretsStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            Adds the named <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> to the service collection using
+            configuration defined by <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions"/>.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="name">The service name.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> (by name) is registered as a singleton service.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceCollectionExtensions.AddAzureSecretsStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions})">
+            <summary>
+            Adds the named <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> to the service collection using the
+            specified configuration options.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="name">The service name.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            Each unique <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> (by name) is registered as a singleton service.
+            Named services can be resolved using <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageServiceFactory"/>.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceFactory">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> that resolves
+            <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService"/> instances.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceFactory.ServiceClientPrefix">
+            <summary>
+            The prefix used to register the underlying <see cref="T:Azure.Security.KeyVault.Certificates.CertificateClient"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceFactory.DefaultServiceName">
+            <summary>
+            The default service name.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceFactory.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceFactory"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceFactory.GetService(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceFactory.GetServiceOrDefault(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions">
+            <summary>
+            Defines the options used to configure new <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService"/> instances.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.ServiceUri">
+            <summary>
+            Gets or sets the service URI that should be used to connect to the secrets storage service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.Credentials">
+            <summary>
+            Gets or sets the options that should be used to set the credentials to access the service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.RetryPolicy">
+            <summary>
+            Gets or sets the options that should be used to set the retry policy to access the service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.Primavera#Hydrogen#Security#Azure#Secrets#IProvideSecretsStorageServiceClients#InitializeCertificateServiceClient(Azure.Security.KeyVault.Certificates.CertificateClientOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.Primavera#Hydrogen#Security#Azure#Secrets#IProvideSecretsStorageServiceClients#InitializeKeyServiceClient(Azure.Security.KeyVault.Keys.KeyClientOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.Primavera#Hydrogen#Security#Azure#Secrets#IProvideSecretsStorageServiceClients#InitializeSecretServiceClient(Azure.Security.KeyVault.Secrets.SecretClientOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceOptions.Primavera#Hydrogen#Security#Azure#Secrets#IProvideSecretsStorageServiceClients#GetServiceClientConnectionInfo(System.Uri@,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceRegistration">
+            <summary>
+            Describes the registration of a named <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceRegistration.Name">
+            <summary>
+            Gets the service name.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceRegistration.#ctor(System.String,System.Func{System.IServiceProvider,Primavera.Hydrogen.Security.Secrets.ISecretsStorageService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceRegistration"/> class.
+            </summary>
+            <param name="name">The service name.</param>
+            <param name="serviceFactory">The delegate that should be used to create the service instance.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageServiceRegistration.GetService(System.IServiceProvider)">
+            <summary>
+            Gets the service instance.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Security.Secrets.ISecretsStorageService"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.IProvideSecretsStorageServiceClients">
+            <summary>
+            Defines the interface of a type that is capable of initializing instances
+            of secrets storage service clients depending on configuration options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.IProvideSecretsStorageServiceClients.InitializeCertificateServiceClient(Azure.Security.KeyVault.Certificates.CertificateClientOptions)">
+            <summary>
+            Initializes the certificate service client.
+            </summary>
+            <param name="options">The service client options.</param>
+            <returns>
+            The <see cref="T:Azure.Security.KeyVault.Certificates.CertificateClient" /> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.IProvideSecretsStorageServiceClients.InitializeKeyServiceClient(Azure.Security.KeyVault.Keys.KeyClientOptions)">
+            <summary>
+            Initializes the key service client.
+            </summary>
+            <param name="options">The service client options.</param>
+            <returns>
+            The <see cref="T:Azure.Security.KeyVault.Keys.KeyClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.IProvideSecretsStorageServiceClients.InitializeSecretServiceClient(Azure.Security.KeyVault.Secrets.SecretClientOptions)">
+            <summary>
+            Initializes the secret service client.
+            </summary>
+            <param name="options">The service client options.</param>
+            <returns>
+            The <see cref="T:Azure.Security.KeyVault.Secrets.SecretClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.IProvideSecretsStorageServiceClients.GetServiceClientConnectionInfo(System.Uri@,System.String@)">
+            <summary>
+            Gets a string that describes how the service client was initialized.
+            </summary>
+            <param name="serviceUri">The service URI.</param>
+            <param name="info">A string that describes how the service client was initialized.</param>
+            <remarks>
+            This information is useful for diagnosing unauthorized and/or forbidden errors.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions.DefaultDiagnosticName">
+            <summary>
+            The default name used for diagnostics.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions.AddAzureKeyVaultSecretsStorageSecretDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure KeyVault Secrets Storage secret.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="secretName">The name of the secret that should be diagnosed.</param>
+            <param name="serviceName">The service name. If null, the default service will be diagnosed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService"/> to
+            determine whether the specified secret exists.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions.AddAzureKeyVaultSecretsStorageKeyDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure KeyVault Secrets Storage key.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="keyName">The name of the key that should be diagnosed.</param>
+            <param name="serviceName">The service name. If null, the default service will be diagnosed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService"/> to
+            determine whether the specified key exists.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions.AddAzureKeyVaultSecretsStorageCertificateDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure KeyVault Secrets Storage certificate.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="certificateName">The name of the certificate that should be diagnosed.</param>
+            <param name="serviceName">The service name. If null, the default service will be diagnosed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageService"/> to
+            determine whether the specified certificate exists. If the certificate exists but is expired,
+            the diagnostic will report an unhealthy status.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions">
+            <summary>
+            Provides extension methods for various Key Vault models.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToSecretIdentifier(Azure.Security.KeyVault.Secrets.KeyVaultSecret)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Secrets.KeyVaultSecret"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretIdentifier"/> instance.
+            </summary>
+            <param name="secret">The secret.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretIdentifier"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToKeyIdentifier(Azure.Security.KeyVault.Keys.KeyVaultKey)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Keys.KeyVaultKey"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.KeyIdentifier"/> instance.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretIdentifier"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToCertificateIdentifier(Azure.Security.KeyVault.Certificates.KeyVaultCertificate)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Certificates.KeyVaultCertificate"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.CertificateIdentifier"/> instance.
+            </summary>
+            <param name="certificate">The certificate.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretIdentifier"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToSecret(Azure.Security.KeyVault.Secrets.KeyVaultSecret)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Secrets.KeyVaultSecret"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.Secret"/> instance.
+            </summary>
+            <param name="secret">The secret.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.Secret"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToSecrets(System.Collections.Generic.IEnumerable{Azure.Security.KeyVault.Secrets.KeyVaultSecret})">
+            <summary>
+            Converts the specified list of <see cref="T:Azure.Security.KeyVault.Secrets.KeyVaultSecret"/> instances to
+            a list of <see cref="T:Primavera.Hydrogen.Security.Secrets.Secret"/> instances.
+            </summary>
+            <param name="secrets">The secrets.</param>
+            <returns>The list of <see cref="T:Primavera.Hydrogen.Security.Secrets.Secret"/> instances.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToKey(Azure.Security.KeyVault.Keys.KeyVaultKey)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Keys.KeyVaultKey"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.Key"/> instance.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.Key"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToKeys(System.Collections.Generic.IEnumerable{Azure.Security.KeyVault.Keys.KeyVaultKey})">
+            <summary>
+            Converts the specified list of <see cref="T:Azure.Security.KeyVault.Keys.KeyVaultKey"/> instances to
+            a list of <see cref="T:Primavera.Hydrogen.Security.Secrets.Key"/> instances.
+            </summary>
+            <param name="keys">The keys.</param>
+            <returns>The list of <see cref="T:Primavera.Hydrogen.Security.Secrets.Key"/> instances.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToCertificate(Azure.Security.KeyVault.Certificates.KeyVaultCertificate)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Certificates.KeyVaultCertificate"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.Certificate"/> instance.
+            </summary>
+            <param name="certificate">The certificate.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.Certificate"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToCertificates(System.Collections.Generic.IEnumerable{Azure.Security.KeyVault.Certificates.KeyVaultCertificate})">
+            <summary>
+            Converts the specified list of <see cref="T:Azure.Security.KeyVault.Certificates.KeyVaultCertificate"/> instances to
+            a list of <see cref="T:Primavera.Hydrogen.Security.Secrets.Certificate"/> instances.
+            </summary>
+            <param name="certificates">The certificates.</param>
+            <returns>The list of <see cref="T:Primavera.Hydrogen.Security.Secrets.Key"/> instances.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToJsonWebKey(Azure.Security.KeyVault.Keys.JsonWebKey)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Keys.JsonWebKey"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.JsonWebKey"/> instance.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.JsonWebKey"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToSecretAttributes(Azure.Security.KeyVault.Secrets.SecretProperties)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Secrets.SecretProperties"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretAttributes"/> instance.
+            </summary>
+            <param name="properties">The properties.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretAttributes"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToCertificateAttributes(Azure.Security.KeyVault.Certificates.CertificateProperties)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Certificates.CertificateProperties"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.CertificateAttributes"/> instance.
+            </summary>
+            <param name="properties">The properties.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.CertificateAttributes"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.KeyVaultModelsExtensions.ToKeyAttributes(Azure.Security.KeyVault.Keys.KeyProperties)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Security.KeyVault.Keys.KeyProperties"/> instance to
+            a <see cref="T:Primavera.Hydrogen.Security.Secrets.KeyAttributes"/> instance.
+            </summary>
+            <param name="properties">The properties.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretAttributes"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.OperationTargets">
+            <summary>
+            Defines the target of an action on a blob storage resource.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Security.Azure.Secrets.OperationTargets.Certificate">
+            <summary>
+            The target is a certificate.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Security.Azure.Secrets.OperationTargets.Key">
+            <summary>
+            The target is a key.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Security.Azure.Secrets.OperationTargets.Secret">
+            <summary>
+            The target is a secret.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Security.Azure.Secrets.SecretsStorageExceptionHandler">
+            <summary>
+            Provides an exceptions handler to translate exceptions received from the service client
+            to instances of <see cref="T:Primavera.Hydrogen.Security.Secrets.SecretsStorageException"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Azure.Client.IRequestFailedExceptionHandler`1" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.SecretsStorageExceptionHandler.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Security.Azure.Secrets.SecretsStorageExceptionHandler"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Security.Azure.Secrets.SecretsStorageExceptionHandler.OnError(System.String,Primavera.Hydrogen.Azure.Client.FailureCondition,System.Exception,System.String,System.Object[])">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

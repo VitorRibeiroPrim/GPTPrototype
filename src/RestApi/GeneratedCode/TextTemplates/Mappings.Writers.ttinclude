@@ -1,0 +1,203 @@
+﻿<#+
+
+// *** WriteMappingProfileBaseConstructor
+
+public void WriteMappingProfileBaseConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.InitializeMappings();
+<#+
+
+}
+
+// *** WriteInitializeMappings
+
+public void WriteInitializeMappings(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+    foreach (ModelType modelType in serviceModel.Models.OrderBy(i => i.Name))
+    {
+        if (modelType.Extensions().IsVisibleServerSide && serviceModel.Extensions().UseMediatorOrCqrs)
+        {
+
+#>
+        this.Map<#= modelType.Name #>();
+<#+
+
+        }
+    }
+
+    foreach (EnumType enumType in serviceModel.Enumerations.OrderBy(i => i.Name))
+    {
+        if (enumType.Extensions().IsVisibleServerSide && serviceModel.Extensions().UseMediatorOrCqrs)
+        {
+
+#>
+        this.Map<#= enumType.Name #>();
+<#+
+
+        }
+    }
+}
+
+// *** WriteMap
+
+public void WriteMap(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+    ModelType modelType = model.ParentModelAs<MethodModel>().Facets["SourceElement"] as ModelType;
+    if (modelType != null)
+    {
+        this.WriteModelTypeMap(modelType, serviceModel.Namespace);
+        return;
+    }
+
+    EnumType enumType = model.ParentModelAs<MethodModel>().Facets["SourceElement"] as EnumType;
+    if (enumType != null)
+    {
+        this.WriteEnumTypeMap(enumType, serviceModel.Namespace);
+        return;
+    }
+
+    throw new InvalidOperationException("Unexpected domain element");
+}
+
+// *** WriteModelTypeMap
+
+private void WriteModelTypeMap(ModelType modelType, string ns)
+{
+    string restApiNS = $"{ns}.Server.RestApi.Models";
+    string domainNS = $"{ns}.Server.Domain";
+
+    string sourceName = modelType.Name;
+
+    List<ModelTypeEnumProperty> enumProperties = modelType.ChildProperties.OfType<ModelTypeEnumProperty>().ToList();
+
+    if (enumProperties.Count > 0)
+    {
+#>
+        // NOTES:
+        // Enumeration properties need to be mapped explicitly so that projections work correctly
+
+        this.CreateMap<<#= restApiNS #>.<#= sourceName #>, <#= domainNS #>.<#= sourceName #>>()
+<#+
+
+        for (int i = 0; i < enumProperties.Count; i++)
+        {
+            ModelTypeEnumProperty enumProperty = enumProperties[i];
+
+            string terminator = i == enumProperties.Count - 1 ? ";" : "";
+
+            string enumType = enumProperty.IsNullable ? $"{enumProperty.ReferencedEnumeration.Name}?" : enumProperty.ReferencedEnumeration.Name;
+
+            if (enumProperty.Cardinality == Cardinality.Single)
+            {
+
+#>
+            .ForMember(t => t.<#= enumProperty.Name #>, m => m.MapFrom(s => (Server.Domain.<#= enumType #>)s.<#= enumProperty.Name #>))<#= terminator #>
+<#+
+
+            }
+            else if (enumProperty.Cardinality == Cardinality.List)
+            {
+
+#>
+            .ForMember(t => t.<#= enumProperty.Name #>, m => m.MapFrom(s => s.<#= enumProperty.Name #>!.Select(i => (Server.Domain.<#= enumType #>)i)))<#= terminator #>
+<#+
+
+            }
+            else if (enumProperty.Cardinality == Cardinality.Dictionary)
+            {
+                string enumItemType = $"Server.Domain.{enumProperty.ReferencedEnumeration.Name}";
+                
+                if (enumProperty.IsNullableItems)
+                {
+                    enumItemType += "?";
+                }
+
+#>
+            .ForMember(t => t.<#= enumProperty.Name #>, m => m.MapFrom(s => s.<#= enumProperty.Name #>!.Select(i => new KeyValuePair<string, Server.Domain.<#= enumType #>>(i.Key, (<#= enumItemType #>)i.Value))))<#= terminator #>
+<#+
+
+            }
+        }
+
+#>
+
+        this.CreateMap<<#= domainNS #>.<#= sourceName #>, <#= restApiNS #>.<#= sourceName #>>()
+<#+
+
+        for (int i = 0; i < enumProperties.Count; i++)
+        {
+            ModelTypeEnumProperty enumProperty = enumProperties[i];
+
+            string terminator = i == enumProperties.Count - 1 ? ";" : "";
+
+            string enumType = enumProperty.IsNullable ? $"{enumProperty.ReferencedEnumeration.Name}?" : enumProperty.ReferencedEnumeration.Name;
+
+            if (enumProperty.Cardinality == Cardinality.Single)
+            {
+
+#>
+            .ForMember(t => t.<#= enumProperty.Name #>, m => m.MapFrom(s => (RestApi.Models.<#= enumType #>)s.<#= enumProperty.Name #>))<#= terminator #>
+<#+
+
+            }
+            else if (enumProperty.Cardinality == Cardinality.List)
+            {
+
+#>
+            .ForMember(t => t.<#= enumProperty.Name #>, m => m.MapFrom(s => s.<#= enumProperty.Name #>!.Select(i => (RestApi.Models.<#= enumType #>)i)))<#= terminator #>
+<#+
+
+            }
+            else if (enumProperty.Cardinality == Cardinality.Dictionary)
+            {
+                string enumItemType = $"RestApi.Models.{enumProperty.ReferencedEnumeration.Name}";
+                
+                if (enumProperty.IsNullableItems)
+                {
+                    enumItemType += "?";
+                }
+
+
+#>
+            .ForMember(t => t.<#= enumProperty.Name #>, m => m.MapFrom(s => s.<#= enumProperty.Name #>!.Select(i => new KeyValuePair<string, RestApi.Models.<#= enumType #>>(i.Key, (<#= enumItemType #>)i.Value))))<#= terminator #>
+<#+
+
+            }
+        }
+    }
+    else
+    {
+
+#>
+        this.CreateMap<<#= restApiNS #>.<#= sourceName #>, <#= domainNS #>.<#= sourceName #>>();
+
+        this.CreateMap<<#= domainNS #>.<#= sourceName #>, <#= restApiNS #>.<#= sourceName #>>();
+<#+
+
+    }
+}
+
+// *** WriteEnumTypeMap
+
+private void WriteEnumTypeMap(EnumType enumType, string ns)
+{
+    string restApiNS = $"{ns}.Server.RestApi.Models";
+    string domainNS = $"{ns}.Server.Domain";
+
+    string sourceName = enumType.Name;
+
+#>
+        this.CreateMap<<#= restApiNS #>.<#= sourceName #>, <#= domainNS #>.<#= sourceName #>>();
+
+        this.CreateMap<<#= domainNS #>.<#= sourceName #>, <#= restApiNS #>.<#= sourceName #>>();
+<#+
+
+}
+
+#>

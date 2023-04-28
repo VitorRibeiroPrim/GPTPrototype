@@ -1,0 +1,801 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Azure.Client</name>
+    </assembly>
+    <members>
+        <member name="T:System.Diagnostics.CodeAnalysis.AllowNullAttribute">
+            <summary>
+            A non-nullable parameter, field, or property may be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DisallowNullAttribute">
+            <summary>
+            A nullable parameter, field, or property should never be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullAttribute">
+            <summary>
+            A non-nullable parameter, field, property, or return value may be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullAttribute">
+            <summary>
+            A nullable parameter, field, property, or return value will never be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute">
+            <summary>
+            A non-nullable argument may be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute">
+            <summary>
+            A nullable argument won't be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute">
+            <summary>
+            A return value, property, or argument isn't null if the argument for the specified parameter isn't null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute">
+            <summary>
+            A method or property never returns. In other words, it always throws an exception.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute">
+            <summary>
+            This method or property never returns if the associated boolean parameter has the specified value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute">
+            <summary>
+            The listed member won't be null when the method returns.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute">
+            <summary>
+            The listed member won't be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AsyncPageableExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Azure.AsyncPageable`1"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AsyncPageableExtensions.GetPageAsync``2(Azure.AsyncPageable{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task{``1}},System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified page from <paramref name="pages"/>.
+            </summary>
+            <typeparam name="TItem">The type of the items contained in the original pages.</typeparam>
+            <typeparam name="TResult">The type of the items contained in the result page.</typeparam>
+            <param name="pages">The original pages.</param>
+            <param name="transform">A delegate used to transform <typeparamref name="TItem"/> to <typeparamref name="TResult"/>.</param>
+            <param name="continuationToken">The continuation token.</param>
+            <param name="maxCount">The maximum number of page items (speculative).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The page.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2">
+            <summary>
+            Provides the default implementation of <see cref="T:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2"/>.
+            </summary>
+            <typeparam name="THandler">The type of the specific handler.</typeparam>
+            <typeparam name="TException">The type of the exception raised by the specific handler.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2.HandleAsync(System.String,System.Func{System.Threading.Tasks.Task},System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2.HandleAsync(System.String,System.Func{System.Threading.Tasks.Task},System.Action,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2.HandleAsync``1(System.String,System.Func{System.Threading.Tasks.Task{``0}},System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2.HandleAsync``1(System.String,System.Func{System.Threading.Tasks.Task{``0}},System.Action,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AzureCliCredentialOptions">
+            <summary>
+            Defines the configuration options used to set the Azure CLI token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureCliCredentialOptions.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the Azure CLI token credential is enabled.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AzureClientServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type
+            that allows configuring services to communicate with Azure services.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureClientServiceCollectionExtensions.AddAzureClientExceptionHandler(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the <see cref="T:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2"/> service.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions">
+            <summary>
+            Defines the configuration options used to set the credentials to access an Azure service.
+            </summary>
+            <remarks>
+            These credentials are used to build a <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential"/> in the following order:
+            <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.ManagedIdentity"/>, <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.VisualStudio"/>, <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.VisualStudioCode"/>,
+            <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.AzureCli"/>, <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.ClientSecret"/> and <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.Key"/>.
+            The service in question may not support all these credential kinds.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.ManagedIdentity">
+            <summary>
+            Gets or sets the options used to set the managed identity token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.VisualStudio">
+            <summary>
+            Gets or sets the options used to set the Visual Studio token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.VisualStudioCode">
+            <summary>
+            Gets or sets the options used to set the Visual Studio Code token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.AzureCli">
+            <summary>
+            Gets or sets the options used to set the Azure CLI token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.ClientSecret">
+            <summary>
+            Gets or sets the options used to set the client credentials grant type token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.Key">
+            <summary>
+            Gets or sets the options used to set the key credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.GetTokenCredential(System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retrieves the <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential"/> that should be applied according to these
+            configuration options.
+            </summary>
+            <param name="allowManagedIdentity">A value indicating whether <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.ManagedIdentity"/> is allowed.</param>
+            <param name="allowVisualStudio">A value indicating whether <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.VisualStudio"/> is allowed.</param>
+            <param name="allowVisualStudioCode">A value indicating whether <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.VisualStudioCode"/> is allowed.</param>
+            <param name="allowAzureCli">A value indicating whether <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.AzureCli"/> is allowed.</param>
+            <param name="allowClientSecret">A value indicating whether <see cref="P:Primavera.Hydrogen.Azure.Client.AzureCredentialsOptions.ClientSecret"/> is allowed.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential"/> instance.
+            Null if no credential is activated in configuration.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AzureManagedIdentityCredentialOptions">
+            <summary>
+            Defines the configuration options used to set the managed identity token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureManagedIdentityCredentialOptions.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the managed identity token credential is enabled.
+            The default value is true.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureManagedIdentityCredentialOptions.ClientId">
+            <summary>
+            Gets or sets the client identifier. Optional.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureManagedIdentityCredentialOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Azure.Client.AzureManagedIdentityCredentialOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AzureRetryMode">
+            <summary>
+            Defines the mode that should be applied to calculate the interval between retry attempts.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.AzureRetryMode.Fixed">
+            <summary>
+            The time interval between retry attempts is fixed.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.AzureRetryMode.Exponential">
+            <summary>
+            The time interval between retry attempts will be determined based on a back-off strategy.
+            Each attempt will increase the interval.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions">
+            <summary>
+            Defines the configuration options used to set the retry policy to access an Azure service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.DefaultMode">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.Mode"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.DefaultMaxRetries">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.MaxRetries"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.DefaultInterval">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.Interval"/> (in seconds).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.DefaultMaxInterval">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.MaxInterval"/> (in seconds).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.DefaultTimeout">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.Timeout"/> (in seconds).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.Mode">
+            <summary>
+            Gets or sets the mode that should be applied to calculate the interval between retry attempts.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.MaxRetries">
+            <summary>
+            Gets or sets the maximum number of retries.
+            The default value is <see cref="F:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.DefaultMaxRetries"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.Interval">
+            <summary>
+            Gets or sets the interval between retry attempts.
+            This is the fixed interval if mode is <see cref="F:Primavera.Hydrogen.Azure.Client.AzureRetryMode.Fixed"/> or the
+            interval used for calculations if mode is <see cref="F:Primavera.Hydrogen.Azure.Client.AzureRetryMode.Exponential"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.MaxInterval">
+            <summary>
+            Gets or sets the maximum interval between retry attempts.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.Timeout">
+            <summary>
+            Gets or sets the timeout for individual network operations.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.AzureRetryPolicyOptions.Apply(Azure.Core.ClientOptions)">
+            <summary>
+            Applies the retry policy to the specified client options.
+            </summary>
+            <param name="clientOptions">The client options.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.ClientSecretCredentialOptions">
+            <summary>
+            Defines the configuration options used to set the client credentials grant type token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.ClientSecretCredentialOptions.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the client credentials grant type token credential is enabled.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.ClientSecretCredentialOptions.TenantId">
+            <summary>
+            Gets or sets the tenant identifier. Required if enabled.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.ClientSecretCredentialOptions.ClientId">
+            <summary>
+            Gets or sets the client identifier. Required if enabled.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.ClientSecretCredentialOptions.ClientSecret">
+            <summary>
+            Gets or sets the client secret. Required if enabled.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.KeyCredentialsOptions">
+            <summary>
+            Defines the configuration options used to set the key credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.KeyCredentialsOptions.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the key credential is enabled.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.KeyCredentialsOptions.Key">
+            <summary>
+            Gets or sets the key. Required if enabled.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.VisualStudioCodeCredentialOptions">
+            <summary>
+            Defines the configuration options used to set the Visual Studio Code token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.VisualStudioCodeCredentialOptions.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the Visual Studio Code token credential is enabled.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.VisualStudioCodeCredentialOptions.TenantId">
+            <summary>
+            Gets or sets the tenant identifier. Optional.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.VisualStudioCredentialOptions">
+            <summary>
+            Defines the configuration options used to set the Visual Studio token credential to access an Azure service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.VisualStudioCredentialOptions.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the Visual Studio token credential is enabled.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.VisualStudioCredentialOptions.TenantId">
+            <summary>
+            Gets or sets the tenant identifier. Optional.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.FailureCondition">
+            <summary>
+            Indicates the failure determined from the <see cref="T:Azure.RequestFailedException"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.ConnectionFailure">
+            <summary>
+            The exception indicates a connection failure.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.Unauthorized">
+            <summary>
+            The exception indicates an unauthorized request (<see cref="F:System.Net.HttpStatusCode.Unauthorized"/>).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.Forbidden">
+            <summary>
+            The exception indicates a forbidden request (<see cref="F:System.Net.HttpStatusCode.Forbidden"/>).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.BadRequest">
+            <summary>
+            The exception indicates a bad request (<see cref="F:System.Net.HttpStatusCode.BadRequest"/>).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.Conflict">
+            <summary>
+            The exception indicates a conflict (<see cref="F:System.Net.HttpStatusCode.Conflict"/>).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.NotFound">
+            <summary>
+            The exception indicates a not found resource (<see cref="F:System.Net.HttpStatusCode.NotFound"/>).
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.AuthenticationFailure">
+            <summary>
+            The exception indicates an authentication failure.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Azure.Client.FailureCondition.Undetermined">
+            <summary>
+            The exception indicates an undetermined error (not matched by any other condition).
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2">
+            <summary>
+            Defines the interface of a generic exceptions handler for exceptions raised by the Azure SDK service clients.
+            This handler recognizes the common error conditions (identified by the response status code)
+            and delegates on the specific handler (<typeparamref name="THandler"/>) the behavior to
+            raise the appropriate exception (<typeparamref name="TException"/>).
+            </summary>
+            <typeparam name="THandler">The type of the specific handler.</typeparam>
+            <typeparam name="TException">The type of the exception raised by the specific handler.</typeparam>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2.HandleAsync(System.String,System.Func{System.Threading.Tasks.Task},System.String,System.Object[])">
+            <summary>
+            Handles exceptions raised by the specified action.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <param name="action">The action that should be executed.</param>
+            <param name="target">The target of the operation.</param>
+            <param name="args">The additional arguments.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous task.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2.HandleAsync(System.String,System.Func{System.Threading.Tasks.Task},System.Action,System.String,System.Object[])">
+            <summary>
+            Handles exceptions raised by the specified action.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <param name="action">The action that should be executed.</param>
+            <param name="afterAction">The action that should after an exception is handled or a result is produced.</param>
+            <param name="target">The target of the operation.</param>
+            <param name="args">The additional arguments.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous task.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2.HandleAsync``1(System.String,System.Func{System.Threading.Tasks.Task{``0}},System.String,System.Object[])">
+            <summary>
+            Handles exceptions raised by the specified action.
+            </summary>
+            <typeparam name="T">The type of the result.</typeparam>
+            <param name="serviceName">The service name.</param>
+            <param name="action">The action that should be executed.</param>
+            <param name="target">The target of the operation.</param>
+            <param name="args">The additional arguments.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous task.
+            The action result.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.IAzureRequestExceptionsHandler`2.HandleAsync``1(System.String,System.Func{System.Threading.Tasks.Task{``0}},System.Action,System.String,System.Object[])">
+            <summary>
+            Handles exceptions raised by the specified action.
+            </summary>
+            <typeparam name="T">The type of the result.</typeparam>
+            <param name="serviceName">The service name.</param>
+            <param name="action">The action that should be executed.</param>
+            <param name="afterAction">The action that should after an exception is handled or a result is produced.</param>
+            <param name="target">The target of the operation.</param>
+            <param name="args">The additional arguments.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous task.
+            The action result.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential">
+            <summary>
+            Provides a custom <see cref="T:Azure.Identity.ChainedTokenCredential"/> that provides an implementation of <see cref="M:System.Object.GetHashCode"/> that
+            allows better cache management.
+            </summary>
+            <seealso cref="T:Azure.Identity.ChainedTokenCredential" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential.#ctor(Azure.Core.TokenCredential[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential"/> class.
+            </summary>
+            <param name="sources">The ordered chain of <see cref="T:Azure.Core.TokenCredential" /> implementations to tried when calling <see cref="M:Azure.Identity.ChainedTokenCredential.GetToken(Azure.Core.TokenRequestContext,System.Threading.CancellationToken)" /> or <see cref="M:Azure.Identity.ChainedTokenCredential.GetTokenAsync(Azure.Core.TokenRequestContext,System.Threading.CancellationToken)" />.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder">
+            <summary>
+            Allows creating instances of <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential"/> to use as <see cref="T:Azure.Core.TokenCredential"/> to
+            access Azure client libraries.
+            </summary>
+            <remarks>
+            This allows chaining credentials to access Azure resources from the following list:
+            <see cref="T:Azure.Identity.ManagedIdentityCredential"/>, <see cref="T:Azure.Identity.VisualStudioCredential"/>, <see cref="T:Azure.Identity.VisualStudioCodeCredential"/>,
+            and <see cref="T:Azure.Identity.ClientSecretCredential"/>.
+            Notice that any given credential type can only be used once in the chain (except <see cref="T:Azure.Identity.ClientSecretCredential"/>).
+            Since the <see cref="T:Azure.Core.TokenCredential"/> instance is passed after creating to the client library, access tokens caching will
+            be managed by the client library itself. That will not be the case if
+            <see cref="M:Azure.Identity.ChainedTokenCredential.GetTokenAsync(Azure.Core.TokenRequestContext,System.Threading.CancellationToken)"/> is invoked directly.
+            In that case, the caller should manage the token lifetime, renewal, etc.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.Wrapper">
+            <summary>
+            Gets or sets the wrapper.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.Build">
+            <summary>
+            Builds the <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential"/> instance.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredential"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.AddManagedIdentity(System.String)">
+            <summary>
+            Adds the managed identity credential to the credential chain.
+            </summary>
+            <param name="clientId">The client identifier. Optional.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder"/> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.ManagedIdentityCredential"/> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.AddVisualStudio(System.String)">
+            <summary>
+            Adds the Visual Studio credential to the credential chain.
+            </summary>
+            <param name="tenantId">The tenant identifier. Optional.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder"/> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.VisualStudioCredential"/> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.AddVisualStudioCode(System.String)">
+            <summary>
+            Adds the Visual Studio Code credential to the credential chain.
+            </summary>
+            <param name="tenantId">The tenant identifier. Optional.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder"/> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.VisualStudioCodeCredential"/> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.AddAzureCli">
+            <summary>
+            Adds the Azure CLI credential to the credential chain.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder"/> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.AzureCliCredential"/> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.AddClientSecret(System.String,System.String,System.String)">
+            <summary>
+            Adds a client credentials grant type credential to the credential chain.
+            </summary>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="clientId">The client identifier.</param>
+            <param name="clientSecret">The client secret.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder" /> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.AzureCliCredential" /> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder.AddCredential(Azure.Core.TokenCredential,System.Boolean)">
+            <summary>
+            Adds the specified credential to the chain.
+            </summary>
+            <param name="credential">The credential that should be added.</param>
+            <param name="allowRepeated">A value indicating whether the credential should be accepted
+            if another of the same type has already been added.</param>
+            <exception cref="T:System.InvalidOperationException">
+            If <paramref name="allowRepeated"/> is true and there is already a credential of the
+            same type as <paramref name="credential"/> in the chain.
+            </exception>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilderExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilderExtensions.AddManagedIdentity(Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder,System.String)">
+            <summary>
+            Adds the managed identity credential to the credential chain.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="clientId">The client identifier. Optional.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder" /> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.ManagedIdentityCredential" /> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilderExtensions.AddVisualStudio(Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder,System.String)">
+            <summary>
+            Adds the Visual Studio credential to the credential chain.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="tenantId">The tenant identifier. Optional.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder" /> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.VisualStudioCredential" /> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilderExtensions.AddVisualStudioCode(Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder,System.String)">
+            <summary>
+            Adds the Visual Studio Code credential to the credential chain.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="tenantId">The tenant identifier. Optional.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder" /> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.VisualStudioCodeCredential" /> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilderExtensions.AddAzureCli(Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder)">
+            <summary>
+            Adds the Azure CLI credential to the credential chain.
+            </summary>
+            <param name="builder">The builder.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder" /> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.AzureCliCredential" /> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilderExtensions.AddClientSecret(Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder,System.String,System.String,System.String)">
+            <summary>
+            Adds a client credentials grant type credential to the credential chain.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="clientId">The client identifier.</param>
+            <param name="clientSecret">The client secret.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder" /> instance.
+            </returns>
+            <remarks>
+            Adds the <see cref="T:Azure.Identity.AzureCliCredential" /> credential.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilderExtensions.WithWrapper(Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder,System.Func{Azure.Core.TokenCredential,Azure.Core.TokenCredential})">
+            <summary>
+            Sets up a wrapper function that allows mocking the actual credential added to the chain.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="wrapper">The wrapper. A function that accepts the credential that is being added and that can
+            return a different one to be added.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Azure.Client.Identity.ChainedTokenCredentialBuilder" /> instance.
+            </returns>
+            <remarks>
+            This method supports testing scenarios.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.IRequestFailedExceptionHandler`1">
+            <summary>
+            Defines a specific exception handler for exceptions of type <see cref="T:System.Exception"/>.
+            This handler is used by <see cref="T:Primavera.Hydrogen.Azure.Client.AzureRequestExceptionsHandler`2"/> to raise
+            the appropriate exception (<typeparamref name="TException"/>).
+            </summary>
+            <typeparam name="TException">The type of the exception.</typeparam>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.IRequestFailedExceptionHandler`1.OnError(System.String,Primavera.Hydrogen.Azure.Client.FailureCondition,System.Exception,System.String,System.Object[])">
+            <summary>
+            Invoked when a <see cref="T:System.Exception" /> is found to translate the exception to the
+            actual exception that should be raised.
+            </summary>
+            <param name="serviceName">The service name.</param>
+            <param name="failure">The failure condition.</param>
+            <param name="exception">The exception raised by the service client.</param>
+            <param name="target">The target of the operation.</param>
+            <param name="args">The arguments passed in the operation.</param>
+            <returns>
+            The new exception that should be thrown instead.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Azure.Client.Properties.Resources.RES_Exception_ChainedCredential_TypeRepeated">
+            <summary>
+              Looks up a localized string similar to A credential of type &apos;{0}&apos; was already added to the chain..
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions">
+            <summary>
+            Defines extension methods for the <see cref="T:Azure.RequestFailedException"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions.IsConnectionFailure(Azure.RequestFailedException)">
+            <summary>
+            Determines whether the exception corresponds to a connection failure error.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>
+            A value indicating whether the exception corresponds to a connection failure error.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions.IsUnauthorized(Azure.RequestFailedException)">
+            <summary>
+            Determines whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.Unauthorized"/> error.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>
+            A value indicating whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.Unauthorized"/> error.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions.IsForbidden(Azure.RequestFailedException)">
+            <summary>
+            Determines whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.Forbidden"/> error.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>
+            A value indicating whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.Forbidden"/> error.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions.IsConflict(Azure.RequestFailedException)">
+            <summary>
+            Determines whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.Conflict"/> error.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>
+            A value indicating whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.Conflict"/> error.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions.IsNotFound(Azure.RequestFailedException)">
+            <summary>
+            Determines whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.NotFound"/> error.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>
+            A value indicating whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.NotFound"/> error.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions.IsBadRequest(Azure.RequestFailedException)">
+            <summary>
+            Determines whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.BadRequest"/> error.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>
+            A value indicating whether the exception corresponds to a <see cref="F:System.Net.HttpStatusCode.BadRequest"/> error.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Azure.Client.RequestFailedExceptionExtensions.GetErrorCode(Azure.RequestFailedException)">
+            <summary>
+            Gets the error code for the exception (if any).
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>The error code.</returns>
+        </member>
+    </members>
+</doc>

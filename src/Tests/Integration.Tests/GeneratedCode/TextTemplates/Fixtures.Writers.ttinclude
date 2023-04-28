@@ -1,0 +1,247 @@
+﻿<#+
+
+// *** WriteInitialize
+
+public void WriteInitialize(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        if (this.initialized)
+        {
+            return;
+        }
+
+        this.initialized = true;
+
+<#+
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        this.authorizationServer = this.BuildAuthorizationServer(
+            this.ClientId,
+            this.ClientSecret);
+
+<#+
+
+    }
+
+#>
+        this.application = this.BuildApplication();
+<#+
+
+}
+
+// *** WriteDisposeProtected
+
+public void WriteDisposeProtected(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Already disposed?
+
+        if (this.disposed)
+        {
+            return;
+        }
+
+        // Called from Dispose()?
+
+        if (disposing)
+        {
+            this.application?.Dispose();
+            this.application = null;
+<#+
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+
+            this.authorizationServer?.Dispose();
+            this.authorizationServer = null;
+<#+
+
+    }
+
+#>
+        }
+
+        // Set flag
+
+        this.disposed = true;
+<#+
+
+}
+
+// *** WriteGetServiceClientAsync
+
+public void WriteGetServiceClientAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        Primavera.Hydrogen.Rest.Client.Authentication.ClientSecretCredential credential = new Primavera.Hydrogen.Rest.Client.Authentication.ClientSecretCredential(
+            this.AuthorizationServer.Server.BaseAddress,
+            this.clientId,
+            this.clientSecret,
+            handler: this.AuthorizationServer.CreateHandler());
+
+        string accessToken = await credential.GetTokenAsync()
+            .ConfigureAwait(false);
+
+<#+
+
+    }
+
+#>
+        <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>ClientOptions clientOptions = new <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>ClientOptions()
+        {
+            Transport = new Primavera.Hydrogen.Rest.Client.Pipeline.HttpClientTransport(
+                this.Application.CreateHandler())
+        };
+
+        this.ConfigureServiceClientOptions(clientOptions);
+
+<#+
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        return new <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>Client(
+            this.Application.Server.BaseAddress,
+            new Primavera.Hydrogen.Rest.Client.Authentication.AccessTokenCredential(accessToken),
+            clientOptions);
+<#+
+
+    }
+    else
+    {
+
+#>
+        return Task.FromResult(
+            new <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>Client(
+                this.Application.Server.BaseAddress,
+                new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+                clientOptions));
+<#+
+
+    }
+
+}
+
+// *** WriteBuildApplication
+
+public void WriteBuildApplication(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Primavera.Hydrogen.DesignTime.Testing.AspNetCore.WebApplicationTestHostBuilder builder = Primavera.Hydrogen.DesignTime.Testing.AspNetCore.WebApplicationTestHostBuilder
+<#+
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+            .Create()
+            .ConfigureIdentityServer(this.AuthorizationServer);
+<#+
+
+    }
+    else
+    {
+
+#>
+            .Create();
+<#+
+
+    }
+
+#>
+
+        if (this.ConfigureLoggingDelegate != null)
+        {
+            builder.ConfigureLogging(this.ConfigureLoggingDelegate);
+        }
+
+        if (this.ConfigureServicesDelegate != null)
+        {
+            builder
+                .ConfigureServices(this.ConfigureServicesDelegate);
+        }
+
+        return builder
+            .UseStartup<TStartup>()
+            .Build();
+<#+
+
+}
+
+// *** WriteAuthorizationServer
+
+public void WriteAuthorizationServer(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            this.Initialize();
+            return this.authorizationServer;
+        }
+<#+
+
+}
+
+// *** WriteApplication
+
+public void WriteApplication(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            this.Initialize();
+            return this.application;
+        }
+<#+
+
+}
+
+// *** WriteWarmUpApplicationAsync
+
+public void WriteWarmUpApplicationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        using HttpRequestMessage httpRequest = this.Application
+            .CreateRequest(
+                System.Net.Http.HttpMethod.Get,
+                new System.Uri("https://localhost"));
+
+        await this.Application
+            .SendRequestAsync(
+                httpRequest,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        await System.Threading.Tasks.Task.Delay(
+            TimeSpan.FromSeconds(5),
+            cancellationToken)
+            .ConfigureAwait(false);
+<#+
+
+}
+
+#>

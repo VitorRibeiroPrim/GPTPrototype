@@ -1,0 +1,257 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Integration.Tests");
+
+    // Fixture
+
+    ClassModel baseFixtureClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("IntegrationTestFixtureBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Inheritance = "System.IDisposable",
+                Documentation = new DocumentationModel("Defines the base class for a test fixture used for integration tests.")
+                {
+                    SeeAlso = new List<string> { "System.IDisposable" }
+                }
+            })
+            .WithTypeParameter(
+                new TypeParameterModel("TStartup")
+                {
+                    Constraint = "class",
+                    Documentation = new DocumentationModel("The startup class.")
+                })
+            .WithField(new FieldModel("application", "Primavera.Hydrogen.DesignTime.Testing.AspNetCore.WebApplicationTestHost"))
+            .WithField(new FieldModel("initialized", "bool"))
+            .WithField(new FieldModel("disposed", "bool"))
+            .WithProperty(
+                new PropertyModel("CurrentOperation", "string")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the operation being tested.")
+                })
+            .WithProperty(
+                new PropertyModel("Application", "Primavera.Hydrogen.DesignTime.Testing.AspNetCore.WebApplicationTestHost")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the application test host.")
+                })
+            .WithProperty(
+                new PropertyModel("ConfigureLoggingDelegate", "System.Action<Microsoft.Extensions.Logging.ILoggingBuilder>")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets a delegate used to configure the logging.")
+                })
+            .WithProperty(
+                new PropertyModel("ConfigureServicesDelegate", "System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection>")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets a delegate used to configure the application services.")
+                })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"IntegrationTestFixtureBase{TStartup}\"/> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("startupType", "System.Type")
+                    {
+                        DefaultValue = "null",
+                        Documentation = new DocumentationModel("The type of the startup class. Optional (if not specified the default mock startup will be used).")
+                    })
+                .ParentModelAs<ClassModel>()
+            .WithMethod(MethodModel.Templates.Dispose)
+            .AddMethod(
+                new MethodModel("Dispose")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Releases unmanaged and - optionally - managed resources.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("disposing", "bool")
+                    {
+                        Documentation = new DocumentationModel("<c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("Initialize", "void")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Initializes the fixture.")
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("GetServiceClientAsync", "System.Threading.Tasks.Task<{0}.Client.Rest.{1}Client>".Format(sourceModel.Namespace, sourceModel.Name))
+                {
+                    Modifiers = sourceModel.AuthorizationMode.IsOn() ? MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async : MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Returns an instance of the service client.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureServiceClientOptions")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Allows configuring the service client options.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("clientOptions", "{0}.Client.Rest.{1}ClientOptions".Format(sourceModel.Namespace, sourceModel.Name))
+                    {
+                        Documentation = new DocumentationModel("The client options.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("BuildApplication", "Primavera.Hydrogen.DesignTime.Testing.AspNetCore.WebApplicationTestHost")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Builds the application test host.")
+                    {
+                        Returns = "The <see cref=\"Primavera.Hydrogen.DesignTime.Testing.AspNetCore.WebApplicationTestHost\"/> instance."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("WarmUpApplicationAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel("Warms up the application.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation.",
+                        Remarks = "This method may be used to start the application and let it finish background services (for example) before executing tests."
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                .ParentModelAs<ClassModel>();
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        baseFixtureClass
+            .WithField(new FieldModel("authorizationServer", "Primavera.Hydrogen.DesignTime.Testing.AspNetCore.IdentityServer.IdentityServerTestHost"))
+            .WithField(new FieldModel("clientId", "string", "System.Guid.NewGuid().ToString()"))
+            .WithField(new FieldModel("clientSecret", "string", "\"secret\""))
+            .WithProperty(
+                new PropertyModel("AuthorizationServer", "Primavera.Hydrogen.DesignTime.Testing.AspNetCore.IdentityServer.IdentityServerTestHost")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the authorization server test host.")
+                })
+            .WithProperty(
+                new PropertyModel("ClientId", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel("this.clientId"),
+                    SetAccessor = new PropertySetAccessorModel("this.clientId = value")
+                    {
+                        Modifiers = PropertyAccessorModifiers.Protected
+                    },
+                    Documentation = new DocumentationModel("Gets or sets the client identifier.")
+            })
+            .WithProperty(
+                new PropertyModel("ClientSecret", "string")
+                {
+                    Modifiers = PropertyModifiers.Public,
+                    GetAccessor = new PropertyGetAccessorModel("this.clientSecret"),
+                    SetAccessor = new PropertySetAccessorModel("this.clientSecret = value")
+                    {
+                        Modifiers = PropertyAccessorModifiers.Protected
+                    },
+                    Documentation = new DocumentationModel("Gets or sets the client secret.")
+                })
+            .AddMethod(
+                new MethodModel("BuildAuthorizationServer", "Primavera.Hydrogen.DesignTime.Testing.AspNetCore.IdentityServer.IdentityServerTestHost")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Builds the authorization server test host.")
+                    {
+                        Returns = "The <see cref=\"Primavera.Hydrogen.DesignTime.Testing.AspNetCore.IdentityServer.IdentityServerTestHost\"/> instance."
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client identifier.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("clientSecret", "string")
+                    {
+                        Documentation = new DocumentationModel("The client secret.")
+                    })
+                .ParentModelAs<ClassModel>();
+    }
+
+    // Fixtures
+
+    targetModel.Namespace
+        .AddClass(
+            new ClassModel("IntegrationTestFixture")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "IntegrationTestFixtureBase<TStartup>",
+                Documentation = new DocumentationModel("Defines a test fixture used for integration tests.")
+                {
+                    SeeAlso = new List<string> { "IntegrationTestFixtureBase{TStartup}" }
+                }
+            })
+            .WithTypeParameter(
+                new TypeParameterModel("TStartup")
+                {
+                    Constraint = "class",
+                    Documentation = new DocumentationModel("The startup class.")
+                })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"IntegrationTestFixture{TStartup}\"/> class.")
+                })
+                .ParentModelAs<ClassModel>();
+
+    targetModel.Namespace
+        .AddClass(
+            new ClassModel("IntegrationTestFixture")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "IntegrationTestFixture<MockStartup>",
+                Documentation = new DocumentationModel("Defines a test fixture used for integration tests.")
+                {
+                    SeeAlso = new List<string> { "IntegrationTestFixtureBase{MockStartup}" }
+                }
+            })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"IntegrationTestFixture\"/> class.")
+                })
+                .ParentModelAs<ClassModel>();
+
+}
+
+#>

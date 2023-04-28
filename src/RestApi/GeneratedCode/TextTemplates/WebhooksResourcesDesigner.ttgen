@@ -1,0 +1,52 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Empty?
+
+if (this.ServiceModel.Webhooks.Count == 0)
+{
+    this.GenerationEnvironment.Clear();
+    this.GenerationEnvironment.Append("IGNORE");
+}
+else
+{
+    // Build the transformations
+
+    ServiceModelTransformations<ResourcesFileModel> transformations1 = new ServiceModelTransformations<ResourcesFileModel>(this.ServiceModel);
+
+    transformations1.Add(new WebhooksResourcesServiceModelTransformation());
+
+    // Transform
+
+    ResourcesFileModel intermediateModel = new ResourcesFileModel(
+        "WebhooksResources",
+        this.ServiceModel.Namespace + ".Server.RestApi.Localization",
+        this.ServiceModel.Namespace + ".Server.RestApi.GeneratedCode.Webhooks.gen",
+        true);
+
+    transformations1.TransformTo(intermediateModel);
+
+    // Second transformation
+
+    ResourcesFileModelTransformations<CSharpFileModel> transformations2 =
+        new ResourcesFileModelTransformations<CSharpFileModel>(intermediateModel);
+
+    transformations2.Add(new ResourcesFileModelToCSharpCodeFileModelTransformation());
+
+    // Transform
+
+    CSharpFileModel targetModel = new CSharpFileModel();
+    transformations2.TransformTo(targetModel);
+
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Generate code
+
+    controller.Write(targetModel);
+}
+
+#>

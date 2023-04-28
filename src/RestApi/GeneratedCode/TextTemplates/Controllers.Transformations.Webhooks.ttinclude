@@ -1,0 +1,213 @@
+﻿<#+
+
+// *** TransformWebhooksController
+
+public void TransformWebhooksController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (sourceModel.Webhooks.Count == 0)
+    {
+        return;
+    }
+
+    // Base class
+
+    ClassModel baseClass = targetModel.Namespace
+        .AddClass(new ClassModel("WebhooksControllerBase")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+            Inheritance = "CustomApiControllerBase, IWebhooksController",
+            Documentation = new DocumentationModel("Defines base class for the controller that provides the webhooks routes.")
+            {
+                Remarks = "This is the base class of the MVC controller."
+            }
+        })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithProperty(new PropertyModel("Logger", "Microsoft.Extensions.Logging.ILogger", "this.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<WebhooksControllerBase>>()")
+            {
+                Documentation = new DocumentationModel("Gets the logger."),
+                Modifiers = PropertyModifiers.Protected,
+                Facets = new System.Collections.Generic.Dictionary<string, object>()
+                {
+                    ["BaseControllerLogger"] = true,
+                    ["ControllerName"] = "Webhooks"
+                }
+            })
+            .WithProperty(new PropertyModel("SubscriptionsService", "Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService", "this.HttpContext.RequestServices.GetRequiredService<Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService>()")
+            {
+                Documentation = new DocumentationModel("Gets the webhooks subscriptions service."),
+                Modifiers = PropertyModifiers.Protected
+            })
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Protected,
+                Inheritance = "base()",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"WebhooksControllerBase\" /> class.")
+            })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("CreateSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpPost(Metadata.Routes.Webhooks.CreateSubscription)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(string), (int)System.Net.HttpStatusCode.Created)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.Conflict)"))
+                .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ValidateSubscriptionRequestAsync", "System.Threading.Tasks.Task<Result>")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Validates the specified request to create a webhook subscription.")
+                {
+                    Returns = "The operation result.",
+                    Remarks = "This method can be overridden to validate the incoming request or to complement it with additional data provided by the application."
+                }
+            })
+                .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("UpdateSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpPut(Metadata.Routes.Webhooks.UpdateSubscription)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(void), (int)System.Net.HttpStatusCode.OK)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.NotFound)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.Conflict)"))
+                .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ValidateSubscriptionRequestAsync", "System.Threading.Tasks.Task<Result>")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Validates the specified request to update a webhook subscription.")
+                {
+                    Returns = "The operation result.",
+                    Remarks = "This method can be overridden to validate the incoming request or to complement it with additional data provided by the application."
+                }
+            })
+                .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("GetSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Metadata.Routes.Webhooks.GetSubscription)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription), (int)System.Net.HttpStatusCode.OK)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.NotFound)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithParameter(new MethodParameterModel("clientId", "string"))
+                .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("DeleteSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpDelete(Metadata.Routes.Webhooks.DeleteSubscription)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(void), (int)System.Net.HttpStatusCode.NoContent)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.NotFound)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithParameter(new MethodParameterModel("clientId", "string"))
+                .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("GetSubscriptionsAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Metadata.Routes.Webhooks.GetSubscriptions)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>), (int)System.Net.HttpStatusCode.OK)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.NotFound)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithParameter(new MethodParameterModel("clientId", "string"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("DeleteSubscriptionsAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpDelete(Metadata.Routes.Webhooks.DeleteSubscriptions)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(void), (int)System.Net.HttpStatusCode.NoContent)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.NotFound)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithParameter(new MethodParameterModel("clientId", "string"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("PingSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpPost(Metadata.Routes.Webhooks.PingSubscription)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(void), (int)System.Net.HttpStatusCode.OK)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.NotFound)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithParameter(new MethodParameterModel("clientId", "string"))
+                .WithParameter(new MethodParameterModel("subscriptionId", "string"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("GetWebhooksMetadataAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Metadata.Routes.Webhooks.GetWebhooksMetadata)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata>), (int)System.Net.HttpStatusCode.OK)"))
+                .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(Primavera.Hydrogen.Rest.RestProblemDetails), (int)System.Net.HttpStatusCode.BadRequest)"))
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .ParentModelAs<ClassModel>();
+
+    // Class
+
+    targetModel.Namespace
+        .AddClass(new ClassModel("WebhooksController")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+            Inheritance = "WebhooksControllerBase",
+            Documentation = new DocumentationModel("Defines the controller that provides the webhooks routes.")
+            {
+                Remarks = "This is the MVC controller."
+            }
+        })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)"))
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"WebhooksController\" /> class.")
+            })
+                .ParentModelAs<ClassModel>();
+
+    // Authorization
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        foreach (MethodModel methodModel in baseClass.Methods)
+        {
+            MethodModifiers modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async;
+            if (methodModel.Modifiers == modifiers)
+            {
+                methodModel.WithAttribute(new AttributeModel("Microsoft.AspNetCore.Authorization.Authorize(Common.Constants.Policies.Webhooks)"));
+            }
+        }
+    }
+
+}
+
+#>

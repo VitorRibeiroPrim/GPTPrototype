@@ -1,0 +1,760 @@
+﻿<#+
+
+// *** WriteCreateSubscriptionAsync
+
+public void WriteCreateSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNull(request, nameof(request));
+
+        // End Validation
+
+        // Route
+
+        System.Uri requestUri = new System.Uri(
+            Primavera.Hydrogen.UriHelper.Combine(
+                this.client.ServiceUri.AbsoluteUri,
+                Metadata.Routes.Webhooks.CreateSubscription));
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokePostAsync<Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest, string>(
+            requestUri, 
+            request, 
+            System.Net.HttpStatusCode.Created, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteUpdateSubscriptionAsync
+
+public void WriteUpdateSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNull(request, nameof(request));
+
+        // End Validation
+
+        // Route
+
+        System.Uri requestUri = new System.Uri(
+            Primavera.Hydrogen.UriHelper.Combine(
+                this.client.ServiceUri.AbsoluteUri,
+                Metadata.Routes.Webhooks.UpdateSubscription));
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokePutAsync<Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest>(
+            requestUri, 
+            request, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteDeleteSubscriptionAsync
+
+public void WriteDeleteSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(clientId, nameof(clientId));
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(subscriptionId, nameof(subscriptionId));
+
+        // End Validation
+
+        // Route
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Webhooks.DeleteSubscription,
+            new System.Collections.Generic.Dictionary<string, object?>()
+            {
+                ["clientId"] = clientId,
+                ["subscriptionId"] = subscriptionId
+            });
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokeDeleteAsync(
+            requestUri, 
+            System.Net.HttpStatusCode.NoContent, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteDeleteSubscriptionIfExistsAsync
+
+public void WriteDeleteSubscriptionIfExistsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult deleteResult = await this.DeleteSubscriptionAsync(
+                clientId,
+                subscriptionId,
+                cancellationToken)
+                .ConfigureAwait(false);
+
+            return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+                deleteResult.Request,
+                deleteResult.Response,
+                true);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            if (Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound.EqualsNoCase(ex.Error?.Code))
+            {
+                return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+                    ex.Request,
+                    ex.Response,
+                    false);
+            }
+
+            throw;
+        }
+<#+
+
+}
+
+// *** WriteGetSubscriptionAsync
+
+public void WriteGetSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(clientId, nameof(clientId));
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(subscriptionId, nameof(subscriptionId));
+
+        // End Validation
+
+        // Route
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Webhooks.GetSubscription,
+            new System.Collections.Generic.Dictionary<string, object?>()
+            {
+                ["clientId"] = clientId,
+                ["subscriptionId"] = subscriptionId
+            });
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokeGetAsync<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteGetSubscriptionAsync2
+
+public void WriteGetSubscriptionAsync2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(clientId, nameof(clientId));
+        Primavera.Hydrogen.Guard.NotNullOrEmpty(eventNames, nameof(eventNames));
+
+        // End Validation
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>> getResult = await this.GetSubscriptionsAsync(
+                clientId,
+                cancellationToken)
+                .ConfigureAwait(false);
+
+            Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription? found = null;
+
+            foreach (Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription subscription in getResult.Result)
+            {
+                bool eventsMatch = true;
+
+                foreach (string eventName in eventNames)
+                {
+                    if (!eventName.EqualsAnyNoCase(subscription.EventNames))
+                    {
+                        eventsMatch = false;
+                        break;
+                    }
+                }
+
+                if (eventsMatch)
+                {
+                    found = subscription;
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                throw new Primavera.Hydrogen.Rest.Client.RestRequestException(
+                    new Primavera.Hydrogen.Rest.RestProblemDetails(
+                        Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound,
+                        Primavera.Hydrogen.Rest.Client.Webhooks.WebhooksSubscriptionsClientResources.RES_Error_Webhooks_EventsSubscriptionNotFound,
+                        404));
+            }
+
+            return new Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>(
+                found);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            if (Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.NoSubscriptionsFound.EqualsNoCase(ex.Error?.Code))
+            {
+                throw new Primavera.Hydrogen.Rest.Client.RestRequestException(
+                    ex.Message,
+                    new Primavera.Hydrogen.Rest.RestProblemDetails(
+                        Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound,
+                        Primavera.Hydrogen.Rest.Client.Webhooks.WebhooksSubscriptionsClientResources.RES_Error_Webhooks_EventsSubscriptionNotFound,
+                        404));
+            }
+
+            throw;
+        }
+<#+
+
+}
+
+// *** WriteActivateSubscriptionAsync
+
+public void WriteActivateSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription> getResult = await this.GetSubscriptionAsync(
+            clientId,
+            subscriptionId,
+            cancellationToken)
+            .ConfigureAwait(false);
+
+        if (getResult.Result.Active)
+        {
+            return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+                getResult.Request,
+                getResult.Response,
+                false);
+        }
+
+        Primavera.Hydrogen.Rest.Client.RestServiceResult updateResult = await this.UpdateSubscriptionAsync(
+            new Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest()
+            {
+                Active = true,
+                CallbackUrl = getResult.Result.CallbackUrl!,
+                ClientId = getResult.Result.ClientId!,
+                EventNames = getResult.Result.EventNames!,
+                Filters = getResult.Result.Filters,
+                Properties = getResult.Result.Properties,
+                Secret = getResult.Result.Secret!,
+                SubscriptionId = getResult.Result.SubscriptionId!
+            },
+            cancellationToken)
+            .ConfigureAwait(false);
+
+        return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+            updateResult.Request,
+            updateResult.Response,
+            true);
+<#+
+
+}
+
+// *** WriteActivateSubscriptionAsync2
+
+public void WriteActivateSubscriptionAsync2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(clientId, nameof(clientId));
+        Primavera.Hydrogen.Guard.NotNullOrEmpty(eventNames, nameof(eventNames));
+
+        // End Validation
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>> getResult = await this.GetSubscriptionsAsync(
+                clientId,
+                cancellationToken)
+                .ConfigureAwait(false);
+
+            Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription? found = null;
+
+            foreach (Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription subscription in getResult.Result)
+            {
+                bool eventsMatch = true;
+
+                foreach (string eventName in eventNames)
+                {
+                    if (!eventName.EqualsAnyNoCase(subscription.EventNames))
+                    {
+                        eventsMatch = false;
+                        break;
+                    }
+                }
+
+                if (eventsMatch)
+                {
+                    found = subscription;
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                throw new Primavera.Hydrogen.Rest.Client.RestRequestException(
+                    new Primavera.Hydrogen.Rest.RestProblemDetails(
+                        Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound,
+                        Primavera.Hydrogen.Rest.Client.Webhooks.WebhooksSubscriptionsClientResources.RES_Error_Webhooks_EventsSubscriptionNotFound,
+                        404));
+            }
+
+            if (found.Active)
+            {
+                return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+                    getResult.Request,
+                    getResult.Response,
+                    false);
+            }
+
+            Primavera.Hydrogen.Rest.Client.RestServiceResult updateResult = await this.UpdateSubscriptionAsync(
+                new Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest()
+                {
+                    Active = true,
+                    CallbackUrl = found.CallbackUrl!,
+                    ClientId = found.ClientId!,
+                    EventNames = found.EventNames!,
+                    Filters = found.Filters,
+                    Properties = found.Properties,
+                    Secret = found.Secret!,
+                    SubscriptionId = found.SubscriptionId!
+                },
+                cancellationToken)
+                .ConfigureAwait(false);
+
+            return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+                updateResult.Request,
+                updateResult.Response,
+                true);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            if (Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.NoSubscriptionsFound.EqualsNoCase(ex.Error?.Code))
+            {
+                throw new Primavera.Hydrogen.Rest.Client.RestRequestException(
+                    ex.Message,
+                    new Primavera.Hydrogen.Rest.RestProblemDetails(
+                        Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound,
+                        Primavera.Hydrogen.Rest.Client.Webhooks.WebhooksSubscriptionsClientResources.RES_Error_Webhooks_EventsSubscriptionNotFound,
+                        404));
+            }
+
+            throw;
+        }
+<#+
+
+}
+
+// *** WriteDeleteSubscriptionsAsync
+
+public void WriteDeleteSubscriptionsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(clientId, nameof(clientId));
+
+        // End Validation
+
+        // Route
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Webhooks.DeleteSubscriptions,
+            new System.Collections.Generic.Dictionary<string, object?>()
+            {
+                ["clientId"] = clientId
+            });
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokeDeleteAsync(
+            requestUri, 
+            System.Net.HttpStatusCode.NoContent, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteDeleteSubscriptionsIfExistAsync
+
+public void WriteDeleteSubscriptionsIfExistAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult deleteResult = await this.DeleteSubscriptionsAsync(
+                clientId,
+                cancellationToken)
+                .ConfigureAwait(false);
+
+            return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+                deleteResult.Request,
+                deleteResult.Response,
+                true);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            if (Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.NoSubscriptionsFound.EqualsNoCase(ex.Error?.Code))
+            {
+                return new Primavera.Hydrogen.Rest.Client.RestServiceResult<bool>(
+                    ex.Request!,
+                    ex.Response!,
+                    false);
+            }
+
+            throw;
+        }
+<#+
+
+}
+
+// *** WriteGetSubscriptionsAsync
+
+public void WriteGetSubscriptionsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(clientId, nameof(clientId));
+
+        // End Validation
+
+        // Route
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Webhooks.GetSubscriptions,
+            new System.Collections.Generic.Dictionary<string, object?>()
+            {
+                ["clientId"] = clientId
+            });
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokeGetAsync<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WritePingSubscriptionAsync
+
+public void WritePingSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Begin Validation
+
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(clientId, nameof(clientId));
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(subscriptionId, nameof(subscriptionId));
+
+        // End Validation
+
+        // Route
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Webhooks.PingSubscription,
+            new System.Collections.Generic.Dictionary<string, object?>()
+            {
+                ["clientId"] = clientId,
+                ["subscriptionId"] = subscriptionId
+            });
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokePostAsync(
+            requestUri, 
+            System.Net.HttpStatusCode.OK,
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteGetWebhooksMetadataAsync
+
+public void WriteGetWebhooksMetadataAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Route
+
+        System.Uri requestUri = new System.Uri(
+            Primavera.Hydrogen.UriHelper.Combine(
+                this.client.ServiceUri.AbsoluteUri,
+                Metadata.Routes.Webhooks.GetWebhooksMetadata));
+
+        // Result
+
+        return this.client.PipelineInvoker.InvokeGetAsync<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata>>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteCreateSubscription
+
+public void WriteCreateSubscription(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.CreateSubscriptionAsync(
+                request)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteUpdateSubscription
+
+public void WriteUpdateSubscription(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.UpdateSubscriptionAsync(
+                request)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteDeleteSubscription
+
+public void WriteDeleteSubscription(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.DeleteSubscriptionAsync(
+                clientId,
+                subscriptionId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteDeleteSubscriptionIfExists
+
+public void WriteDeleteSubscriptionIfExists(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.DeleteSubscriptionIfExistsAsync(
+                clientId,
+                subscriptionId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteGetSubscription
+
+public void WriteGetSubscription(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.GetSubscriptionAsync(
+                clientId,
+                subscriptionId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteGetSubscription2
+
+public void WriteGetSubscription2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.GetSubscriptionAsync(
+                clientId,
+                eventNames)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteDeleteSubscriptions
+
+public void WriteDeleteSubscriptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.DeleteSubscriptionsAsync(
+                clientId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteDeleteSubscriptionsIfExist
+
+public void WriteDeleteSubscriptionsIfExist(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.DeleteSubscriptionsIfExistAsync(
+                clientId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteGetSubscriptions
+
+public void WriteGetSubscriptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.GetSubscriptionsAsync(
+                clientId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteActivateSubscription
+
+public void WriteActivateSubscription(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.ActivateSubscriptionAsync(
+                clientId,
+                subscriptionId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteActivateSubscription2
+
+public void WriteActivateSubscription2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.ActivateSubscriptionAsync(
+                clientId,
+                eventNames)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WritePingSubscription
+
+public void WritePingSubscription(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.PingSubscriptionAsync(
+                clientId,
+                subscriptionId)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteGetWebhooksMetadata
+
+public void WriteGetWebhooksMetadata(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.GetWebhooksMetadataAsync()
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+#>

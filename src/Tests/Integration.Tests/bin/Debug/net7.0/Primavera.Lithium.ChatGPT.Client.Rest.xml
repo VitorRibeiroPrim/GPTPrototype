@@ -1,0 +1,692 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Lithium.ChatGPT.Client.Rest</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase">
+            <summary>
+            Defines the base class for the type that provides monitoring operations on the service.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController" />
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.client">
+            <summary>
+            The service client instance.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.#ctor(Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase" /> class.
+            </summary>
+            <param name="client">The service client.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.ProbeAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.DiagnosticsAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.EndpointsAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.ConfigurationAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.InformationAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.Probe">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.Diagnostics">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.Endpoints">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.Configuration">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.Information">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase.Initialize">
+            <summary>
+            Performs additional initialization.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientController">
+            <summary>
+            Provides monitoring operations on the service.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientControllerBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientController.#ctor(Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.MonitoringClientController" /> class.
+            </summary>
+            <param name="client">The service client.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase">
+            <summary>
+            The chatGPT controller.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Rest.IChatGPTClientController" />
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.client">
+            <summary>
+            The service client instance.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.#ctor(Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase" /> class.
+            </summary>
+            <param name="client">The service client.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.AskAsync(Primavera.Lithium.ChatGPT.Client.Rest.Models.Request,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.Ask(Primavera.Lithium.ChatGPT.Client.Rest.Models.Request)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.Initialize">
+            <summary>
+            Performs additional initialization.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.ConfigureAskRoute(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Configures the dictionary used to set the action parameters in the route.
+            </summary>
+            <param name="routeParameters">The dictionary used to set the action parameters in the route.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.ConfigureAskHeaders(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Configures the dictionary used to set the action parameters in the headers.
+            </summary>
+            <param name="headers">The dictionary used to set the action parameters in the headers.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase.ValidateAsk(Primavera.Lithium.ChatGPT.Client.Rest.Models.Request)">
+            <summary>
+            Validates the action parameters.
+            </summary>
+            <param name="request">The request with the question.</param>
+            <remarks>
+            Override this method to implement custom validations.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientController">
+            <summary>
+            The chatGPT controller.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientControllerBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientController.#ctor(Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientController" /> class.
+            </summary>
+            <param name="client">The service client.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ExtensionMethods">
+            <summary>
+            Provides extension methods for various types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ExtensionMethods.CombineResolvers(System.Text.Json.JsonSerializerOptions,System.Text.Json.Serialization.Metadata.IJsonTypeInfoResolver[])">
+            <summary>
+            Combines the provided <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> instances as the
+            contract resolver for the specified <see cref="T:System.Text.Json.JsonSerializerOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.</param>
+            <param name="resolvers">The <see cref="T:System.Text.Json.Serialization.Metadata.IJsonTypeInfoResolver"/> instances.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController">
+            <summary>
+            Provides monitoring operations on the service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.ProbeAsync(System.Threading.CancellationToken)">
+            <summary>
+            Probes the service.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> that describes the health of the service.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.DiagnosticsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Diagnoses the service.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> that describes the health of the service.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.EndpointsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Analyzes the service endpoints.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Primavera.Hydrogen.Rest.Routing.EndpointInfo"/> that contains the list of endpoints.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.ConfigurationAsync(System.Threading.CancellationToken)">
+            <summary>
+            Analyzes the service configuration.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation"/> that describes where the configuration was saved.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.InformationAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns information about the service.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.Rest.Description.ServiceInfo"/> that provides information about the service.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.Probe">
+            <summary>
+            Probes the service.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> that describes the health of the service.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.Diagnostics">
+            <summary>
+            Diagnoses the service.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthResult"/> that describes the health of the service.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.Endpoints">
+            <summary>
+            Analyzes the service endpoints.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Primavera.Hydrogen.Rest.Routing.EndpointInfo"/> that contains the list of endpoints.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.Configuration">
+            <summary>
+            Analyzes the service configuration.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation"/> that describes where the configuration was saved.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IMonitoringClientController.Information">
+            <summary>
+            Provides information about the service.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            The <see cref="T:Primavera.Hydrogen.Rest.Description.ServiceInfo"/> that provides information about the service.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.IChatGPTClientController">
+            <summary>
+            The chatGPT controller.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IChatGPTClientController.AskAsync(Primavera.Lithium.ChatGPT.Client.Rest.Models.Request,System.Threading.CancellationToken)">
+            <summary>
+            Ask a question to the chat.
+            </summary>
+            <param name="request">The request with the question.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.IChatGPTClientController.Ask(Primavera.Lithium.ChatGPT.Client.Rest.Models.Request)">
+            <summary>
+            Ask a question to the chat.
+            </summary>
+            <param name="request">The request with the question.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.Client.RestServiceResult`1"/> result.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Rest.Client.RestRequestException">Raised when the operation returns an unexpected status code.</exception>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.IChatGPTClient">
+            <summary>
+            Defines the interface of the service client that allows accessing the Chat Gpt Service REST API.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.IChatGPTClient.Monitoring">
+            <summary>
+            Provides monitoring operations on the service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.IChatGPTClient.ChatGPT">
+            <summary>
+            The chatGPT controller.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.RequestBase">
+            <summary>
+            Defines the base class for <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.Request"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.RequestBase.Question">
+            <summary>
+            The question.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Models.RequestBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.RequestBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Models.RequestBase.SetDefaultValues">
+            <summary>
+            Sets the default values.
+            </summary>
+            <remarks>
+            This method should be overridden to set the default values of properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.Request">
+            <summary>
+            The request resource.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Models.Request.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.Request"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext">
+            <summary>
+            Defines the serializer context.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.Request">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.IEnumerableRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.IListRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.ListRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Models.SerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Localization.ModelsResources">
+            <summary>
+            Provides means to access resource strings.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Localization.ModelsResources.RES_Display_Request_Question">
+            <summary>
+            Gets the 'RES_Display_Request_Question' resource string.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Localization.ModelsResources.ResourceManager">
+            <summary>
+            Gets the resource manager.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.Localization.ModelsResources.Culture">
+            <summary>
+            Gets or sets the culture.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.Localization.ModelsResources.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.Localization.ModelsResources"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes">
+            <summary>
+            Defines constants that specify the routes used by the REST API actions.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.Monitoring">
+            <summary>
+            Defines constants that specify the routes used by the monitoring actions.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.Monitoring.Probe">
+            <summary>
+            Defines the route for the action that probes the service. This action is used to perform dependencies tests on the service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.Monitoring.Diagnostics">
+            <summary>
+            Defines the route for the action that diagnoses the service. This action is used to perform functional tests on the service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.Monitoring.Endpoints">
+            <summary>
+            Defines the route for the action that analyzes the endpoints of the service. This action is used to verify the service implementation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.Monitoring.Configuration">
+            <summary>
+            Defines the route for the action that analyzes the configuration of the service. This action is used to verify the service implementation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.Monitoring.Information">
+            <summary>
+            Defines the route for the action that returns information about of the service.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.ChatGPT">
+            <summary>
+            Defines constants that specify the routes used by the ChatGPT actions.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Client.Rest.Metadata.Routes.ChatGPT.Ask">
+            <summary>
+            Defines the route for the following action: ChatGPT#Ask.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase">
+            <summary>
+            Defines the base class for the service client that allows accessing the Chat Gpt Service API.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.ResponseClassifier">
+            <summary>
+            Defines a custom response classifier.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.ResponseClassifier.IsRetriable(Primavera.Hydrogen.Rest.Client.Pipeline.RestHttpPipelineContext)">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.Monitoring">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.ChatGPT">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.DefaultApiVersion">
+            <summary>
+            Gets the default API version.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.PipelineInvoker">
+            <summary>
+            Gets the pipeline invoker.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.#ctor(System.Uri,Primavera.Hydrogen.Rest.Client.BearerTokenCredential)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase" /> class.
+            </summary>
+            <param name="serviceUri">The service URI.</param>
+            <param name="credential">The credential that should be used to access the service.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.#ctor(System.Uri,Primavera.Hydrogen.Rest.Client.BearerTokenCredential,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase" /> class.
+            </summary>
+            <param name="serviceUri">The service URI.</param>
+            <param name="credential">The credential that should be used to access the service.</param>
+            <param name="clientOptions">The client options.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.Initialize(Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions)">
+            <summary>
+            Invoked when the service client is being created.
+            </summary>
+            <param name="clientOptions">The client options.</param>
+            <remarks>
+            This method can be overridden to add custom behavior when the service client is being created.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientBase.GetResponseClassifier">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient">
+            <summary>
+            Defines the service client that allows accessing the Chat Gpt Service API.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient.#ctor(System.Uri,Primavera.Hydrogen.Rest.Client.BearerTokenCredential)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient" /> class.
+            </summary>
+            <param name="serviceUri">The service URI.</param>
+            <param name="credential">The credential that should be used to access the service.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient.#ctor(System.Uri,Primavera.Hydrogen.Rest.Client.BearerTokenCredential,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient" /> class.
+            </summary>
+            <param name="serviceUri">The service URI.</param>
+            <param name="credential">The credential that should be used to access the service.</param>
+            <param name="clientOptions">The client options.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientFactory">
+            <summary>
+            Defines a factory to resolve <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient"/> instances.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientFactory.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientFactory" /> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptionsBase">
+            <summary>
+            Defines the base class for the service client options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptionsBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptionsBase" /> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptionsBase.InitializeSerialization">
+            <summary>
+            Initializes the serialization options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptionsBase.SetDefaultValues">
+            <summary>
+            Sets the default values.
+            </summary>
+            <remarks>
+            This method should be overridden to set the default values of properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions">
+            <summary>
+            Defines the service client options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions" /> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions">
+            <summary>
+            Defines extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type
+            that allow registered <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient"/> instances.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})">
+            <summary>
+            Adds the default ChatGPT service client to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="clientFactory">The delegate that should be used to create the service client instance.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            The service client is registered by default as a singleton.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions},System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})">
+            <summary>
+            Adds the default ChatGPT service client to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="clientOptionsFactory">The delegate that should be used to create the service client options instance.</param>
+            <param name="clientFactory">The delegate that should be used to create the service client instance.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            The service client is registered by default as a singleton.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})">
+            <summary>
+            Adds the default ChatGPT service client to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="name">The service client name.</param>
+            <param name="clientFactory">The delegate that should be used to create the service client instance.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            The service client is registered by default as a singleton.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTServiceCollectionExtensions.AddChatGPTClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions},System.Func{System.IServiceProvider,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions,Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient})">
+            <summary>
+            Adds the default ChatGPT service client to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="name">The service client name.</param>
+            <param name="clientOptionsFactory">The delegate that should be used to create the service client options instance.</param>
+            <param name="clientFactory">The delegate that should be used to create the service client instance.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            The service client is registered by default as a singleton.
+            </remarks>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.AllowNullAttribute">
+            <summary>
+            A non-nullable parameter, field, or property may be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DisallowNullAttribute">
+            <summary>
+            A nullable parameter, field, or property should never be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullAttribute">
+            <summary>
+            A non-nullable parameter, field, property, or return value may be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullAttribute">
+            <summary>
+            A nullable parameter, field, property, or return value will never be null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute">
+            <summary>
+            A non-nullable argument may be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute">
+            <summary>
+            A nullable argument won't be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute">
+            <summary>
+            A return value, property, or argument isn't null if the argument for the specified parameter isn't null.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute">
+            <summary>
+            A method or property never returns. In other words, it always throws an exception.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute">
+            <summary>
+            This method or property never returns if the associated boolean parameter has the specified value.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute">
+            <summary>
+            The listed member won't be null when the method returns.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute">
+            <summary>
+            The listed member won't be null when the method returns the specified boolean value.
+            </summary>
+        </member>
+    </members>
+</doc>

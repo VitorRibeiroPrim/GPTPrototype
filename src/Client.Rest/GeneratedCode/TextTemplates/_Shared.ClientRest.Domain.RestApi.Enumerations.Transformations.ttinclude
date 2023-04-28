@@ -1,0 +1,124 @@
+﻿<#+
+
+internal class EnumerationsTransformation : ServiceModelTransformation<CSharpFileModel>
+{
+    #region Public Properties
+
+    // NOTES:
+    // This property indicates the service project that is being transformed
+
+    public string Project
+    {
+        get;
+    }
+
+    // NOTES:
+    // This property indicates that the transformation is being used to generate client-side code
+    // Otherwise it is server-side
+
+    public bool ClientSide
+    {
+        get;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public EnumerationsTransformation(string project)
+    {
+        this.Project = project;
+        this.ClientSide = project == "Client.Rest";
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (sourceElement is EnumType enumType)
+        {
+            if (this.ClientSide)
+            {
+                return enumType.Extensions().IsVisibleClientSide;
+            }
+            else
+            {
+                return enumType.Extensions().IsVisibleServerSide;
+            }
+        }
+
+        return false;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (targetModel == null)
+        {
+            return;
+        }
+
+        if (sourceElement is EnumType enumType)
+        {
+            EnumModel enumModel = new EnumModel(enumType.Name)
+            {
+                Modifiers = EnumModifiers.Public,
+                Documentation = new DocumentationModel()
+                {
+                    Summary = enumType.Summary
+                }
+            };
+
+            if (!string.IsNullOrEmpty(enumType.CustomAttributes))
+            {
+                IEnumerable<string> customAttributes = enumType.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(i => i.Trim())
+                    .Where(i => !string.IsNullOrEmpty(i));
+
+                foreach (string customAttribute in customAttributes)
+                {
+                    enumModel.WithAttribute(
+                        new AttributeModel(customAttribute));
+                }
+            }
+
+            enumModel.Members = new ModelList<EnumMemberModel>(
+                enumModel,
+                enumType.ChildMembers
+                    .OrderBy(m => m.Value)
+                    .Select(
+                        m =>
+                        {
+                            EnumMemberModel enumMemberModel = new EnumMemberModel(m.Name, m.Value)
+                            {
+                                Documentation = new DocumentationModel()
+                                {
+                                    Summary = m.Summary
+                                }
+                            };
+
+                            if (!string.IsNullOrEmpty(m.CustomAttributes))
+                            {
+                                IEnumerable<string> customAttributes = m.CustomAttributes.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(i => i.Trim())
+                                    .Where(i => !string.IsNullOrEmpty(i));
+
+                                foreach (string customAttribute in customAttributes)
+                                {
+                                    enumMemberModel.WithAttribute(
+                                        new AttributeModel(customAttribute));
+                                }
+                            }
+
+                            return enumMemberModel;
+                        }));
+
+            targetModel.Namespace.Enumerations.Add(enumModel);
+        }
+    }
+
+    #endregion
+}
+
+#>

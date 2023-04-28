@@ -1,0 +1,12 @@
+﻿<#+
+
+public void WriteAttributes(ModelWriter modelWriter, ServiceModel model)
+{
+    this.WriteAssemblyInfoShared(
+        modelWriter, 
+        model,
+        $"{model.Product} {model.DisplayName} Client Console",
+        $"Console application that allows testing the {model.DisplayName} REST client library.");
+}
+
+#>

@@ -1,0 +1,405 @@
+﻿<#+
+
+// *** WriteSerializerContextSerializationTest
+
+public void WriteSerializerContextSerializationTest(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel method = model.ParentModelAs<MethodModel>();
+    CSharpFileModel fileModel = model.RootModelAs<CSharpFileModel>();
+
+    ModelType modelType = method.GetFacet<ModelType>("ModelType");
+
+    string namespacePart = fileModel.GetFacet<string>("NamespacePart");
+    string modelsNamespace = fileModel.GetFacet<string>("ModelsNamespace");
+
+#>
+        <#= modelsNamespace #>.<#= modelType.Name #> instance = this.CreateDefault<#= modelType.Name #>();
+
+        System.Text.Json.JsonSerializerOptions options = this.GetJsonSerializerOptions();
+
+        string json = System.Text.Json.JsonSerializer.Serialize(instance, options);
+        json.Should().NotBeEmpty();
+
+        <#= modelsNamespace #>.<#= modelType.Name #> deserialized = System.Text.Json.JsonSerializer.Deserialize<<#= modelsNamespace #>.<#= modelType.Name #>>(json, options);
+        deserialized.Should().NotBeNull();
+<#+
+
+}
+
+// *** WriteCreateDefaultInstance
+
+public void WriteCreateDefaultInstance(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel method = model.ParentModelAs<MethodModel>();
+    CSharpFileModel fileModel = model.RootModelAs<CSharpFileModel>();
+
+    ModelType modelType = method.GetFacet<ModelType>("ModelType");
+
+    string namespacePart = fileModel.GetFacet<string>("NamespacePart");
+    string modelsNamespace = fileModel.GetFacet<string>("ModelsNamespace");
+
+#>
+        <#= modelsNamespace #>.<#= modelType.Name #> result = new <#= modelsNamespace #>.<#= modelType.Name #>();
+
+<#+
+    WriteFakeModelInitialization(modelType, "result", modelsNamespace);
+#>
+
+        return result;
+<#+
+
+}
+
+// *** WriteGetJsonSerializerOptions
+
+public void WriteGetJsonSerializerOptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel method = model.ParentModelAs<MethodModel>();
+    CSharpFileModel fileModel = model.RootModelAs<CSharpFileModel>();
+
+    string project = fileModel.GetFacet<string>("Project");
+    string modelsNamespace = fileModel.GetFacet<string>("ModelsNamespace");
+
+#>
+        System.Text.Json.JsonSerializerOptions result = new System.Text.Json.JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        };
+
+<#+
+
+    if (project == "Client.Rest")
+    {
+
+#>
+        result.AddContext<<#= modelsNamespace #>.SerializerContext>();
+<#+
+
+    }
+    else
+    {
+
+#>
+        result.AddContext<<#= modelsNamespace #>.SerializerContext>();
+<#+
+
+    }
+
+#>
+
+        return result;
+<#+
+
+}
+
+// *** WriteFakeModelInitialization
+
+public void WriteFakeModelInitialization(ModelType model, string variableName, string namespacePart)
+{
+    if (model.BaseModel != null)
+    {
+        WriteFakeModelInitialization(model.BaseModel, variableName, namespacePart);
+    }
+
+    foreach (ModelTypeProperty property in model.ChildProperties)
+    {
+        WriteFakeModelInitialization(property as ModelTypeScalarProperty, variableName);
+        WriteFakeModelInitialization(property as ModelTypeEnumProperty, variableName, namespacePart);
+        WriteFakeModelInitialization(property as ModelTypeModelProperty, variableName, namespacePart);
+    }
+}
+
+public void WriteFakeModelInitialization(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (property.Kind == PropertyKind.Calculated)
+    {
+        return;
+    }
+
+    if (!string.IsNullOrEmpty(property.DefaultValue))
+    {
+        return;
+    }
+
+    WriteFakeModelInitializationString(property.Type == ScalarType.String ? property : null, variableName);
+    WriteFakeModelInitializationString(property.Type == ScalarType.Password ? property : null, variableName);
+    WriteFakeModelInitializationEmail(property.Type == ScalarType.Email ? property : null, variableName);
+    WriteFakeModelInitializationUri(property.Type == ScalarType.Url ? property : null, variableName);
+    
+    WriteFakeModelInitializationPhone(property.Type == ScalarType.PhoneNumber ? property : null, variableName);
+    
+    WriteFakeModelInitializationNumber(property.Type == ScalarType.Integer ? property : null, variableName);
+    WriteFakeModelInitializationNumber(property.Type == ScalarType.Long ? property : null, variableName);
+    WriteFakeModelInitializationNumber(property.Type == ScalarType.Double ? property : null, variableName);
+    WriteFakeModelInitializationNumber(property.Type == ScalarType.Decimal ? property : null, variableName);
+    
+    WriteFakeModelInitializationBoolean(property.Type == ScalarType.Boolean ? property : null, variableName);
+    
+    WriteFakeModelInitializationByteArray(property.Type == ScalarType.ByteArray ? property : null, variableName);
+    
+    WriteFakeModelInitializationGuid(property.Type == ScalarType.Guid ? property : null, variableName);
+    
+    WriteFakeModelInitializationDateTime(property.Type == ScalarType.DateTime ? property : null, variableName);
+    WriteFakeModelInitializationDateTimeOffset(property.Type == ScalarType.DateTimeOffset ? property : null, variableName);
+    WriteFakeModelInitializationTime(property.Type == ScalarType.Time ? property : null, variableName);
+
+}
+
+public void WriteFakeModelInitializationString(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "\"value\"");
+}
+
+public void WriteFakeModelInitializationEmail(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "\"email@server.pt\"");
+}
+
+public void WriteFakeModelInitializationUri(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "new System.Uri(\"https://localhost\")");
+}
+
+public void WriteFakeModelInitializationPhone(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "\"+351969696969\"");
+}
+
+public void WriteFakeModelInitializationNumber(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "10");
+}
+
+public void WriteFakeModelInitializationBoolean(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "true");
+}
+
+public void WriteFakeModelInitializationByteArray(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "new byte[1] { 100 }");
+}
+
+public void WriteFakeModelInitializationDateTime(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "System.DateTime.UtcNow");
+}
+
+public void WriteFakeModelInitializationDateTimeOffset(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "System.DateTimeOffset.UtcNow");
+}
+
+public void WriteFakeModelInitializationTime(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "System.TimeSpan.FromSeconds(1)");
+}
+
+public void WriteFakeModelInitializationGuid(ModelTypeScalarProperty property, string variableName)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    WriteFakeModelInitialization(property, variableName, "System.Guid.NewGuid()");
+}
+
+public void WriteFakeModelInitialization(ModelTypeScalarProperty property, string variableName, string value)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (property.Cardinality == Cardinality.Single)
+    {
+
+#>
+        <#= variableName #>.<#= property.Name #> = <#= value #>;
+<#+
+
+    }
+
+    if (property.Cardinality == Cardinality.List)
+    {
+
+#>
+        <#= variableName #>.<#= property.Name #>.Add(<#= value #>);
+<#+
+
+    }
+
+    if (property.Cardinality == Cardinality.Dictionary)
+    {
+
+#>
+        <#= variableName #>.<#= property.Name #>.Add("key", <#= value #>);
+<#+
+
+    }
+}
+
+public void WriteFakeModelInitialization(ModelTypeEnumProperty property, string variableName, string namespacePart)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (!string.IsNullOrEmpty(property.DefaultValue))
+    {
+        return;
+    }
+
+    EnumType enumeration = property.ReferencedEnumeration;
+
+    if (property.Cardinality == Cardinality.Single)
+    {
+
+#>
+        <#= variableName #>.<#= property.Name #> = <#= namespacePart #>.<#= enumeration?.Name #>.<#= enumeration?.ChildMembers.FirstOrDefault()?.Name #>;
+<#+
+
+    }
+
+    if (property.Cardinality == Cardinality.List)
+    {
+
+#>
+        <#= variableName #>.<#= property.Name #>.Add(<#= namespacePart #>.<#= enumeration?.Name #>.<#= enumeration?.ChildMembers.FirstOrDefault()?.Name #>);
+<#+
+
+    }
+
+    if (property.Cardinality == Cardinality.Dictionary)
+    {
+
+#>
+        <#= variableName #>.<#= property.Name #>.Add("key", <#= namespacePart #>.<#= enumeration?.Name #>.<#= enumeration?.ChildMembers.FirstOrDefault()?.Name #>);
+<#+
+
+    }
+}
+
+public void WriteFakeModelInitialization(ModelTypeModelProperty property, string variableName, string namespacePart)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (!string.IsNullOrEmpty(property.DefaultValue))
+    {
+        return;
+    }
+
+    if (property.ReferencedModel == null)
+    {
+        return;
+    }
+
+    if (property.ReferencedModel == property.ParentModel)
+    {
+        // Stop condition to break circular references
+
+        return;
+    }
+
+    if (property.Cardinality == Cardinality.Single)
+    {
+
+#>
+        <#= $"{variableName}.{property.Name}" #> = CreateDefault<#= property.ReferencedModel.Name #>();
+<#+
+
+    }
+
+    if (property.Cardinality == Cardinality.List)
+    {
+        string hashString = GetVariableName(property);
+
+#>
+        <#= namespacePart #>.<#= property.ReferencedModel.Name #> <#= hashString #> = CreateDefault<#= property.ReferencedModel.Name #>();
+        <#= variableName #>.<#= property.Name #>.Add(<#= hashString #>);
+<#+
+
+    }
+
+    if (property.Cardinality == Cardinality.Dictionary)
+    {
+        string hashString = GetVariableName(property);
+
+#>
+        <#= namespacePart #>.<#= property.ReferencedModel.Name #> <#= hashString #> = CreateDefault<#= property.ReferencedModel.Name #>();
+        <#= variableName #>.<#= property.Name #>.Add("key", <#= hashString #>);
+<#+
+
+    }
+}
+
+// *** GetVariableName
+
+public string GetVariableName(ModelTypeProperty property)
+{
+    Guid id = UniqueIdentifiers.NewDeterministicGuid(property.Name);
+
+    return $"instance{id.ToString().RemoveNoCase("-")}";
+}
+
+#>

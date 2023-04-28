@@ -1,0 +1,1330 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Mediator</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder"/> for CQRS.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCqrsHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any command, query or event that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />, <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2"/> or
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1"/>.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCqrsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any command, query or event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />, <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2"/> or
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1"/>.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCqrsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any command, query or event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />, <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2"/> or
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1"/>.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandsHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any command that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any command that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any command that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandHandler``2(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandHandler``2(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``1},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueriesHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any query that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2" />.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueriesHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any query that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueriesHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any query that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueryHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified query.
+            </summary>
+            <typeparam name="TQuery">The query type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueryHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified query.
+            </summary>
+            <typeparam name="TQuery">The query type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventsHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any event that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1" />.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified handler for any event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventHandler`1" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventHandler``2(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified event.
+            </summary>
+            <typeparam name="TEvent">The event type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventHandler``2(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``1},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified event.
+            </summary>
+            <typeparam name="TEvent">The event type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCqrsExceptionsHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any command, query or event that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3" />, <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3"/> or
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2"/>.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCqrsExceptionsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any command, query or event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3" />, <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3"/> or
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2"/>.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCqrsExceptionsHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any command, query or event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3" />, <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3"/> or
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2"/>.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandsExceptionHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exceptions handler for any command that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3" />.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandsExceptionHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exceptions handler for any command that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandsExceptionHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exceptions handler for any command that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.ICommandExceptionHandler`3" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandExceptionHandler``4(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandExceptionHandler``4(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``3},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandExceptionHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddCommandExceptionHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified command.
+            </summary>
+            <typeparam name="TCommand">The command type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueriesExceptionHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any query that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3" />.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueriesExceptionHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any query that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueriesExceptionHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any query that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IQueryExceptionHandler`3" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueryExceptionHandler``4(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified query.
+            </summary>
+            <typeparam name="TQuery">The query type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddQueryExceptionHandler``4(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``3},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified query.
+            </summary>
+            <typeparam name="TQuery">The query type.</typeparam>
+            <typeparam name="TResult">The result type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventsExceptionHandler(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any event that it may handle.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <paramref name="handlerType" /> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2" />.
+            Raised if <paramref name="handlerType" /> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventsExceptionHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventsExceptionHandler``1(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the specified exception handler for any event that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.Cqrs.IEventExceptionHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventExceptionHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified event.
+            </summary>
+            <typeparam name="TEvent">The event type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Cqrs.MediatorBuilderCqrsExtensions.AddEventExceptionHandler``3(Primavera.Hydrogen.Mediator.IMediatorBuilder,System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified event.
+            </summary>
+            <typeparam name="TEvent">The event type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="builder">The builder.</param>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.IMediatorBuilder">
+            <summary>
+            Defines the interface of the mediator builder.
+            The mediator builder allows configuring the mediator.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestsHandler(System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for any request that it may handle.
+            </summary>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <paramref name="handlerType"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2" />.
+            Raised if <paramref name="handlerType"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestsHandler``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for any request that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestsHandler``1(System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for any request that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IRequestHandler`2" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestHandler``3(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TResponse">The response type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestHandler``3(System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TResponse">The response type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestHandler``2(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestHandler``2(System.Func{System.IServiceProvider,``1},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an handler for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionsHandler(System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for any request and exception that it may handle.
+            </summary>
+            <param name="handlerType">The handler type.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <paramref name="handlerType"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3" />.
+            Raised if <paramref name="handlerType"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionsHandler``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for any request and exception that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionsHandler``1(System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for any request and exception that it may handle.
+            </summary>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <typeparamref name="THandler"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3" />.
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionHandler``4(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified request and exception.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TResponse">The response type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionHandler``4(System.Func{System.IServiceProvider,``3},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified request and exception.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TResponse">The response type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionHandler``3(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified request and exception.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionHandler``3(System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds an exception handler for the specified request and exception.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TException">The exception type.</typeparam>
+            <typeparam name="THandler">The handler type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The handler lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="THandler"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestsMiddleware(System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware for any request that it may handle.
+            </summary>
+            <param name="middlewareType">The middleware type.</param>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <paramref name="middlewareType"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IMiddleware`2"/>.
+            Raised if <paramref name="middlewareType"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestsMiddleware``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware for any request that it may handle.
+            </summary>
+            <typeparam name="TMiddleware">The middleware type.</typeparam>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <typeparamref name="TMiddleware"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IMiddleware`2"/>.
+            Raised if <typeparamref name="TMiddleware"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestsMiddleware``1(System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware for any request that it may handle.
+            </summary>
+            <typeparam name="TMiddleware">The middleware type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the <typeparamref name="TMiddleware"/> does not implement
+            <see cref="T:Primavera.Hydrogen.Mediator.IMiddleware`2"/>.
+            Raised if <typeparamref name="TMiddleware"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestMiddleware``3(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TResponse">The response type.</typeparam>
+            <typeparam name="TMiddleware">The middleware type.</typeparam>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="TMiddleware"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestMiddleware``3(System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TResponse">The response type.</typeparam>
+            <typeparam name="TMiddleware">The middleware type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="TMiddleware"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestMiddleware``2(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TMiddleware">The middleware type.</typeparam>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="TMiddleware"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddRequestMiddleware``2(System.Func{System.IServiceProvider,``1},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware for the specified request.
+            </summary>
+            <typeparam name="TRequest">The request type.</typeparam>
+            <typeparam name="TMiddleware">The middleware type.</typeparam>
+            <param name="implementationFactory">The implementation factory.</param>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if <typeparamref name="TMiddleware"/> is not a concrete type.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionProcessorMiddleware(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware to process exceptions raised while processing requests.
+            </summary>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionProcessorMiddleware``2(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware to process exceptions raised while processing the specified request.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.IMediatorBuilder.AddExceptionProcessorMiddleware``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds a middleware to process exceptions raised while processing the specified request.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <param name="lifetime">The middleware lifetime (in the service collection).</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.MediatorBuilder">
+            <summary>
+            Defines the default implementation for <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.#ctor(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.MediatorBuilder" /> class.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="serviceLifetime">The service lifetime.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestsHandler(System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestsHandler``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestsHandler``1(System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestHandler``3(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestHandler``3(System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestHandler``2(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestHandler``2(System.Func{System.IServiceProvider,``1},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionsHandler(System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionsHandler``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionsHandler``1(System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionHandler``4(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionHandler``4(System.Func{System.IServiceProvider,``3},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionHandler``3(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionHandler``3(System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestsMiddleware(System.Type,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestsMiddleware``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestsMiddleware``1(System.Func{System.IServiceProvider,``0},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestMiddleware``3(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestMiddleware``3(System.Func{System.IServiceProvider,``2},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestMiddleware``2(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddRequestMiddleware``2(System.Func{System.IServiceProvider,``1},Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionProcessorMiddleware(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionProcessorMiddleware``2(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorBuilder.AddExceptionProcessorMiddleware``1(Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.MediatorServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type
+            that allows configuring the mediator.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.MediatorServiceCollectionExtensions.AddMediator(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
+            <summary>
+            Adds the mediator to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="serviceLifetime">The service lifetime.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Mediator.IMediatorBuilder" /> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.ReflectionHelper">
+            <summary>
+            Provides helper methods for reflection.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.ReflectionHelper.FindInterfacesThatImplement(System.Type,System.Type)">
+            <summary>
+            Finds the interfaces in <paramref name="currentType"/> that implement
+            <paramref name="targetType"/>.
+            </summary>
+            <param name="currentType">The current type.</param>
+            <param name="targetType">The target type.</param>
+            <returns>
+            The list of interfaces.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.ExceptionProcessorMiddleware`2">
+            <summary>
+            Defines a middleware that handles exceptions raised while processing a request.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IMiddleware`2" />
+            <remarks>
+            This middleware activates the relevant <see cref="T:Primavera.Hydrogen.Mediator.IRequestExceptionHandler`3"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.ExceptionProcessorMiddleware`2.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.ExceptionProcessorMiddleware`2"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.ExceptionProcessorMiddleware`2.RunAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,Primavera.Hydrogen.Mediator.RequestHandlerDelegate{`0,`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Internal.LoggerExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.Logging.ILogger"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.LoggerExtensions.LogCheckingHandler(Microsoft.Extensions.Logging.ILogger,System.String)">
+            <summary>
+            Logs a debug message indicating that <see cref="T:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapper`3"/> is checking
+            if an exception handler can handle the exception.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="handlerType">The handler type.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.LoggerExtensions.LogHandled(Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Logs a debug message indicating that <see cref="T:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapper`3"/>
+            found an exception handler that could handle the exception.
+            </summary>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapper`3">
+            <summary>
+            Defines the request exception handler used by the mediator to direct exceptions
+            to the adequate handler by handling the generics constraints
+            limitations.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapperBase`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapper`3.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapper`3"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapper`3.HandleAsync(`0,System.Exception,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{`1},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapperBase`2">
+            <summary>
+            Defines the base class for the request exception handler used by the mediator to direct exceptions
+            to the adequate handlers by handling the generics constraints limitations.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.RequestExceptionHandlerWrapperBase`2.HandleAsync(`0,System.Exception,Primavera.Hydrogen.Mediator.RequestExceptionHandlerState{`1},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Handles the specified exception.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="exception">The exception.</param>
+            <param name="state">The state.</param>
+            <param name="context">The context.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task" /> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Internal.RequestHandlerWrapper`2">
+            <summary>
+            Defines the request handler used by the mediator to direct requests
+            to the adequate handler by handling the generics constraints
+            limitations.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.Internal.RequestHandlerWrapperBase" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.RequestHandlerWrapper`2.#ctor(System.IServiceProvider,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.Internal.RequestHandlerWrapper`2" /> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="singleHandler">A value indicating whether only a single handler is accepted.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.RequestHandlerWrapper`2.HandleAsync(System.Object,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Internal.RequestHandlerWrapperBase">
+            <summary>
+            Defines the base class for the request handler used by the mediator to direct requests
+            to the adequate handler by handling the generics constraints limitations.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Internal.RequestHandlerWrapperBase.HandleAsync(System.Object,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <summary>
+            Handles the specified request.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="context">The context (optional).</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            The response from the handlers.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Mediator">
+            <summary>
+            Defines the default implementation of <see cref="T:Primavera.Hydrogen.Mediator.IMediator"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IMediator" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Mediator.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.Mediator"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Mediator.SendAsync``1(Primavera.Hydrogen.Mediator.IRequest{``0},Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Mediator.SendAsync(Primavera.Hydrogen.Mediator.IRequest,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.Mediator.PublishAsync(Primavera.Hydrogen.Mediator.IRequest,Primavera.Hydrogen.Mediator.MediatorContext,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.PerformanceMiddleware`2">
+            <summary>
+            Defines a middleware that logs the time taken to process a request.
+            </summary>
+            <typeparam name="TRequest">The type of the request.</typeparam>
+            <typeparam name="TResponse">The type of the response.</typeparam>
+            <seealso cref="T:Primavera.Hydrogen.Mediator.IMiddleware`2" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.PerformanceMiddleware`2.#ctor(Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.Mediator.PerformanceMiddleware{`0,`1}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Mediator.PerformanceMiddleware`2" /> class.
+            </summary>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Mediator.PerformanceMiddleware`2.RunAsync(`0,Primavera.Hydrogen.Mediator.MediatorContext,Primavera.Hydrogen.Mediator.RequestHandlerDelegate{`0,`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Mediator.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_CouldNotDetermineExceptionBaseType">
+            <summary>
+              Looks up a localized string similar to Could not determine exception base type..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_FailedToInstantiateType">
+            <summary>
+              Looks up a localized string similar to Could not create an instance of &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_Handler_Invalid">
+            <summary>
+              Looks up a localized string similar to Handler &apos;{0}&apos; does not implement &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_Handler_Invalid2">
+            <summary>
+              Looks up a localized string similar to Handler &apos;{0}&apos; does not implement &apos;{1}&apos;, &apos;{2}&apos; or &apos;{3}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_Handler_NotConcrete">
+            <summary>
+              Looks up a localized string similar to Handler &apos;{0}&apos; should be a concrete type..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_HandlerNotFound">
+            <summary>
+              Looks up a localized string similar to No handler of signature {0} was found for {1}..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_Middleware_Invalid">
+            <summary>
+              Looks up a localized string similar to Middleware &apos;{0}&apos; does not implement &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_Middleware_NotConcrete">
+            <summary>
+              Looks up a localized string similar to Middleware &apos;{0}&apos; should be a concrete type..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_NoHandlerForCommandFound">
+            <summary>
+              Looks up a localized string similar to Could not resolve any handler for the specified command. A service with signature &apos;{0}&apos; should have been registered in the service collection..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_NoHandlerForQueryFound">
+            <summary>
+              Looks up a localized string similar to Could not resolve any handler for the specified query. A service with signature &apos;{0}&apos; should have been registered in the service collection..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Mediator.Properties.Resources.RES_Exception_NoHandlerForRequestFound">
+            <summary>
+              Looks up a localized string similar to Could not resolve any handler for the specified request. A service with signature &apos;{0}&apos; should have been registered in the service collection..
+            </summary>
+        </member>
+    </members>
+</doc>

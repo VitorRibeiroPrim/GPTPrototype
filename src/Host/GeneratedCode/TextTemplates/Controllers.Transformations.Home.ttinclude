@@ -1,0 +1,155 @@
+﻿<#+
+
+// *** TransformHomeController
+
+public void TransformHomeController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    if (!serviceModel.Settings.GenerateHomeController)
+    {
+        return;
+    }
+
+    // Home controller base class
+
+    ClassModel baseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("HomeControllerBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+                Inheritance = "AppControllerBase, IHomeController",
+                Documentation = new DocumentationModel("Defines the base class for the controller that provides the home routes.")
+                {
+                    Remarks = "This is the base class of the MVC controller."
+                }
+            })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Inheritance = "base(logger)",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"HomeControllerBase\" /> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger")
+                    {
+                        Documentation = new DocumentationModel("The logger.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("IndexAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(
+                    new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Home.Routes.Index)"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Home.Actions.Index)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ErrorAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(
+                    new MethodParameterModel("statusCode", "int"))
+                .WithParameter(
+                    new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Home.Routes.Error)"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Home.Actions.Error)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ShowErrorAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Shows the default error page for the specified view model.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nThe <see cref=\"Microsoft.AspNetCore.Mvc.IActionResult\"/> that describes the action result."
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("model", "ViewModels.ErrorViewModel")
+                    {
+                        Documentation = new DocumentationModel("The error view model.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                .ParentModelAs<ClassModel>();
+
+    if (serviceModel.Settings.GenerateOidcSupport)
+    {
+        targetModel
+            .WithNamespaceImport(
+                new NamespaceImportModel("Microsoft.AspNetCore.Authentication"));
+
+        baseClass
+            .AddMethod(
+                new MethodModel("AccessDeniedAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(
+                    new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.HttpGet(Common.Constants.Controllers.Home.Routes.AccessDenied)"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Home.Actions.AccessDenied)"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("SignoutAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel(true)
+                })
+                .WithParameter(
+                    new MethodParameterModel("returnUri", "string?", "null"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.Route(Common.Constants.Controllers.Home.Routes.Signout)"))
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.ActionName(Common.Constants.Controllers.Home.Actions.Signout)"))
+                .ParentModelAs<ClassModel>();
+    }
+
+    // Home controller
+
+    ClassModel controllerClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("HomeController")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "HomeControllerBase",
+                Documentation = new DocumentationModel("Defines the controller that provides the home routes.")
+            })
+            .WithAttribute(new AttributeModel("Microsoft.AspNetCore.Mvc.ControllerName(Common.Constants.Controllers.Home.Name)"))
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base(logger)",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"HomeController\" /> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger<HomeController>")
+                    {
+                        Documentation = new DocumentationModel("The logger.")
+                    })
+                .ParentModelAs<ClassModel>();
+
+}
+
+#>

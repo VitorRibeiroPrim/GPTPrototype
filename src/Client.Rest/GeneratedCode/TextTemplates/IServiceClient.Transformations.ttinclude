@@ -1,0 +1,74 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Rest");
+
+    InterfaceModel interfaceModel = targetModel.Namespace
+        .AddInterface(new InterfaceModel("I{0}Client".Format(sourceModel.Name))
+        {
+            Modifiers = InterfaceModifiers.Public | InterfaceModifiers.Partial,
+            Documentation = new DocumentationModel("Defines the interface of the service client that allows accessing the {0} REST API.".Format(sourceModel.DisplayName))
+        });
+
+    interfaceModel
+        .WithProperty(new PropertyModel("Monitoring", "IMonitoringClientController")
+        {
+            GetAccessor = new PropertyGetAccessorModel(),
+            Documentation = new DocumentationModel("Provides monitoring operations on the service.")
+        });
+
+    if (sourceModel.Webhooks.Any())
+    {
+        interfaceModel
+            .WithProperty(new PropertyModel("Webhooks", "IWebhooksClientController")
+            {
+                GetAccessor = new PropertyGetAccessorModel(),
+                Documentation = new DocumentationModel("Provides operations to manage webhooks on the service.")
+            });
+    }
+}
+
+// *** TransformController
+
+public void TransformController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ControllerType sourceModel = sourceElement as ControllerType;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (sourceModel.Visibility == ControllerTypeVisibility.ServerSide)
+    {
+        return;
+    }
+
+    if (sourceModel.AccessModifier == ControllerTypeAccessModifier.Internal)
+    {
+        return;
+    }
+
+    if (!sourceModel.ChildActions.Any(a => a.IsApiVersionInUse(sourceModel.ServiceModel.Version)))
+    {
+        return;
+    }
+
+    InterfaceModel interfaceModel = targetModel.Namespace.Interfaces[0];
+
+    interfaceModel.AddProperty(new PropertyModel(sourceModel.Name, "I{0}ClientController".Format(sourceModel.Name))
+    {
+        GetAccessor = new PropertyGetAccessorModel(),
+        Documentation = new DocumentationModel(sourceModel.Summary)
+    });
+}
+
+#>

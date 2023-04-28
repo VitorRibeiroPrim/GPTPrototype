@@ -1,0 +1,46 @@
+﻿
+<#+
+
+public void WriteCopyrightPartialViewEmpty(ModelWriter modelWriter, ServiceModel model)
+{
+
+#>
+<!--
+This file is empty because the service model is configured to not generate the home controller
+-->
+<#+
+
+}
+
+public void WriteCopyrightPartialView(ModelWriter modelWriter, ServiceModel model)
+{
+
+#>
+@using System.Net
+@using Microsoft.Extensions.DependencyInjection
+@using Primavera.Hydrogen.Net
+@using <#= model.Namespace #>.Server.Host.Localization
+@{
+    // Configuration
+
+    HostConfiguration configuration = this.Context.RequestServices.GetRequiredService<HostConfiguration>();
+
+    // IP Address
+
+    IPAddress? address = await IPConfig.MyIpAsync().ConfigureAwait(false);
+
+    string ipAddress = address?.ToString() ?? "Unavailable";
+}
+
+    <div class="info-content">
+        <span>@Html.Raw(configuration.Information!.Copyright)</span>
+        <span>Powered by Lithium v<#= SdkConstants.FrameworkVersion #></span>
+        <span>@Html.Raw($"{ViewsResources.RES_Version}: {configuration.Information.Version}")</span>
+        <span>@Html.Raw($"{ViewsResources.RES_Build}: {configuration.Information.InformationalVersion}")</span>
+        <span hidden>IP: @Html.Raw(ipAddress)</span>
+    </div>
+<#+
+
+}
+
+#>

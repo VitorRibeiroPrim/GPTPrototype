@@ -1,0 +1,61 @@
+﻿<#+
+
+public void WriteSettings(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model == null)
+    {
+        return;
+    }
+
+    OAuthClient oauthClient = model.OAuthClients.FirstOrDefault(i => i.GrantType == OAuthGrantType.ClientCredentials);
+
+#>
+{
+    "Logging": {
+        "Debug": {
+            "LogLevel": {
+                "Default": "Warning",
+                "Primavera": "Warning"
+            }
+        },
+        "Console": {
+            "LogLevel": {
+                "Default": "Warning",
+                "Primavera": "Warning"
+            }
+        }
+    },
+    "ApplicationConfiguration": {
+        "Environments": {
+            "Local": {
+<#+
+
+    if (oauthClient != null)
+    {
+
+#>
+                "ServiceBaseUri": "https://localhost:20001",
+                "ClientId": "<#= oauthClient.Name #>",
+                "ClientSecret": "<#= oauthClient.Secret #>"
+<#+
+
+    }
+    else
+    {
+
+#>
+                "ServiceBaseUri": "https://localhost:20001"
+<#+
+
+    }
+
+#>
+            }
+        }
+    }
+}
+<#+
+
+}
+
+#>

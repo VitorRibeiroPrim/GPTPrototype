@@ -1,0 +1,19 @@
+﻿<#+
+
+// *** WriteClientLibDocumentationAsync
+
+public void WriteClientLibDocumentationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Show the view
+
+        return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(
+            this.View(<#= serviceModel.Namespace #>.Server.Common.Constants.Views.ClientLibDocumentation));
+<#+
+
+}
+
+#>

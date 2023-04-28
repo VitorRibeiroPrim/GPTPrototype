@@ -1,0 +1,82 @@
+﻿<#+
+
+public void EnumerationsTransformations(string project)
+{
+    // Build the transformations
+
+    ServiceModelTransformations<CSharpFileModel> transformations =
+        new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+    transformations.Add(
+        new EnumerationsTransformation(project));
+
+    transformations.Add(
+        (s, t) => true,
+        (s, t) => { return s is ServiceModel; },
+        (s, t) =>
+        {
+            if (s is ServiceModel serviceModel)
+            {
+                // Empty?
+
+                switch (project)
+                {
+                    case "Client.Rest":
+                        if (!serviceModel.Enumerations.Any(i => i.Extensions().IsVisibleClientSide))
+                        {
+                            t.WithEmptyComment("This file is empty because the service model does not include\nany enumerations visible client-side.");
+                            return;
+                        }
+
+                        break;
+                    case "Domain":
+                    case "RestApi":
+                        if (!serviceModel.Enumerations.Any(i => i.Extensions().IsVisibleServerSide))
+                        {
+                            t.WithEmptyComment("This file is empty because the service model does not include\nany enumerations visible server-side.");
+                            return;
+                        }
+
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Invalid project name '{project}'");
+                }
+
+                // Namespace
+
+                string namespacePart;
+
+                switch (project)
+                {
+                    case "Client.Rest":
+                        namespacePart = ".Client.Rest.Models";
+                        break;
+                    case "RestApi":
+                        namespacePart = ".Server.RestApi.Models";
+                        break;
+                    case "Domain":
+                        namespacePart = ".Server.Domain";
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Invalid project name '{project}'");
+                }
+
+                t.Namespace = new NamespaceModel(serviceModel.Namespace + namespacePart);
+            }
+        });
+
+    // Transform
+
+    CSharpFileModel targetModel = new CSharpFileModel();
+    transformations.TransformTo(targetModel);
+
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Generate code
+
+    controller.Write(targetModel);
+}
+
+#>

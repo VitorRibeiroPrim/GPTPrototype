@@ -1,0 +1,181 @@
+﻿<#+
+
+// *** TransformCustomApiController
+
+public void TransformCustomApiController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.RestApi.Controllers");
+
+    // Custom API controller base class
+
+    ClassModel customApiControllerClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("CustomApiControllerBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+                Inheritance = "Primavera.Hydrogen.AspNetCore.Mvc.ApiControllerBase",
+                Documentation = new DocumentationModel("Defines a base class that allows sharing behavior between all API controllers.")
+            })
+            .WithProperty(
+                new PropertyModel("Mapper", "AutoMapper.IMapper", "this.HttpContext.RequestServices.GetRequiredService<AutoMapper.IMapper>()")
+                {
+                    Documentation = new DocumentationModel("Gets the mapper."),
+                    Modifiers = PropertyModifiers.Protected
+                })
+            .AddMethod(
+                new MethodModel("NotFound", "Microsoft.AspNetCore.Mvc.NotFoundObjectResult")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Creates an <see cref=\"Microsoft.AspNetCore.Mvc.NotFoundObjectResult\"/> that produces a\n<see cref=\"Microsoft.AspNetCore.Http.StatusCodes.Status404NotFound\"/> response\nfor the specified <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                    {
+                        Returns = "The <see cref=\"Microsoft.AspNetCore.Mvc.NotFoundObjectResult\"/> instance."
+                    }
+                })
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.NonAction"))
+                .WithParameter(
+                    new MethodParameterModel("value", "Primavera.Hydrogen.Rest.RestProblemDetails")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("BadRequest", "Microsoft.AspNetCore.Mvc.BadRequestObjectResult")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Creates an <see cref=\"Microsoft.AspNetCore.Mvc.BadRequestObjectResult\"/> that produces a\n<see cref=\"Microsoft.AspNetCore.Http.StatusCodes.Status400BadRequest\"/> response\nfor the specified <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                    {
+                        Returns = "The <see cref=\"Microsoft.AspNetCore.Mvc.BadRequestObjectResult\"/> instance."
+                    }
+                })
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.NonAction"))
+                .WithParameter(
+                    new MethodParameterModel("value", "Primavera.Hydrogen.Rest.RestProblemDetails")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("Conflict", "Microsoft.AspNetCore.Mvc.ConflictObjectResult")
+                {
+                    Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Creates an <see cref=\"Microsoft.AspNetCore.Mvc.ConflictObjectResult\"/> that produces a\n<see cref=\"Microsoft.AspNetCore.Http.StatusCodes.Status409Conflict\"/> response\nfor the specified <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                    {
+                        Returns = "The <see cref=\"Microsoft.AspNetCore.Mvc.ConflictObjectResult\"/> instance."
+                    }
+                })
+                .WithAttribute(
+                    new AttributeModel("Microsoft.AspNetCore.Mvc.NonAction"))
+                .WithParameter(
+                    new MethodParameterModel("value", "Primavera.Hydrogen.Rest.RestProblemDetails")
+                    {
+                        Documentation = new DocumentationModel("The <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                    })
+                .ParentModelAs<ClassModel>();
+
+    // Custom API OData controller base class
+
+    ClassModel customApiODataControllerClass = null;
+
+    if (sourceModel.Extensions().HasODataServerSide)
+    {
+        customApiODataControllerClass = targetModel.Namespace
+            .AddClass(
+                new ClassModel("CustomApiODataControllerBase")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+                    Inheritance = "Primavera.Hydrogen.AspNetCore.Mvc.OData.ApiODataControllerBase",
+                    Documentation = new DocumentationModel("Defines a base class that allows sharing behavior between all OData controllers.")
+                })
+                .WithProperty(
+                    new PropertyModel("Mapper", "AutoMapper.IMapper", "this.HttpContext.RequestServices.GetRequiredService<AutoMapper.IMapper>()")
+                    {
+                        Documentation = new DocumentationModel("Gets the mapper."),
+                        Modifiers = PropertyModifiers.Protected
+                    })
+                .AddMethod(
+                    new MethodModel("NotFound", "Microsoft.AspNetCore.Mvc.NotFoundObjectResult")
+                    {
+                        Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel("Creates an <see cref=\"Microsoft.AspNetCore.Mvc.NotFoundObjectResult\"/> that produces a\n<see cref=\"Microsoft.AspNetCore.Http.StatusCodes.Status404NotFound\"/> response\nfor the specified <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                        {
+                            Returns = "The <see cref=\"Microsoft.AspNetCore.Mvc.NotFoundObjectResult\"/> instance."
+                        }
+                    })
+                    .WithAttribute(
+                        new AttributeModel("Microsoft.AspNetCore.Mvc.NonAction"))
+                    .WithParameter(
+                        new MethodParameterModel("value", "Primavera.Hydrogen.Rest.RestProblemDetails")
+                        {
+                            Documentation = new DocumentationModel("The <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                        })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(
+                    new MethodModel("BadRequest", "Microsoft.AspNetCore.Mvc.BadRequestObjectResult")
+                    {
+                        Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel("Creates an <see cref=\"Microsoft.AspNetCore.Mvc.BadRequestObjectResult\"/> that produces a\n<see cref=\"Microsoft.AspNetCore.Http.StatusCodes.Status400BadRequest\"/> response\nfor the specified <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                        {
+                            Returns = "The <see cref=\"Microsoft.AspNetCore.Mvc.BadRequestObjectResult\"/> instance."
+                        }
+                    })
+                    .WithAttribute(
+                        new AttributeModel("Microsoft.AspNetCore.Mvc.NonAction"))
+                    .WithParameter(
+                        new MethodParameterModel("value", "Primavera.Hydrogen.Rest.RestProblemDetails")
+                        {
+                            Documentation = new DocumentationModel("The <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                        })
+                    .ParentModelAs<ClassModel>()
+                .AddMethod(
+                    new MethodModel("Conflict", "Microsoft.AspNetCore.Mvc.ConflictObjectResult")
+                    {
+                        Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                        Documentation = new DocumentationModel("Creates an <see cref=\"Microsoft.AspNetCore.Mvc.ConflictObjectResult\"/> that produces a\n<see cref=\"Microsoft.AspNetCore.Http.StatusCodes.Status409Conflict\"/> response\nfor the specified <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                        {
+                            Returns = "The <see cref=\"Microsoft.AspNetCore.Mvc.ConflictObjectResult\"/> instance."
+                        }
+                    })
+                    .WithAttribute(
+                        new AttributeModel("Microsoft.AspNetCore.Mvc.NonAction"))
+                    .WithParameter(
+                        new MethodParameterModel("value", "Primavera.Hydrogen.Rest.RestProblemDetails")
+                        {
+                            Documentation = new DocumentationModel("The <see cref=\"Primavera.Hydrogen.Rest.RestProblemDetails\"/> instance.")
+                        })
+                    .ParentModelAs<ClassModel>();
+    }
+
+    // Mediator
+
+    if (sourceModel.Extensions().UseMediatorOrCqrs)
+    {
+        customApiControllerClass
+            .WithProperty(
+                new PropertyModel("Mediator", "Primavera.Hydrogen.Mediator.IMediator", "this.HttpContext.RequestServices.GetRequiredService<Primavera.Hydrogen.Mediator.IMediator>()")
+                {
+                    Documentation = new DocumentationModel("Gets the mediator."),
+                    Modifiers = PropertyModifiers.Protected
+                });
+
+        if (customApiODataControllerClass != null)
+        {
+            customApiODataControllerClass
+                .WithProperty(
+                    new PropertyModel("Mediator", "Primavera.Hydrogen.Mediator.IMediator", "this.HttpContext.RequestServices.GetRequiredService<Primavera.Hydrogen.Mediator.IMediator>()")
+                    {
+                        Documentation = new DocumentationModel("Gets the mediator."),
+                        Modifiers = PropertyModifiers.Protected
+                    });
+        }
+    }
+}
+
+#>

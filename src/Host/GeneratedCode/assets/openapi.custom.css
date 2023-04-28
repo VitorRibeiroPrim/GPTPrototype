@@ -1,0 +1,30 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap');
+
+.swagger-ui pre * {
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+.swagger-ui textarea {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+}
+
+.swagger-ui * {
+    font-family: 'Roboto', 'Arial', sans-serif !important;
+}
+
+.swagger-ui .opblock-body pre.microlight {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+}
+
+.swagger-ui .parameter__type {
+    font-weight: 400 !important;
+}
+
+.swagger-ui .parameter__extension, .swagger-ui .parameter__in {
+    font-weight: 400 !important;
+    font-style: normal !important;
+}

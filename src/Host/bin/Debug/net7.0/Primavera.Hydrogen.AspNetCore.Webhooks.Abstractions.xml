@@ -1,0 +1,296 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.AspNetCore.Webhooks.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService">
+            <summary>
+            Defines the interface of the webhooks subscriptions service.
+            This service is responsible for managing the subscriptions of client applications
+            for webhooks events.
+            </summary>
+            <remarks>
+            The client application (the subscriber) should invoke this service to create, update or delete
+            subscriptions on one or more events supported by the publisher.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.CreateSubscriptionAsync(Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new webhook subscription.
+            </summary>
+            <param name="request">The webhook subscription that should be created.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result`1"/> that describes the operation result.
+            If succeeded, the result contains the identifier of the new webhook subscription.
+            </returns>
+            <remarks>
+            Error codes:
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestInvalid"/>: the request arguments are invalid.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.EventAlreadySubscribed"/>: at least one event was
+            already subscribed.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestCanceled"/>: the request was canceled by
+            the application.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.UpdateSubscriptionAsync(Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest,System.Threading.CancellationToken)">
+            <summary>
+            Updates the specified webhook subscription.
+            </summary>
+            <param name="request">The webhook subscription that should be updated.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result"/> that describes the operation result.
+            </returns>
+            <remarks>
+            Error codes:
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestInvalid"/>: the request arguments are invalid.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound"/>: the subscription does not exist.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.EventAlreadySubscribed"/>: at least one event was
+            already subscribed.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestCanceled"/>: the request was canceled by
+            the application.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.DeleteSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified webhook subscription.
+            </summary>
+            <param name="clientId">The client application identifier.</param>
+            <param name="subscriptionId">The webhook subscription identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result"/> that describes the operation result.
+            </returns>
+            <remarks>
+            Error codes:
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestInvalid"/>: the request arguments are invalid.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound"/>: the subscription does not exist.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestCanceled"/>: the request was canceled by
+            the application.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.DeleteSubscriptionsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes all the webhook subscriptions for the specified client application.
+            </summary>
+            <param name="clientId">The client application identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result"/> that describes the operation result.
+            </returns>
+            <remarks>
+            Error codes:
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestInvalid"/>: the request arguments are invalid.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.NoSubscriptionsFound"/>: no subscriptions found.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestCanceled"/>: the request was canceled by
+            the application.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.GetSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified webhook subscription.
+            </summary>
+            <param name="clientId">The client application identifier.</param>
+            <param name="subscriptionId">The webhook subscription identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result`1"/> that describes the operation result.
+            If succeeded, the result contains the webhook subscription.
+            </returns>
+            <remarks>
+            Error codes:
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestInvalid"/>: the request arguments are invalid.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound"/>: the subscription does not exist.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.GetSubscriptionsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves all the webhook subscriptions for the specified client application.
+            </summary>
+            <param name="clientId">The client application identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result`1"/> that describes the operation result.
+            If succeeded, the result contains the webhook subscriptions (it may be
+            an empty list if there is no subscription).
+            </returns>
+            <remarks>
+            Error codes:
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestInvalid"/>: the request arguments are invalid.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.PingSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sends a ping to the specified webhook subscription callback.
+            </summary>
+            <param name="clientId">The client application identifier.</param>
+            <param name="subscriptionId">The webhook subscription identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result"/> that describes the operation result.
+            </returns>
+            <remarks>
+            Error codes:
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.RequestInvalid"/>: the request arguments are invalid.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.SubscriptionNotFound"/>: the subscription does not exist.
+            - <see cref="F:Primavera.Hydrogen.Rest.Webhooks.WebhooksErrorCodes.PingFailed"/>: the ping callback action failed.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.GetWebhooksMetadataAsync(System.Threading.CancellationToken)">
+            <summary>
+            Retrieves metadata about all the webhooks available.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result`1"/> that describes the operation result.
+            If succeeded, the result contains the metadata about all the webhooks.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.GetSubscriptionsForEventAsync(System.String,System.Collections.Generic.IDictionary{System.String,System.String},System.Threading.CancellationToken)">
+            <summary>
+            Retrieves all the active webhook subscriptions for the specified webhook event.
+            </summary>
+            <param name="eventName">The event name.</param>
+            <param name="filters">The filters that should be applied to the subscriptions.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result`1"/> that describes the operation result.
+            If succeeded, the result contains the webhook subscriptions.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.UpdateSubscriptionAsync(Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackRequest,Primavera.Hydrogen.Rest.Webhooks.WebhookCallbackResponse,System.Threading.CancellationToken)">
+            <summary>
+            Updates the specified webhook subscription's last request and last response.
+            </summary>
+            <param name="subscription">The webhook subscription that should be updated.</param>
+            <param name="request">The last webhook request.</param>
+            <param name="response">The last webhook response.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result"/> that describes the operation result.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.ISubscriptionsService.GetWebhooksToRetryAsync(System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the webhooks events that should be retried.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The <see cref="T:Primavera.Hydrogen.Result`1"/> that describes the operation result.
+            If succeeded, the result contains the webhook callback requests that should be retried.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService">
+            <summary>
+            Defines the interface of the webhooks service.
+            This service is responsible for publishing webhooks events on behalf of the publisher to the
+            adequate subscribers.
+            </summary>
+            <remarks>
+            The publisher triggers the webhook by invoking this service and providing the name of the event along
+            with the data payload (required) and filters (optional).
+            The service will publish the event to all the subscribers that subscribed the event previously.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.IWebhooksService.PublishEventAsync``1(System.String,``0,System.Collections.Generic.IDictionary{System.String,System.String},System.Threading.CancellationToken)">
+            <summary>
+            Publishes the specified webhook event.
+            </summary>
+            <typeparam name="T">The type of the webhook payload.</typeparam>
+            <param name="eventName">The name of the webhook event.</param>
+            <param name="payload">The webhook payload.</param>
+            <param name="filters">
+            The webhook filters.
+            When specified, only the subscriptions whose filters match ALL the filters specified,
+            will receive the webhook event in the configured callback.
+            </param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The operation result, which indicates that the request was accepted, not that it
+            was actually received by any subscriber.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders">
+            <summary>
+            Provides a representation of the headers that are sent to the client application in the callback
+            request.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders.ApplicationName">
+            <summary>
+            Gets or sets the name of the application that triggered the webhook.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders.EventName">
+            <summary>
+            Gets or sets the name of the event that triggered the webhook.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders.DeliveryId">
+            <summary>
+            Gets or sets the delivery identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders.Signature">
+            <summary>
+            Gets or sets the signature.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders.Properties">
+            <summary>
+            Gets or sets the properties registered by the client application when subscribing the webhook.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhookHeaders.IsSignatureValid(System.String,System.String)">
+            <summary>
+            Determines whether the signature received is valid (matches the specified secret and payload JSON).
+            </summary>
+            <param name="secret">The secret.</param>
+            <param name="payload">The JSON of the payload received.</param>
+            <returns>
+            A value indicating whether the signature received is valid.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksException">
+            <summary>
+            Describes errors raised by the webhooks services.
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksException"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+    </members>
+</doc>

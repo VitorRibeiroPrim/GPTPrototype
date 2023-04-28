@@ -1,0 +1,43 @@
+﻿<Project>
+
+    <!-- Assembly name and namespace -->
+
+    <PropertyGroup>
+        <RootNamespace>Primavera.Lithium.ChatGPT.Server.RestApi.Tests</RootNamespace>
+        <AssemblyName>Primavera.Lithium.ChatGPT.Server.RestApi.Tests</AssemblyName>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Global implicit using statements -->
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+     <ItemGroup>
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Linq" />
+        <Using Include="FluentAssertions" />
+        <Using Include="FluentAssertions.Primitives" />
+        <Using Include="FluentAssertions.Specialized" />
+        <Using Include="Microsoft.AspNetCore.Http" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Moq" />
+        <Using Include="Primavera.Hydrogen" />
+        <Using Include="Primavera.Hydrogen.DesignTime.Testing" />
+        <Using Include="Primavera.Hydrogen.DesignTime.Testing.FluentAssertions" />
+        <Using Include="Primavera.Hydrogen.DesignTime.Testing.Xunit" />
+        <Using Include="Primavera.Hydrogen.Rest" />
+        <Using Include="Xunit" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.Common" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.Common.Configuration" />
+    </ItemGroup>
+
+    <!-- NuGet properties -->
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+</Project>

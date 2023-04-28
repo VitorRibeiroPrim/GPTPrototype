@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Lithium.ChatGPT.Server.Common.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests">
+            <summary>
+            Provides unit tests for the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetId_Principal_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetId(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetId_Subject">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetId(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetId_NameIdentifier">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetId(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetId_NotFound">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetEmail_Principal_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetEmail_Email1">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetEmail_Email2">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetEmail_NotFound">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetClientId_Principal_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetClientId(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetClientId_ClientId">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetClientId(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetClientId_NotFound">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetClientId(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetDisplayName_Principal_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetDisplayName_DisplayName">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetDisplayName_Email">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetDisplayName_NotFound">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsApi_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsApi(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsApi_True">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsApi(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsApi_False">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsApi(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsMonitoring_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsMonitoring_Monitoring">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsMonitoring_AdminFunctions">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsMonitoring_False">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsDocumentation_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsDocumentation(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsDocumentation_True">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsDocumentation(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsDocumentation_False">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsDocumentation(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsRestApiDocumentation_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentation(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsRestApiDocumentation_True">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentation(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsRestApiDocumentation_False">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentation(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsRestApiDocumentationCustomization_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentationCustomization(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsRestApiDocumentationCustomization_True">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentationCustomization(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsRestApiDocumentationCustomization_False">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentationCustomization(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsContent_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsContent_Css">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsContent_Fonts">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsContent_Img">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsContent_Lib">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_PathIsContent_False">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetBaseUri_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetBaseUri(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetBaseUri">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetBaseUri(Microsoft.AspNetCore.Http.HttpRequest)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetRestProblemDetailsType_Request_Null">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetRestProblemDetailsType(Microsoft.AspNetCore.Http.HttpRequest,System.String)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetRestProblemDetailsType_ErrorCode_NullOrWhiteSpace">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetRestProblemDetailsType(Microsoft.AspNetCore.Http.HttpRequest,System.String)"/> method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.ExtensionMethodsTests.ExtensionMethods_GetRestProblemDetailsType">
+            <summary>
+            Tests the <see cref="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetRestProblemDetailsType(Microsoft.AspNetCore.Http.HttpRequest,System.String)"/> method.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTestsBase">
+            <summary>
+            Defines the base class for <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTests"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTestsBase.CreateServiceCollection">
+            <summary>
+            Creates the service collection instance.
+            </summary>
+            <returns>
+            The service collection.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTestsBase.TestAddCommonPart">
+            <summary>
+            Tests the AddCommonPart method.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTestsBase.TestAddCommonPartServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.IServiceProvider)">
+            <summary>
+            Tests the services registered in the AddCommonPart method.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="provider">The service provider.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTests">
+            <summary>
+            Provides integration tests for <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Startup"/>.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTests" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTests"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Tests.StartupTests.StartupTests_AddCommonPart">
+            <summary>
+            Tests the AddCommonPart method.
+            </summary>
+        </member>
+    </members>
+</doc>

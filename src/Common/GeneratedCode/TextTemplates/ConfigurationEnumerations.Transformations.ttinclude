@@ -1,0 +1,45 @@
+﻿<#+
+
+internal class ConfigurationEnumerationsTransformation : ServiceModelTransformation<CSharpFileModel>
+{
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        return sourceElement is ConfigurationEnumType;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (sourceElement is ConfigurationEnumType configurationEnumType)
+        {
+            EnumModel enumModel = new EnumModel(configurationEnumType.Name)
+            {
+                Modifiers = EnumModifiers.Public,
+                Documentation = new DocumentationModel()
+                {
+                    Summary = configurationEnumType.Summary
+                }
+            };
+
+            enumModel.Members = new ModelList<EnumMemberModel>(
+                enumModel,
+                configurationEnumType.ChildMembers
+                    .OrderBy(m => m.Value)
+                    .Select(
+                        m => new EnumMemberModel(m.Name, m.Value)
+                        {
+                            Documentation = new DocumentationModel()
+                            {
+                                Summary = m.Summary
+                            }
+                        }));
+
+            targetModel.Namespace.Enumerations.Add(enumModel);
+        }
+    }
+
+    #endregion
+}
+
+#>

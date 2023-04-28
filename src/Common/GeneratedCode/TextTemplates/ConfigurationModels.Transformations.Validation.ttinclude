@@ -1,0 +1,427 @@
+﻿<#+
+
+// *** AddValidation (ConfigurationModelTypeProperty)
+
+private void AddValidation(ConfigurationModelTypeProperty property, PropertyModel propertyModel)
+{
+    this.AddValidation(property as ConfigurationModelTypeScalarProperty, propertyModel);
+    this.AddValidation(property as ConfigurationModelTypeConfigurationEnumProperty, propertyModel);
+    this.AddValidation(property as ConfigurationModelTypeConfigurationModelProperty, propertyModel);
+}
+
+// *** AddValidation (ConfigurationModelTypeScalarProperty)
+
+private void AddValidation(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (!property.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.AddIsRequired(property, propertyModel);
+    }
+
+    if (property.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.AddNotEmpty(property, propertyModel);
+    }
+    
+    if (property.IsEmailValue.GetValueOrDefault(false))
+    {
+        this.AddEmail(property, propertyModel);
+    }
+
+    if (property.IsMinLengthValue != null)
+    {
+        this.AddMinLength(property, propertyModel);
+    }
+
+    if (property.IsMaxLengthValue != null)
+    {
+        this.AddMaxLength(property, propertyModel);
+    }
+
+    if (property.IsRegularExpressionValue != null)
+    {
+        this.AddRegularExpression(property, propertyModel);
+    }
+
+    if (property.IsLessThanValue != null)
+    {
+        this.AddLessThan(property, propertyModel);
+    }
+
+    if (property.IsLessThanOrEqualToValue != null)
+    {
+        this.AddLessThanOrEqualTo(property, propertyModel);
+    }
+
+    if (property.IsGreaterThanValue != null)
+    {
+        this.AddGreaterThan(property, propertyModel);
+    }
+
+    if (property.IsGreaterThanOrEqualToValue != null)
+    {
+        this.AddGreaterThanOrEqualTo(property, propertyModel);
+    }
+
+    if (property.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.AddPhone(property, propertyModel);
+    }
+
+    if (property.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.AddInternationalPhoneNumber(property, propertyModel);
+    }
+
+    if (property.Type == ScalarType.Url)
+    {
+        this.AddUri(property, propertyModel);
+    }
+}
+
+// *** AddValidation (ConfigurationModelTypeConfigurationEnumProperty)
+
+private void AddValidation(ConfigurationModelTypeConfigurationEnumProperty property, PropertyModel propertyModel)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (!property.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.AddIsRequired(property, propertyModel);
+        this.AddMayBeNull(propertyModel);
+    }
+
+    if (property.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.AddNotEmpty(property, propertyModel);
+    }
+}
+
+// *** AddValidation (ConfigurationModelTypeConfigurationModelProperty)
+
+private void AddValidation(ConfigurationModelTypeConfigurationModelProperty property, PropertyModel propertyModel)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (!property.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.AddIsRequired(property, propertyModel);
+        this.AddMayBeNull(propertyModel);
+    }
+
+    if (property.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.AddNotEmpty(property, propertyModel);
+    }
+}
+
+// *** AddIsRequired
+
+private void AddIsRequired(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    if (property.Cardinality == Cardinality.Single)
+    {
+        this.AddIsRequiredSingle(property, propertyModel);
+    }
+    else
+    {
+        this.AddIsRequiredMultiple(property, propertyModel);
+    }
+}
+
+// *** AddIsRequiredSingle
+
+private void AddIsRequiredSingle(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    switch (property.Type)
+    {
+        case ScalarType.Boolean:
+        case ScalarType.DateTime:
+        case ScalarType.DateTimeOffset:
+        case ScalarType.Decimal:
+        case ScalarType.Double:
+        case ScalarType.Guid:
+        case ScalarType.Integer:
+        case ScalarType.Long:
+        case ScalarType.Time:
+            break;
+        case ScalarType.ByteArray:
+        case ScalarType.Url:
+            this.AddPropertyAttribute(
+                propertyModel, 
+                "Required",
+                $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+            this.AddMayBeNull(propertyModel);
+            break;
+        default:
+            this.AddPropertyAttribute(
+                propertyModel, 
+                "Required",
+                $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = false)");
+            this.AddMayBeNull(propertyModel);
+            break;
+    }
+}
+
+// *** AddIsRequiredMultiple
+
+private void AddIsRequiredMultiple(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    switch (property.Type)
+    {
+        case ScalarType.Boolean:
+        case ScalarType.ByteArray:
+        case ScalarType.DateTime:
+        case ScalarType.DateTimeOffset:
+        case ScalarType.Decimal:
+        case ScalarType.Double:
+        case ScalarType.Guid:
+        case ScalarType.Integer:
+        case ScalarType.Long:
+        case ScalarType.Time:
+        case ScalarType.Url:
+            this.AddPropertyAttribute(
+                propertyModel, 
+                "Required",
+                $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+            break;
+        default:
+            this.AddPropertyAttribute(
+                propertyModel, 
+                "Required",
+                $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = false)");
+            break;
+    }
+
+    this.AddMayBeNull(propertyModel);
+}
+
+// *** AddIsRequired (ConfigurationModelTypeConfigurationEnumProperty)
+
+private void AddIsRequired(ConfigurationModelTypeConfigurationEnumProperty property, PropertyModel propertyModel)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "Required",
+        "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+}
+
+// *** AddIsRequired (ConfigurationModelTypeConfigurationModelProperty)
+
+private void AddIsRequired(ConfigurationModelTypeConfigurationModelProperty property, PropertyModel propertyModel)
+{
+    if (property == null)
+    {
+        return;
+    }
+
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "Required",
+        "Primavera.Hydrogen.ComponentModel.DataAnnotations.Required");
+}
+
+// *** AddMayBeNull
+
+private void AddMayBeNull(PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "MaybeNull",
+        "System.Diagnostics.CodeAnalysis.MaybeNull");
+}
+
+// *** AddNotEmpty
+
+private void AddNotEmpty(ConfigurationModelTypeProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "NotEmpty",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.NotEmpty");
+}
+
+// *** AddEmail
+
+private void AddEmail(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "Email",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Email");
+}
+
+// *** AddMinLength
+
+private void AddMinLength(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "MinLength",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.TextMinLength({property.IsMinLengthValue.Value})");
+}
+
+// *** AddMaxLength
+
+private void AddMaxLength(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "MaxLength",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.TextMaxLength({property.IsMaxLengthValue.Value})");
+}
+
+// *** AddRegularExpression
+
+private void AddRegularExpression(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    string regularExpression = this.FindRegularExpression(property.IsRegularExpressionValue, property);
+
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "RegularExpression",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.RegularExpression(Common.Metadata.RegularExpressions.{regularExpression}Value)");
+}
+
+// *** FindRegularExpression
+
+private string FindRegularExpression(string name, ConfigurationModelTypeScalarProperty property)
+{
+    if (string.IsNullOrEmpty(name))
+    {
+        return "unknown";
+    }
+
+    if (property == null || property.ParentConfigurationModel == null || property.ParentConfigurationModel.ServiceModel == null)
+    {
+        return "unknown";
+    }
+
+    RegularExpression regularExpression = property.ParentConfigurationModel.ServiceModel.RegularExpressions.FirstOrDefault(r => r.Name.EqualsNoCase(name));
+    if (regularExpression == null)
+    {
+        return "unknown";
+    }
+
+    return regularExpression.Name;
+}
+
+// *** AddLessThan
+
+private void AddLessThan(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "LessThan",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.LessThan({property.IsLessThanValue.Value})");
+}
+
+// *** AddLessThanOrEqualTo
+
+private void AddLessThanOrEqualTo(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "LessThanOrEqualTo",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.LessThanOrEqualTo({property.IsLessThanOrEqualToValue.Value})");
+}
+
+// *** AddGreaterThan
+
+private void AddGreaterThan(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "GreaterThan",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.GreaterThan({property.IsGreaterThanValue.Value})");
+}
+
+// *** AddGreaterThanOrEqualTo
+
+private void AddGreaterThanOrEqualTo(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "GreaterThanOrEqualTo",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.GreaterThanOrEqualTo({property.IsGreaterThanOrEqualToValue.Value})");
+}
+
+// *** AddPhone
+
+private void AddPhone(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "Phone",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Phone");
+}
+
+// *** AddInternationalPhoneNumber
+
+private void AddInternationalPhoneNumber(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    this.AddPropertyAttribute(
+        propertyModel, 
+        "InternationalPhoneNumber",
+        $"Primavera.Hydrogen.ComponentModel.DataAnnotations.InternationalPhoneNumber");
+}
+
+// *** AddUri
+
+private void AddUri(ConfigurationModelTypeScalarProperty property, PropertyModel propertyModel)
+{
+    if (property.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        this.AddPropertyAttribute(
+            propertyModel, 
+            "Uri",
+            $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Uri(true)");
+    }
+    else
+    {
+        this.AddPropertyAttribute(
+            propertyModel, 
+            "Uri",
+            $"Primavera.Hydrogen.ComponentModel.DataAnnotations.Uri(false)");
+    }
+}
+
+// *** AddPropertyAttribute
+
+private void AddPropertyAttribute(PropertyModel propertyModel, string name, string attribute)
+{
+    if (propertyModel.Attributes != null)
+    {
+        if (propertyModel.Attributes.Any(a => a.Name.EqualsNoCase(name) || a.Name.StartsWith(name + "(", StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+    }
+
+    propertyModel.WithAttribute(
+        new AttributeModel(
+            attribute));
+}
+
+#>

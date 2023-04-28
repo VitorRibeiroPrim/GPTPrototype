@@ -1,0 +1,42 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (!sourceModel.BackgroundServices.Any(i => i is QueueBackgroundService))
+    {
+        targetModel.WithEmptyComment("This file is empty because the service model does not include\nany queued background services.");
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Common");
+}
+
+// *** TransformBackgroundService
+
+public void TransformBackgroundService(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    QueueBackgroundService sourceModel = sourceElement as QueueBackgroundService;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace
+        .AddClass(
+            new ClassModel($"{sourceModel.Name}WorkItem")
+            {
+                Inheritance = "Primavera.Hydrogen.AspNetCore.Hosting.WorkItem",
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Documentation = new DocumentationModel($"Defines the work item for the {sourceModel.Name} background service.")
+            });
+}
+
+#>

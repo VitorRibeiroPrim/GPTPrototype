@@ -1,0 +1,13 @@
+﻿<#+
+
+public void WriteAttributes(ModelWriter modelWriter, ServiceModel model)
+{
+    this.WriteAssemblyInfoShared(
+        modelWriter, 
+        model,
+        $"{model.Product} {model.DisplayName} Common Library",
+        $"Class library that provides common types used by the {model.DisplayName}.",
+        $"{model.Namespace}.Server.Common.Tests");
+}
+
+#>

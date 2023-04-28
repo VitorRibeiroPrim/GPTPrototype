@@ -1,0 +1,69 @@
+﻿<Project>
+
+    <!-- Ignore Spelling: Grupo Primavera -->
+    <!-- Ignore Spelling: Copyright © 2018-2023 Grupo Primavera -->
+
+    <!-- Assembly name and namespace -->
+
+    <PropertyGroup>
+        <RootNamespace>Primavera.Lithium.ChatGPT.Server.RestApi</RootNamespace>
+        <AssemblyName>Primavera.Lithium.ChatGPT.Server.RestApi</AssemblyName>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Nullable reference types -->
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <!-- Global implicit using statements -->
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System" />
+        <Using Include="System.Collections" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Globalization" />
+        <Using Include="System.Text" />
+        <Using Include="System.Text.Json" />
+        <Using Include="System.Text.Json.Serialization" />
+        <Using Include="AutoMapper" />
+        <Using Include="AutoMapper.QueryableExtensions" />
+        <Using Include="Microsoft.AspNetCore.Http" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Include="Microsoft.Extensions.Logging" />
+        <Using Include="Primavera.Hydrogen" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Hosting" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Webhooks" />
+        <Using Include="Primavera.Hydrogen.HealthMonitoring" />
+        <Using Include="Primavera.Hydrogen.Rest" />
+        <Using Include="Primavera.Hydrogen.Rest.Routing" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.Common" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.Common.Configuration" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.RestApi.Metadata" />
+    </ItemGroup>
+
+    <!-- NuGet properties -->
+
+    <!-- Ignore Spelling: Copyright © 2018-2023 Grupo Primavera -->
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <Authors>Grupo Primavera</Authors>
+        <Company>Grupo Primavera</Company>
+        <Copyright>Copyright © 2018-2023 Grupo Primavera</Copyright>
+        <Description>Class library that provides the Chat Gpt Service REST API.</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Primavera;Lithium</PackageTags>
+        <Product>Lithium</Product>
+    </PropertyGroup>
+
+</Project>

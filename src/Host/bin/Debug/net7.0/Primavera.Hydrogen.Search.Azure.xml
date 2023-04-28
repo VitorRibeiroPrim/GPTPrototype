@@ -1,0 +1,812 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Search.Azure</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Search.ISearchDataSourceOperations"/> for the Azure
+            search service.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Search.ISearchDataSourceOperations" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations.#ctor(Primavera.Hydrogen.Search.Azure.AzureSearchService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations" /> class.
+            </summary>
+            <param name="service">The search service.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations.CreateAsync(Primavera.Hydrogen.Search.SearchDataSource,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations.CreateIfNotExistsAsync(Primavera.Hydrogen.Search.SearchDataSource,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations.ExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations.DeleteAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDataSourceOperations.DeleteIfExistsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified data source if it exists.
+            </summary>
+            <param name="dataSourceName">The data source name.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1" /> object that represents the asynchronous operation.
+            A value indicating whether the data source was deleted.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchDocumentsOperations">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Search.ISearchDocumentsOperations"/> for the Azure
+            search service.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Search.ISearchDocumentsOperations" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDocumentsOperations.#ctor(Primavera.Hydrogen.Search.Azure.AzureSearchService,Azure.Search.Documents.SearchClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchDocumentsOperations" /> class.
+            </summary>
+            <param name="service">The search service instance.</param>
+            <param name="searchClient">The index search client.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDocumentsOperations.SearchAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchDocumentsOperations.SearchAsync``1(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Search.ISearchIndexerOperations"/> for the Azure
+            search service.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Search.ISearchIndexerOperations" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.#ctor(Primavera.Hydrogen.Search.Azure.AzureSearchService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations" /> class.
+            </summary>
+            <param name="service">The search service.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.CreateAsync(Primavera.Hydrogen.Search.SearchIndexer,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.CreateIfNotExistsAsync(Primavera.Hydrogen.Search.SearchIndexer,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.ExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.DeleteAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.DeleteIfExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.GetStatusAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexerOperations.RunAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Search.ISearchIndexOperations"/> for the Azure
+            search service.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Search.ISearchIndexOperations" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations.#ctor(Primavera.Hydrogen.Search.Azure.AzureSearchService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations" /> class.
+            </summary>
+            <param name="service">The search service.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations.CreateAsync(Primavera.Hydrogen.Search.SearchIndex,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations.CreateIfNotExistsAsync(Primavera.Hydrogen.Search.SearchIndex,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations.ExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations.DeleteAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations.DeleteIfExistsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchIndexOperations.GetClient(System.String)">
+            <summary>
+            Gets an adapter that allows performing operations on the specified index.
+            </summary>
+            <param name="indexName">The index name.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.ISearchServiceIndexClient"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchService">
+            <summary>
+            Defines a implementation of the <see cref="T:Primavera.Hydrogen.Search.ISearchService" /> that uses
+            the Azure Cognitive Search.
+            </summary>
+            <remarks>
+            More information on the Azure Cognitive Search Service:
+            <see href="https://azure.microsoft.com/en-us/services/search">here</see>.
+            More information on the Azure SDK for .NET Cognitive Search libraries:
+            <see href="https://docs.microsoft.com/en-us/dotnet/api/overview/azure/search">here</see>.
+            Additional information on the Azure SDK:
+            <see href="https://azure.github.io/azure-sdk">here</see>.
+            </remarks>
+            <seealso cref="T:Primavera.Hydrogen.Search.ISearchService" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.Indexes">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.DataSources">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.Indexers">
+            <inheritdoc />
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.Options">
+            <summary>
+            Gets the options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.Logger">
+            <summary>
+            Gets the logger.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.ExceptionsHandler">
+            <summary>
+            Gets the exceptions handler.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.SearchIndexClient">
+            <summary>
+            Gets the <see cref="T:Azure.Search.Documents.Indexes.SearchIndexClient"/> object associated with this instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchService.SearchIndexerClient">
+            <summary>
+            Gets the <see cref="T:Azure.Search.Documents.Indexes.SearchIndexerClient"/> object associated with this instance.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchService.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchService" /> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException">
+            <summary>
+            Represents errors raised by the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchService" />.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Search.SearchServiceException" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+            <param name="innerException">The exception that caused this error.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException.#ctor(Primavera.Hydrogen.Search.SearchServiceError)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException" /> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException.#ctor(Primavera.Hydrogen.Search.SearchServiceError,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException" /> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException.#ctor(Primavera.Hydrogen.Search.SearchServiceError,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException"/> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+            <param name="message">The error message.</param>
+            <param name="innerException">The exception that caused this error.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceExceptionHandler">
+            <summary>
+            Provides an exceptions handler to translate exceptions received from the service client
+            to instances of <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceException"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Azure.Client.IRequestFailedExceptionHandler`1" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceExceptionHandler.#ctor(Primavera.Hydrogen.Search.Azure.AzureSearchOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceExceptionHandler"/> class.
+            </summary>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceExceptionHandler.OnError(System.String,Primavera.Hydrogen.Azure.Client.FailureCondition,System.Exception,System.String,System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceIndexClient">
+            <summary>
+            Defines an implementation of <see cref="T:Primavera.Hydrogen.Search.ISearchServiceIndexClient"/> for the Azure
+            search service.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Search.ISearchServiceIndexClient" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchServiceIndexClient.Documents">
+            <summary>
+            Gets an adapter that allows performing operations on search documents.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceIndexClient.#ctor(Primavera.Hydrogen.Search.Azure.AzureSearchService,Azure.Search.Documents.SearchClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceIndexClient" /> class.
+            </summary>
+            <param name="service">The search service.</param>
+            <param name="indexClient">The index client.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchOptions">
+            <summary>
+            Defines the options used to configure new <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchOptions"/> instances.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchOptions.ServiceUri">
+            <summary>
+            Gets or sets the service URI that should be used to connection to the search service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchOptions.Credentials">
+            <summary>
+            Gets or sets the credentials that should be used to connect to the search service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.AzureSearchOptions.RetryPolicy">
+            <summary>
+            Gets or sets the retry policy that should be used to connect to the storage service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchOptions.Primavera#Hydrogen#Search#Azure#IProvideSearchServiceClients#InitializeSearchIndexServiceClient(Primavera.Hydrogen.Search.Azure.SearchServiceClientInitializedWith@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchOptions.Primavera#Hydrogen#Search#Azure#IProvideSearchServiceClients#InitializeSearchIndexerServiceClient(Primavera.Hydrogen.Search.Azure.SearchServiceClientInitializedWith@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchOptions.Primavera#Hydrogen#Search#Azure#IProvideSearchServiceClients#GetServiceClientConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type
+            that allows configuring the <see cref="T:Primavera.Hydrogen.Search.ISearchService"/> to use
+            Azure Search services.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceCollectionExtensions.AddAzureSearch(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds a service that allows creating instances of <see cref="T:Primavera.Hydrogen.Search.ISearchService"/> using
+            configuration defined by <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchOptions"/>.
+            This service will use Azure search services.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            <see cref="T:Primavera.Hydrogen.Search.ISearchService"/> is registered as a singleton.
+            The underlying instance of <see cref="T:Azure.Search.Documents.Indexes.SearchIndexClient"/> can be resolved using the name
+            "<see cref="T:Primavera.Hydrogen.Search.ISearchService"/>-<see cref="T:Azure.Search.Documents.Indexes.SearchIndexClient"/>".
+            The underlying instance of <see cref="T:Azure.Search.Documents.Indexes.SearchIndexerClient"/> can be resolved using the name
+            "<see cref="T:Primavera.Hydrogen.Search.ISearchService"/>-<see cref="T:Azure.Search.Documents.Indexes.SearchIndexerClient"/>".
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceCollectionExtensions.AddAzureSearch(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Primavera.Hydrogen.Search.Azure.AzureSearchOptions})">
+            <summary>
+            Adds a service that allows creating instances of <see cref="T:Primavera.Hydrogen.Search.ISearchService"/> using the
+            specified configuration options.
+            This service will use Azure search services.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            <see cref="T:Primavera.Hydrogen.Search.ISearchService"/> is registered as a singleton.
+            The underlying instance of <see cref="T:Azure.Search.Documents.Indexes.SearchIndexClient"/> can be resolved using the name
+            "<see cref="T:Primavera.Hydrogen.Search.ISearchService"/>-<see cref="T:Azure.Search.Documents.Indexes.SearchIndexClient"/>".
+            The underlying instance of <see cref="T:Azure.Search.Documents.Indexes.SearchIndexerClient"/> can be resolved using the name
+            "<see cref="T:Primavera.Hydrogen.Search.ISearchService"/>-<see cref="T:Azure.Search.Documents.Indexes.SearchIndexerClient"/>".
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.IProvideSearchServiceClients">
+            <summary>
+            Defines the interface of a type that is capable of initializing instances
+            of search service clients depending on configuration options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.IProvideSearchServiceClients.InitializeSearchIndexServiceClient(Primavera.Hydrogen.Search.Azure.SearchServiceClientInitializedWith@)">
+            <summary>
+            Initializes the search index service client.
+            </summary>
+            <param name="initializedWith">Indicates how the service client was initialized.</param>
+            <returns>
+            The <see cref="T:Azure.Search.Documents.Indexes.SearchIndexClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.IProvideSearchServiceClients.InitializeSearchIndexerServiceClient(Primavera.Hydrogen.Search.Azure.SearchServiceClientInitializedWith@)">
+            <summary>
+            Initializes the search indexer service client.
+            </summary>
+            <param name="initializedWith">Indicates how the service client was initialized.</param>
+            <returns>
+            The <see cref="T:Azure.Search.Documents.Indexes.SearchIndexClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.IProvideSearchServiceClients.GetServiceClientConnectionInfo">
+            <summary>
+            Gets a string that describes how the service client was initialized.
+            </summary>
+            <returns>
+            A string that describes how the service client was initialized.
+            </returns>
+            <remarks>
+            This information is useful to diagnose unauthorized and/or forbidden errors.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.SearchServiceClientInitializedWith">
+            <summary>
+            Defines how the search service client was initialized
+            by <see cref="T:Primavera.Hydrogen.Search.Azure.IProvideSearchServiceClients"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.SearchServiceClientInitializedWith.ServiceUri">
+            <summary>
+            The service client was initialized with a service URI (and credential).
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.HttpRequestExceptionExtensions">
+            <summary>
+            Defines extension methods for the <see cref="T:System.Net.Http.HttpRequestException"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.HttpRequestExceptionExtensions.IsConnectionFailure(System.Net.Http.HttpRequestException)">
+            <summary>
+            Determines whether the exception corresponds to a connection failure error.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>
+            A value indicating whether the exception corresponds to a connection failure error.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchDataContainerExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchDataContainer"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataContainer"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchDataContainerExtensions.ToSearchIndexerDataContainer(Primavera.Hydrogen.Search.SearchDataContainer)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchDataContainer"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataContainer"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchDataContainer"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataContainer"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchDataContainerExtensions.ToSearchDataContainer(Azure.Search.Documents.Indexes.Models.SearchIndexerDataContainer)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataContainer"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchDataContainer"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataContainer"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchDataContainer"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchDataSourceExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchDataSource"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataSourceConnection"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchDataSourceExtensions.ToAzureSearchIndexerDataSourceConnection(Primavera.Hydrogen.Search.SearchDataSource)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchDataSource"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataSourceConnection"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchDataSource"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataSourceConnection"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchDataSourceTypeExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchDataSourceType"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataSourceType"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchDataSourceTypeExtensions.ToDataSourceType(Primavera.Hydrogen.Search.SearchDataSourceType)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchDataSourceType"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataSourceType"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchDataSourceType"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerDataSourceType"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerExecutionResultExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexerExecutionResult"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerExecutionResult"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerExecutionResultExtensions.ToSearchIndexerExecutionResult(Azure.Search.Documents.Indexes.Models.IndexerExecutionResult)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerExecutionResult"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchIndexerExecutionResult"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerExecutionResult"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchIndexerExecutionResult"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerExecutionStateExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexerExecutionState"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerExecutionStatus"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerExecutionStateExtensions.ToSearchIndexerExecutionState(Azure.Search.Documents.Indexes.Models.IndexerExecutionStatus)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerExecutionStatus"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchIndexerExecutionState"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerExecutionStatus"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchIndexerExecutionState"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexer"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexer"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerExtensions.ToAzureSearchIndexer(Primavera.Hydrogen.Search.SearchIndexer)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchIndexer"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexer"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchIndexer"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexer"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerStateExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexerState"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerStatus"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerStateExtensions.ToSearchIndexerState(Azure.Search.Documents.Indexes.Models.IndexerStatus)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerStatus"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchIndexerState"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Indexes.Models.IndexerStatus"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchIndexerState"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerStatusExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexerStatus"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerStatus"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexerStatusExtensions.ToSearchIndexerStatus(Azure.Search.Documents.Indexes.Models.SearchIndexerStatus)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerStatus"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchIndexerStatus"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerStatus"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchIndexerStatus"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndex"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndex"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexExtensions.ToAzureSearchIndex(Primavera.Hydrogen.Search.SearchIndex)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchIndex"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndex"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchIndex"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndex"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexFieldDataTypeExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexFieldDataType"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchFieldDataType"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexFieldDataTypeExtensions.ToSearchFieldDataType(Primavera.Hydrogen.Search.SearchIndexFieldDataType)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchIndexFieldDataType"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.SearchFieldDataType"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchIndexFieldDataType"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.SearchFieldDataType"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexFieldDataTypeExtensions.ToSearchIndexFieldDataType(Azure.Search.Documents.Indexes.Models.SearchFieldDataType)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Indexes.Models.SearchFieldDataType"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchIndexFieldDataType"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Indexes.Models.SearchFieldDataType"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchIndexFieldDataType"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexFieldExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexField"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchField"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexFieldExtensions.ToAzureSearchField(Primavera.Hydrogen.Search.SearchIndexField)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchIndexField"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.SearchField"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchIndexField"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.SearchField"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexingScheduleExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchIndexingSchedule"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.IndexingSchedule"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchIndexingScheduleExtensions.ToIndexingSchedule(Primavera.Hydrogen.Search.SearchIndexingSchedule)">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchIndexingSchedule"/> to the corresponding <see cref="T:Azure.Search.Documents.Indexes.Models.IndexingSchedule"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchIndexingSchedule"/> instance.</param>
+            <returns>The <see cref="T:Azure.Search.Documents.Indexes.Models.IndexingSchedule"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchItemErrorExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchItemError"/> and the <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerError"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchItemErrorExtensions.ToSearchItemError(Azure.Search.Documents.Indexes.Models.SearchIndexerError)">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerError"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchItemError"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Indexes.Models.SearchIndexerError"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchItemError"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchResultsDocumentExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchResultsDocument`1"/> and the <see cref="T:Azure.Search.Documents.Models.SearchResult`1"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchResultsDocumentExtensions.ToSearchResultsDocument``1(Azure.Search.Documents.Models.SearchResult{``0})">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Models.SearchResult`1"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchResultsDocument`1"/> instance.
+            </summary>
+            <typeparam name="T">The type that maps to the index schema.</typeparam>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Models.SearchResult`1"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchResultsDocument`1"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Extensions.SearchResultsExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Search.SearchResults`1"/> and the <see cref="T:Azure.Search.Documents.Models.SearchResults`1"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchResultsExtensions.ToSearchResults``1(Azure.Search.Documents.Models.SearchResults{``0})">
+            <summary>
+            Converts the specified <see cref="T:Azure.Search.Documents.Models.SearchResults`1"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchResults`1"/> instance.
+            </summary>
+            <typeparam name="T">The type that maps to the index schema.</typeparam>
+            <param name="source">The source <see cref="T:Azure.Search.Documents.Models.SearchResults`1"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchResults`1"/> instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.Extensions.SearchResultsExtensions.ToSearchResults(Primavera.Hydrogen.Search.SearchResults{Primavera.Hydrogen.Search.SearchDocument})">
+            <summary>
+            Converts the specified <see cref="T:Primavera.Hydrogen.Search.SearchResults`1"/> to the corresponding <see cref="T:Primavera.Hydrogen.Search.SearchResults"/> instance.
+            </summary>
+            <param name="source">The source <see cref="T:Primavera.Hydrogen.Search.SearchResults`1"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Search.SearchResults"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.DefaultProbeName">
+            <summary>
+            The default name used for probes.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.DefaultDiagnosticName">
+            <summary>
+            The default name used for diagnostics.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.AddAzureSearchProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a probe for Azure Search.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.DefaultProbeName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchService"/> to
+            retrieve the underlying Search service statistics.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.AddAzureSearchIndexDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure Search index.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="indexName">The name of the index that should be diagnosed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchService"/> to
+            determine whether the specified index exists.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.AddAzureSearchIndexerDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure Search indexer.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="indexerName">The name of the indexer that should be diagnosed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchService"/> to
+            determine whether the specified indexer exists.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.AddAzureSearchDataSourceDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for the specified Azure Search data source.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="dataSourceName">The name of the data source that should be diagnosed.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Search.Azure.AzureSearchServiceHealthExtensions.DefaultDiagnosticName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic executes an operation on <see cref="T:Primavera.Hydrogen.Search.Azure.AzureSearchService"/> to
+            determine whether the specified data source exists.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.OperationTargets">
+            <summary>
+            Defines the target of an action on a search resource.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.OperationTargets.Service">
+            <summary>
+            The target is the service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.OperationTargets.DataSource">
+            <summary>
+            The target is a data source.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.OperationTargets.Document">
+            <summary>
+            The target is a search document.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.OperationTargets.Indexer">
+            <summary>
+            The target is a search indexer.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Search.Azure.OperationTargets.Index">
+            <summary>
+            The target is a search index.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Search.Azure.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_DataSourceAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Data source &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_DataSourceNotFound">
+            <summary>
+              Looks up a localized string similar to Data source &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_ErrorConnectingToServer">
+            <summary>
+              Looks up a localized string similar to Could not connect to search server..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_ErrorExecutingOperation">
+            <summary>
+              Looks up a localized string similar to Error executing the operation. See inner exception for more information..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_Forbidden">
+            <summary>
+              Looks up a localized string similar to Access to the search service is forbidden. Service client connection: {0}..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_IndexAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Index &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_IndexerAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Indexer &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_IndexerNotFound">
+            <summary>
+              Looks up a localized string similar to Indexer &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_IndexNotFound">
+            <summary>
+              Looks up a localized string similar to Index &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_InvalidRequestWithDetail">
+            <summary>
+              Looks up a localized string similar to The request is invalid. More info: {0}..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_Options_ApiKeyDisabled">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The API key credential should be enabled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_Options_ApiKeyUnspecified">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The API key is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_Options_ServiceUriUnspecified">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The service URI is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_StatusCode">
+            <summary>
+              Looks up a localized string similar to The server returned an error: {0}..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Search.Azure.Properties.Resources.RES_Exception_Search_Unauthorized">
+            <summary>
+              Looks up a localized string similar to Access to the search service is unauthorized. Service client connection: {0}..
+            </summary>
+        </member>
+    </members>
+</doc>

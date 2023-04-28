@@ -1,0 +1,63 @@
+﻿<Project>
+
+    <!-- Assembly name and namespace -->
+
+    <PropertyGroup>
+        <RootNamespace>Primavera.Lithium.ChatGPT.Client.Rest</RootNamespace>
+        <AssemblyName>Primavera.Lithium.ChatGPT.Client.Rest</AssemblyName>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Nullable reference types -->
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <!-- Global implicit using statements -->
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System" />
+        <Using Include="System.Collections" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Globalization" />
+        <Using Include="System.Text" />
+        <Using Include="System.Text.Json" />
+        <Using Include="System.Text.Json.Serialization" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Include="Primavera.Hydrogen" />
+        <Using Include="Primavera.Hydrogen.Rest" />
+        <Using Include="Primavera.Hydrogen.Rest.Client" />
+    </ItemGroup>
+
+    <!-- NuGet properties -->
+
+    <!-- Ignore Spelling: Copyright © 2018-2023 Grupo Primavera -->
+
+    <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <Authors>Grupo Primavera</Authors>
+        <Company>Grupo Primavera</Company>
+        <Copyright>Copyright © 2018-2023 Grupo Primavera</Copyright>
+        <Description>Class library that provides the client library for the Chat Gpt Service REST API.</Description>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Primavera;Lithium</PackageTags>
+        <Product>Lithium</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)/assets/icon.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,838 @@
+﻿<#+
+
+// *** WriteShowWebhooksMenuAsync
+
+public void WriteShowWebhooksMenuAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Menu
+
+        bool terminate = false;
+        bool cont = true;
+        while (cont)
+        {
+            this.Console.WriteLine();
+            this.Console.WriteLine("========================================");
+            this.Console.WriteLine("Webhooks Menu");
+            this.Console.WriteLine("========================================");
+            this.Console.WriteLine();
+            this.Console.WriteLine("1. Get webhook subscription (by subscription id.)");
+            this.Console.WriteLine("2. Get webhook subscription (by event names)");
+            this.Console.WriteLine("3. Activate webhook subscription (by subscription id.)");
+            this.Console.WriteLine("4. Activate webhook subscription (by event names)");
+            this.Console.WriteLine("5. Create webhook subscription");
+            this.Console.WriteLine("6. Update webhook subscription");
+            this.Console.WriteLine("7. Delete webhook subscription");
+            this.Console.WriteLine("8. Delete webhook subscription (if it exists)");
+            this.Console.WriteLine("9. Get all webhook subscriptions");
+            this.Console.WriteLine("0. Delete all webhook subscriptions");
+            this.Console.WriteLine("A. Delete all webhook subscriptions (if exist)");
+            this.Console.WriteLine("B. Ping webhook subscription");
+            this.Console.WriteLine("C. Get webhooks metadata");
+            this.Console.WriteLine("<. Back");
+            this.Console.WriteLine("Q. Quit");
+            this.Console.Write(">> ");
+
+            System.ConsoleKeyInfo key = this.Console.ReadKey();
+            this.Console.WriteLine();
+
+            switch (key.Key)
+            {
+                case System.ConsoleKey.Q:
+                    cont = false;
+                    terminate = true;
+                    break;
+                case System.ConsoleKey.LeftArrow:
+                    cont = false;
+                    break;
+                case System.ConsoleKey.D1:
+                case System.ConsoleKey.NumPad1:
+                    await this.GetWebhookSubscriptionAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D2:
+                case System.ConsoleKey.NumPad2:
+                    await this.GetWebhookSubscriptionByEventNamesAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D3:
+                case System.ConsoleKey.NumPad3:
+                    await this.ActivateWebhookSubscriptionAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D4:
+                case System.ConsoleKey.NumPad4:
+                    await this.ActivateWebhookSubscriptionByEventNamesAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D5:
+                case System.ConsoleKey.NumPad5:
+                    await this.CreateWebhookSubscriptionAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D6:
+                case System.ConsoleKey.NumPad6:
+                    await this.UpdateWebhookSubscriptionAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D7:
+                case System.ConsoleKey.NumPad7:
+                    await this.DeleteWebhookSubscriptionAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D8:
+                case System.ConsoleKey.NumPad8:
+                    await this.DeleteWebhookSubscriptionIfExistsAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D9:
+                case System.ConsoleKey.NumPad9:
+                    await this.GetWebhookSubscriptionsAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.D0:
+                case System.ConsoleKey.NumPad0:
+                    await this.DeleteWebhookSubscriptionsAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.A:
+                    await this.DeleteWebhookSubscriptionsIfExistAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.B:
+                    await this.PingWebhookSubscriptionAsync().ConfigureAwait(false);
+                    break;
+                case System.ConsoleKey.C:
+                    await this.GetWebhooksMetadataAsync().ConfigureAwait(false);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Result
+
+        return terminate;
+<#+
+
+}
+
+// *** WriteGetWebhookSubscriptionAsync
+
+public void WriteGetWebhookSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+        string subscriptionId = this.GetValueString("subscription id", this.lastSubscriptionId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription> result = await this.Client.Webhooks
+                .GetSubscriptionAsync(
+                    clientId, 
+                    subscriptionId)
+                .ConfigureAwait(false);
+
+            Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription subscriptionResult = result.Result;
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+            this.WriteWebhookSubscription(string.Empty, subscriptionResult);
+
+            this.lastClientId = subscriptionResult.ClientId;
+            this.lastSubscriptionId = subscriptionResult.SubscriptionId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteGetWebhookSubscriptionByEventNamesAsync
+
+public void WriteGetWebhookSubscriptionByEventNamesAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+        System.Collections.Generic.IEnumerable<string> eventNames = this.GetValuesString("event", true, this.lastEventName);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription> result = await this.Client.Webhooks
+                .GetSubscriptionAsync(
+                    clientId, 
+                    eventNames)
+                .ConfigureAwait(false);
+
+            Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription subscriptionResult = result.Result;
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+            this.WriteWebhookSubscription(string.Empty, subscriptionResult);
+
+            this.lastClientId = subscriptionResult.ClientId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteActivateWebhookSubscriptionAsync
+
+public void WriteActivateWebhookSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+        string subscriptionId = this.GetValueString("subscription id", this.lastSubscriptionId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<bool> result = await this.Client.Webhooks
+                .ActivateSubscriptionAsync(
+                    clientId, 
+                    subscriptionId)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded. Result: {0}.", result.Result);
+
+            this.lastClientId = clientId;
+            this.lastSubscriptionId = subscriptionId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteActivateWebhookSubscriptionByEventNamesAsync
+
+public void WriteActivateWebhookSubscriptionByEventNamesAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+        System.Collections.Generic.IEnumerable<string> eventNames = this.GetValuesString("event", true, this.lastEventName);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<bool> result = await this.Client.Webhooks
+                .ActivateSubscriptionAsync(
+                    clientId, 
+                    eventNames)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded. Result: {0}.", result.Result);
+
+            this.lastClientId = clientId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteGetWebhooksSubscriptionsAsync
+
+public void WriteGetWebhookSubscriptionsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription>> result = await this.Client.Webhooks
+                .GetSubscriptionsAsync(
+                    clientId)
+                .ConfigureAwait(false);
+
+            System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription> subscriptionsResult = result.Result;
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+            this.WriteWebhookSubscriptions(subscriptionsResult);
+
+            this.lastClientId = clientId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteGetWebhooksMetadataAsync
+
+public void WriteGetWebhooksMetadataAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata>> result = await this.Client.Webhooks
+                .GetWebhooksMetadataAsync()
+                .ConfigureAwait(false);
+
+            System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata> metadataResult = result.Result;
+
+            this.Console.WriteInformationLine("REST API returned the result. See below.");
+            this.WriteWebhookMetadatas(metadataResult);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteDeleteWebhookSubscriptionAsync
+
+public void WriteDeleteWebhookSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+        string subscriptionId = this.GetValueString("subscription id", this.lastSubscriptionId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult result = await this.Client.Webhooks
+                .DeleteSubscriptionAsync(
+                    clientId, 
+                    subscriptionId)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded.");
+
+            this.lastClientId = clientId;
+            this.lastSubscriptionId = subscriptionId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteDeleteWebhookSubscriptionIfExistsAsync
+
+public void WriteDeleteWebhookSubscriptionIfExistsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+        string subscriptionId = this.GetValueString("subscription id", this.lastSubscriptionId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<bool> result = await this.Client.Webhooks
+                .DeleteSubscriptionIfExistsAsync(
+                    clientId, 
+                    subscriptionId)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded. Result: {0}.", result.Result);
+
+            this.lastClientId = clientId;
+            this.lastSubscriptionId = subscriptionId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteDeleteWebhookSubscriptionsAsync
+
+public void WriteDeleteWebhookSubscriptionsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult result = await this.Client.Webhooks
+                .DeleteSubscriptionsAsync(
+                    clientId)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded.");
+
+            this.lastClientId = clientId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** DeleteWebhookSubscriptionsIfExistAsync
+
+public void WriteDeleteWebhookSubscriptionsIfExistAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<bool> result = await this.Client.Webhooks
+                .DeleteSubscriptionsIfExistAsync(
+                    clientId)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded. Result: {0}.", result.Result);
+
+            this.lastClientId = clientId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WritePingWebhookSubscriptionAsync
+
+public void WritePingWebhookSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        string clientId = this.GetValueString("client id", this.lastClientId);
+        string subscriptionId = this.GetValueString("subscription id", this.lastSubscriptionId);
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult result = await this.Client.Webhooks
+                .PingSubscriptionAsync(
+                    clientId, 
+                    subscriptionId)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded.");
+
+            this.lastClientId = clientId;
+            this.lastSubscriptionId = subscriptionId;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteCreateWebhookSubscriptionAsync
+
+public void WriteCreateWebhookSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest request = new Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest()
+        {
+            ClientId = this.GetValueString("client id", this.lastClientId),
+            EventNames = new System.Collections.Generic.List<string>(this.GetValuesString("event", true, this.lastEventName)),
+            CallbackUrl = this.GetValueUri("callback URL", this.lastCallbackUrl),
+            Active = this.GetValueBoolean("active", defaultValue: true),
+            Secret = this.GetValueString("secret", this.lastSecret)
+        };
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<string> result = await this.Client.Webhooks
+                .CreateSubscriptionAsync(
+                    request)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded. Result: {0}.", result.Result);
+
+            this.lastClientId = request.ClientId;
+            this.lastSubscriptionId = result.Result;
+            this.lastEventName = request.EventNames[0];
+            this.lastSecret = request.Secret;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteUpdateWebhookSubscriptionAsync
+
+public void WriteUpdateWebhookSubscriptionAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Get the input
+
+        this.Console.WriteLine();
+
+        Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest request = new Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest()
+        {
+            ClientId = this.GetValueString("client id", this.lastClientId),
+            SubscriptionId = this.GetValueString("subscription id", this.lastSubscriptionId),
+            EventNames = new System.Collections.Generic.List<string>(this.GetValuesString("event", true, this.lastEventName)),
+            CallbackUrl = this.GetValueUri("callback URL", this.lastCallbackUrl),
+            Active = this.GetValueBoolean("active", defaultValue: true),
+            Secret = this.GetValueString("secret", this.lastSecret)
+        };
+
+        // Call the REST API
+
+        this.Console.WriteLine();
+        this.Console.WriteInformationLine("Calling the REST API...");
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult result = await this.Client.Webhooks
+                .UpdateSubscriptionAsync(
+                    request)
+                .ConfigureAwait(false);
+
+            this.Console.WriteInformationLine("REST API call succeeded.");
+
+            this.lastClientId = request.ClientId;
+            this.lastSubscriptionId = request.SubscriptionId;
+            this.lastEventName = request.EventNames[0];
+            this.lastCallbackUrl = request.CallbackUrl;
+            this.lastSecret = request.Secret;
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            this.WriteRestRequestException(ex);
+        }
+        catch (System.Exception ex)
+        {
+            this.Console.WriteErrorLine(ex);
+        }
+<#+
+
+}
+
+// *** WriteWriteWebhookSubscription
+
+public void WriteWriteWebhookSubscription(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine(spacing + "Subscription....:");
+        this.Console.WriteInformationLine(spacing + "..ClientId......: {0}", subscription.ClientId);
+        this.Console.WriteInformationLine(spacing + "..SubscriptionId: {0}", subscription.SubscriptionId);
+        this.Console.WriteInformationLine(spacing + "..ClientId......: {0}", subscription.ClientId);
+        this.Console.WriteInformationLine(spacing + "..EventNames....: {0}", string.Join(";", subscription.EventNames ?? new System.Collections.Generic.List<string>()));
+        this.Console.WriteInformationLine(spacing + "..CallbackUrl...: {0}", subscription.CallbackUrl);
+        this.Console.WriteInformationLine(spacing + "..Secret........: {0}", subscription.Secret);
+        this.Console.WriteInformationLine(spacing + "..Active........: {0}", subscription.Active);
+        this.Console.WriteInformationLine(spacing + "..ModifiedOn....: {0}", subscription.ModifiedOn);
+        this.WriteWebhookCallbackRequest(spacing + "..", subscription.LastRequest);
+        this.WriteWebhookCallbackResponse(spacing + "..", subscription.LastResponse);
+<#+
+
+}
+
+// *** WriteWriteWebhookSubscriptions
+
+public void WriteWriteWebhookSubscriptions(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine("Subscriptions:");
+
+        if (subscriptions == null || !subscriptions.Any())
+        {
+            this.Console.WriteInformationLine("..<no data>");
+            return;
+        }
+
+        foreach (Primavera.Hydrogen.Rest.Webhooks.WebhookSubscription subscription in subscriptions.OrderBy(i => i.ModifiedOn))
+        {
+            this.WriteWebhookSubscription("..", subscription);
+        }
+<#+
+
+}
+
+// *** WriteWriteWebhookMetadata
+
+public void WriteWriteWebhookMetadata(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine(spacing + "Metadata:");
+        this.Console.WriteInformationLine(spacing + "..EventName.........: {0}", metadata.EventName);
+        this.Console.WriteInformationLine(spacing + "..EventDescription..: {0}", metadata.EventDescription);
+        this.Console.WriteInformationLine(spacing + "..PayloadDescription: {0}", metadata.PayloadDescription);
+<#+
+
+}
+
+// *** WriteWriteWebhookMetadatas
+
+public void WriteWriteWebhookMetadatas(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine("Webhooks:");
+
+        if (metadata != null)
+        {
+            foreach (Primavera.Hydrogen.Rest.Webhooks.WebhookMetadata webhook in metadata.OrderBy(e => e.EventName))
+            {
+                this.WriteWebhookMetadata("..", webhook);
+            }
+        }
+<#+
+
+}
+
+// *** WriteWriteWebhookCallbackRequest
+
+public void WriteWriteWebhookCallbackRequest(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine(spacing + "LastRequest....:");
+
+        if (request == null)
+        {
+            this.Console.WriteInformationLine(spacing + "..<null>");
+            return;
+        }
+
+        this.Console.WriteInformationLine(spacing + "..Status.....: {0}", request.Status);
+        this.Console.WriteInformationLine(spacing + "..EventName..: {0}", request.EventName);
+        this.Console.WriteInformationLine(spacing + "..CallbackUrl: {0}", request.CallbackUrl);
+        this.Console.WriteInformationLine(spacing + "..Payload....: (...)");
+        this.Console.WriteInformationLine(spacing + "..Timestamp..: {0}", request.Timestamp);
+        this.Console.WriteInformationLine(spacing + "..Retries....: {0}", request.Retries);
+        this.Console.WriteInformationLine(spacing + "..NextRetry..: {0}", request.NextRetry);
+
+        this.Console.WriteInformationLine(spacing + "..Filters....:");
+
+        if (request.Filters == null || !request.Filters.Any())
+        {
+            this.Console.WriteInformationLine(spacing + "....<no data>");
+        }
+        else
+        {
+            foreach (System.Collections.Generic.KeyValuePair<string, string> filter in request.Filters)
+            {
+                this.Console.WriteInformationLine(spacing + "....{0} = {1}", filter.Key, filter.Value);
+            }
+        }
+
+        this.Console.WriteInformationLine(spacing + "..Properties:");
+
+        if (request.Properties == null || !request.Properties.Any())
+        {
+            this.Console.WriteInformationLine(spacing + "....<no data>");
+        }
+        else
+        {
+            foreach (System.Collections.Generic.KeyValuePair<string, string> property in request.Properties)
+            {
+                this.Console.WriteInformationLine(spacing + "....{0} = {1}", property.Key, property.Value);
+            }
+        }
+
+        this.Console.WriteInformationLine(spacing + "..Headers...:");
+
+        if (request.Headers == null || !request.Headers.Any())
+        {
+            this.Console.WriteInformationLine(spacing + "....<no data>");
+        }
+        else
+        {
+            foreach (System.Collections.Generic.KeyValuePair<string, string> header in request.Headers)
+            {
+                this.Console.WriteInformationLine(spacing + "....{0} = {1}", header.Key, header.Value);
+            }
+        }
+<#+
+
+}
+
+// *** WriteWriteWebhookCallbackResponse
+
+public void WriteWriteWebhookCallbackResponse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        this.Console.WriteInformationLine(spacing + "LastResponse..:");
+
+        if (response == null)
+        {
+            this.Console.WriteInformationLine(spacing + "..<null>");
+            return;
+        }
+
+        this.Console.WriteInformationLine(spacing + "..Code.....: {0}", response.Code);
+        this.Console.WriteInformationLine(spacing + "..Message..: {0}", response.Message);
+        this.Console.WriteInformationLine(spacing + "..Timestamp: {0}", response.Timestamp);
+<#+
+
+}
+
+#>

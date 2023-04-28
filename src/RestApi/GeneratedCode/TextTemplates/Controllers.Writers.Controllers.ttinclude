@@ -1,0 +1,1014 @@
+﻿<#+
+
+// *** WriteAction
+
+public void WriteAction(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel parentModel = model.ParentModelAs<MethodModel>();
+
+    ControllerTypeAction action = parentModel.GetFacet<ControllerTypeAction>("Action");
+    if (action == null)
+    {
+        return;
+    }
+
+    this.WriteActionValidation(action, false);
+
+    string parametersText = string.Empty;
+
+    if (!action.RouteIgnoreControllerParameters && action.ParentController.ChildParameters.Count > 0)
+    {
+        parametersText = string.Join(", ", action.ParentController.ChildParameters.Select(p => p.Name.Transform().ToCamelCase()));
+    }
+
+    if (action.ChildParameters.Count > 0)
+    {
+        if (string.IsNullOrEmpty(parametersText))
+        {
+            parametersText = string.Join(", ", action.ChildParameters.Select(p => p.Name.Transform().ToCamelCase()));
+        }
+        else
+        {
+            parametersText = string.Join(", ", parametersText, string.Join(", ", action.ChildParameters.Select(p => p.Name.Transform().ToCamelCase())));
+        }
+    }
+
+    string parametersTextWithoutCancellation = parametersText;
+
+    if (action.ODataEnabled)
+    {
+        if (string.IsNullOrEmpty(parametersText))
+        {
+            parametersText = "queryOptions";
+        }
+        else
+        {
+            parametersText = string.Join(", ", parametersText, "queryOptions");
+        }
+    }
+
+    if (string.IsNullOrEmpty(parametersText))
+    {
+        parametersText = "cancellationToken";
+    }
+    else
+    {
+        parametersText = string.Join(", ", parametersText, "cancellationToken");
+    }
+
+    if (action.ServiceModel.Extensions().UseMediatorOrCqrs)
+    {
+
+#>
+        // Result
+
+        return this.<#= action.Name2 #>WithMediatorAsync(<#= parametersText #>);
+<#+
+
+    }
+    else
+    {
+
+#>
+        // Result
+
+        return this.<#= action.Name2 #>CoreAsync(<#= parametersText #>);
+<#+
+
+    }
+}
+
+// *** WriteActionErrorResponseCompatibility
+
+public void WriteActionErrorResponseCompatibility(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel parentModel = model.ParentModelAs<MethodModel>();
+
+    ControllerTypeAction action = parentModel.GetFacet<ControllerTypeAction>("Action");
+    if (action == null)
+    {
+        return;
+    }
+
+    string parametersText = string.Empty;
+
+    if (!action.RouteIgnoreControllerParameters && action.ParentController.ChildParameters.Count > 0)
+    {
+        parametersText = string.Join(", ", action.ParentController.ChildParameters.Select(p => p.Name.Transform().ToCamelCase()));
+    }
+
+    if (action.ChildParameters.Count > 0)
+    {
+        if (string.IsNullOrEmpty(parametersText))
+        {
+            parametersText = string.Join(", ", action.ChildParameters.Select(p => p.Name.Transform().ToCamelCase()));
+        }
+        else
+        {
+            parametersText = string.Join(", ", parametersText, string.Join(", ", action.ChildParameters.Select(p => p.Name.Transform().ToCamelCase())));
+        }
+    }
+
+    if (action.ODataEnabled)
+    {
+        if (string.IsNullOrEmpty(parametersText))
+        {
+            parametersText = "queryOptions";
+        }
+        else
+        {
+            parametersText = string.Join(", ", parametersText, "queryOptions");
+        }
+    }
+
+    string parametersTextWithoutCancellation = parametersText;
+
+    if (string.IsNullOrEmpty(parametersText))
+    {
+        parametersText = "cancellationToken";
+    }
+    else
+    {
+        parametersText = string.Join(", ", parametersText, "cancellationToken");
+    }
+
+#>
+        // Result
+
+        IActionResult actionResult = await this.<#= action.Name2 #>Async(<#= parametersText #>).ConfigureAwait(false);
+
+        // Convert
+
+        return this.ConvertRestProblemDetailsResult(actionResult);
+<#+
+
+}
+
+// *** WriteConvertRestProblemDetailsResult
+
+public void WriteConvertRestProblemDetailsResult(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (actionResult is Microsoft.AspNetCore.Mvc.BadRequestObjectResult badRequestResult)
+        {
+            if (badRequestResult.Value is Primavera.Hydrogen.Rest.RestProblemDetails problem)
+            {
+                return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(
+                    new Models.RestServiceErrorLegacy(
+                        problem));
+            }
+        }
+
+        if (actionResult is Microsoft.AspNetCore.Mvc.NotFoundObjectResult notFoundResult)
+        {
+            if (notFoundResult.Value is Primavera.Hydrogen.Rest.RestProblemDetails problem)
+            {
+                return new Microsoft.AspNetCore.Mvc.NotFoundObjectResult(
+                    new Models.RestServiceErrorLegacy(
+                        problem));
+            }
+        }
+
+        if (actionResult is Microsoft.AspNetCore.Mvc.ConflictObjectResult conflictResult)
+        {
+            if (conflictResult.Value is Primavera.Hydrogen.Rest.RestProblemDetails problem)
+            {
+                return new Microsoft.AspNetCore.Mvc.ConflictObjectResult(
+                    new Models.RestServiceErrorLegacy(
+                        problem));
+            }
+        }
+
+        return actionResult;
+<#+
+
+}
+
+// *** WriteActionValidation
+
+public void WriteActionValidation(ControllerTypeAction action, bool isAsync)
+{
+    string parametersText = string.Empty;
+
+    if (!action.RouteIgnoreControllerParameters && action.ParentController.ChildParameters.Count > 0)
+    {
+        parametersText = string.Join(", ", action.ParentController.ChildParameters.Select(p => p.Name.Transform().ToCamelCase()));
+    }
+
+    if (action.ChildParameters.Count > 0)
+    {
+        if (string.IsNullOrEmpty(parametersText))
+        {
+            parametersText = string.Join(", ", action.ChildParameters.Select(p => p.Name.Transform().ToCamelCase()));
+        }
+        else
+        {
+            parametersText = string.Join(", ", parametersText, string.Join(", ", action.ChildParameters.Select(p => p.Name.Transform().ToCamelCase())));
+        }
+    }
+
+    string validationParametersText = parametersText;
+
+    if (!string.IsNullOrEmpty(validationParametersText))
+    {
+        validationParametersText = $"{validationParametersText}, out Primavera.Hydrogen.Rest.RestProblemDetails? customValidationError";
+    }
+    else
+    {
+        validationParametersText = "out Primavera.Hydrogen.Rest.RestProblemDetails? customValidationError";
+    }
+
+#>
+        // Begin Validation
+
+        if (!this.Validate()
+<#+
+
+    if (!action.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in action.ParentController.ChildParameters)
+        {
+            this.WriteControllerParameterValidation(parameter);
+        }
+    }
+
+    foreach (ControllerTypeActionParameter parameter in action.ChildParameters)
+    {
+        this.WriteActionParameterValidation(parameter);
+    }
+
+#>
+            .Result(
+                Common.ErrorCodes.RequestArgsInvalid, 
+                Localization.ValidationResources.RES_Error_RequestArgsInvalid, 
+                out Primavera.Hydrogen.Rest.RestProblemDetails? validationError))
+        {
+<#+
+
+    if (isAsync)
+    {
+
+#>
+            return this.BadRequest(
+                validationError);
+<#+
+
+    }
+    else
+    {
+
+#>
+            return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(
+                this.BadRequest(
+                    validationError));
+<#+
+
+    }
+
+#>
+        }
+
+        if (!this.Validate<#= action.Name2 #>(<#= validationParametersText #>))
+        {
+<#+
+
+    if (isAsync)
+    {
+
+#>
+            return this.BadRequest(
+                customValidationError);
+<#+
+
+    }
+    else
+    {
+
+#>
+            return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(
+                this.BadRequest(
+                    customValidationError));
+<#+
+
+    }
+
+#>
+        }
+
+        // End Validation
+
+<#+
+}
+
+// *** WriteControllerParameterValidation
+
+public void WriteControllerParameterValidation(ControllerTypeParameter parameter)
+{
+    this.WriteControllerParameterValidation(parameter as ControllerTypeScalarParameter);
+}
+
+// *** WriteActionParameterValidation
+
+public void WriteActionParameterValidation(ControllerTypeActionParameter parameter)
+{
+    this.WriteActionParameterValidation(parameter as ControllerTypeActionScalarParameter);
+    this.WriteActionParameterValidation(parameter as ControllerTypeActionEnumParameter);
+    this.WriteActionParameterValidation(parameter as ControllerTypeActionModelParameter);
+    this.WriteActionParameterValidation(parameter as ControllerTypeActionJsonParameter);
+}
+
+// *** WriteControllerParameterValidation (ControllerTypeScalarParameter)
+
+public void WriteControllerParameterValidation(ControllerTypeScalarParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+    string errorName = "{0}_{1}".Format(parameter.ParentController.Name, parameter.Name);
+
+    if (parameter.Behavior.AllowIsNullable)
+    {
+        this.WriteRequired(parameterName, errorName);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName, errorName);
+    }
+
+    if (parameter.IsEmailValue.GetValueOrDefault(false))
+    {
+        this.WriteEmail(parameterName, errorName);
+    }
+
+    if (parameter.IsMinLengthValue != null)
+    {
+        this.WriteMinLen(parameterName, errorName, parameter.IsMinLengthValue.Value);
+    }
+
+    if (parameter.IsMaxLengthValue != null)
+    {
+        this.WriteMaxLen(parameterName, errorName, parameter.IsMaxLengthValue.Value);
+    }
+
+    if (parameter.IsRegularExpressionValue != null)
+    {
+        string regularExpression = this.FindRegularExpression(parameter.IsRegularExpressionValue, parameter);
+        this.WriteRegularExpression(parameterName, errorName, regularExpression);
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        this.WriteLessThan(parameterName, errorName, parameter.IsLessThanValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        this.WriteLessThanOrEqualTo(parameterName, errorName, parameter.IsLessThanOrEqualToValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        this.WriteGreaterThan(parameterName, errorName, parameter.IsGreaterThanValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        this.WriteGreaterThanOrEqualTo(parameterName, errorName, parameter.IsGreaterThanOrEqualToValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WritePhoneNumber(parameterName, errorName);
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WriteInternationalPhoneNumber(parameterName, errorName);
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        this.WriteUriAbsolute(parameterName, errorName);
+    }
+}
+
+public string GetParameterTypeLiteral(ControllerTypeScalarParameter parameter)
+{
+    switch (parameter.Type)
+    {
+        case ScalarType.Decimal:
+            return "M";
+        case ScalarType.Long:
+            return "L";
+        case ScalarType.Double:
+            return "D";
+        default:
+            return "";
+    }
+}
+
+public string GetParameterTypeLiteral(ControllerTypeActionScalarParameter parameter)
+{
+    switch (parameter.Type)
+    {
+        case ScalarType.Decimal:
+            return "M";
+        case ScalarType.Long:
+            return "L";
+        case ScalarType.Double:
+            return "D";
+        default:
+            return "";
+    }
+}
+
+// *** WriteActionParameterValidation (ControllerTypeActionScalarParameter)
+
+public void WriteActionParameterValidation(ControllerTypeActionScalarParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    if (parameter.Cardinality == Cardinality.Single)
+    {
+        this.WriteActionParameterValidationSingle(parameter);
+    }
+    else
+    {
+        this.WriteActionParameterValidationMultiple(parameter);
+    }
+}
+
+// *** WriteActionParameterValidationSingle (ControllerTypeActionScalarParameter)
+
+public void WriteActionParameterValidationSingle(ControllerTypeActionScalarParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+    string errorName = "{0}_{1}_{2}".Format(parameter.ParentAction.ParentController.Name, parameter.ParentAction.Name2, parameter.Name);
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        switch (parameter.Type)
+        {
+            case ScalarType.String:
+            case ScalarType.Email:
+            case ScalarType.Password:
+            case ScalarType.PhoneNumber:
+            case ScalarType.Url:
+            case ScalarType.ByteArray:
+                this.WriteRequired(parameterName, errorName);
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName, errorName);
+    }
+    
+    if (parameter.IsEmailValue.GetValueOrDefault(false))
+    {
+        this.WriteEmail(parameterName, errorName);
+    }
+
+    if (parameter.IsMinLengthValue != null)
+    {
+        this.WriteMinLen(parameterName, errorName, parameter.IsMinLengthValue.Value);
+    }
+
+    if (parameter.IsMaxLengthValue != null)
+    {
+        this.WriteMaxLen(parameterName, errorName, parameter.IsMaxLengthValue.Value);
+    }
+
+    if (parameter.IsRegularExpressionValue != null)
+    {
+        string regularExpression = this.FindRegularExpression(parameter.IsRegularExpression, parameter);
+        this.WriteRegularExpression(parameterName, errorName, regularExpression);
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        this.WriteLessThan(parameterName, errorName, parameter.IsLessThanValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        this.WriteLessThanOrEqualTo(parameterName, errorName, parameter.IsLessThanOrEqualToValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        this.WriteGreaterThan(parameterName, errorName, parameter.IsGreaterThanValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        this.WriteGreaterThanOrEqualTo(parameterName, errorName, parameter.IsGreaterThanOrEqualToValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WritePhoneNumber(parameterName, errorName);
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WriteInternationalPhoneNumber(parameterName, errorName);
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        this.WriteUriAbsolute(parameterName, errorName);
+    }
+}
+
+// *** WriteActionParameterValidationMultiple (ControllerTypeActionScalarParameter)
+
+public void WriteActionParameterValidationMultiple(ControllerTypeActionScalarParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+    string errorName = "{0}_{1}_{2}".Format(parameter.ParentAction.ParentController.Name, parameter.ParentAction.Name2, parameter.Name);
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteRequired(parameterName, errorName);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName, errorName);
+    }
+
+    if (parameter.IsEmailValue.GetValueOrDefault(false))
+    {
+        this.WriteEmail(parameterName, errorName);
+    }
+
+    if (parameter.IsMinLengthValue != null)
+    {
+        this.WriteMinLen(parameterName, errorName, parameter.IsMinLengthValue.Value);
+    }
+
+    if (parameter.IsMaxLengthValue != null)
+    {
+        this.WriteMaxLen(parameterName, errorName, parameter.IsMaxLengthValue.Value);
+    }
+
+    if (parameter.IsRegularExpressionValue != null)
+    {
+        string regularExpression = this.FindRegularExpression(parameter.IsRegularExpression, parameter);
+        this.WriteRegularExpression(parameterName, errorName, regularExpression);
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        this.WriteLessThan(parameterName, errorName, parameter.IsLessThanValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        this.WriteLessThanOrEqualTo(parameterName, errorName, parameter.IsLessThanOrEqualToValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        this.WriteGreaterThan(parameterName, errorName, parameter.IsGreaterThanValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        this.WriteGreaterThanOrEqualTo(parameterName, errorName, parameter.IsGreaterThanOrEqualToValue.Value, this.GetParameterTypeLiteral(parameter));
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WritePhoneNumber(parameterName, errorName);
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WriteInternationalPhoneNumber(parameterName, errorName);
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        this.WriteUriAbsolute(parameterName, errorName);
+    }
+}
+
+// *** WriteActionParameterValidation (ControllerTypeActionEnumParameter)
+
+public void WriteActionParameterValidation(ControllerTypeActionEnumParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    if (parameter.Cardinality == Cardinality.Single)
+    {
+        this.WriteActionParameterValidationSingle(parameter);
+    }
+    else
+    {
+        this.WriteActionParameterValidationMultiple(parameter);
+    }
+}
+
+// *** WriteActionParameterValidationSingle (ControllerTypeActionEnumParameter)
+
+public void WriteActionParameterValidationSingle(ControllerTypeActionEnumParameter parameter)
+{
+}
+
+// *** WriteActionParameterValidationMultiple (ControllerTypeActionEnumParameter)
+
+public void WriteActionParameterValidationMultiple(ControllerTypeActionEnumParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+    string errorName = "{0}_{1}_{2}".Format(parameter.ParentAction.ParentController.Name, parameter.ParentAction.Name2, parameter.Name);
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteRequired(parameterName, errorName);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName, errorName);
+    }
+}
+
+// *** WriteActionParameterValidation (ControllerTypeActionModelParameter)
+
+public void WriteActionParameterValidation(ControllerTypeActionModelParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    if (parameter.Cardinality == Cardinality.Single)
+    {
+        this.WriteActionParameterValidationSingle(parameter);
+    }
+    else
+    {
+        this.WriteActionParameterValidationMultiple(parameter);
+    }
+}
+
+// *** WriteActionParameterValidationSingle (ControllerTypeActionModelParameter)
+
+public void WriteActionParameterValidationSingle(ControllerTypeActionModelParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+    string errorName = "{0}_{1}_{2}".Format(parameter.ParentAction.ParentController.Name, parameter.ParentAction.Name2, parameter.Name);
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteRequired(parameterName, errorName);
+    }
+}
+
+// *** WriteActionParameterValidationMultiple (ControllerTypeActionModelParameter)
+
+public void WriteActionParameterValidationMultiple(ControllerTypeActionModelParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+    string errorName = "{0}_{1}_{2}".Format(parameter.ParentAction.ParentController.Name, parameter.ParentAction.Name2, parameter.Name);
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteRequired(parameterName, errorName);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName, errorName);
+    }
+}
+
+// *** WriteActionParameterValidation (ControllerTypeActionJsonParameter)
+
+public void WriteActionParameterValidation(ControllerTypeActionJsonParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+    string errorName = "{0}_{1}_{2}".Format(parameter.ParentAction.ParentController.Name, parameter.ParentAction.Name2, parameter.Name);
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteRequired(parameterName, errorName);
+    }
+}
+
+// *** FindRegularExpression
+
+private string FindRegularExpression(string name, ControllerTypeScalarParameter controllerTypeParameter)
+{
+    if (string.IsNullOrEmpty(name))
+    {
+        return "unknown";
+    }
+
+    if (controllerTypeParameter == null || controllerTypeParameter.ParentController.ServiceModel == null)
+    {
+        return "unknown";
+    }
+
+    RegularExpression regularExpression = controllerTypeParameter.ParentController.ServiceModel.RegularExpressions.FirstOrDefault(r => r.Name.EqualsNoCase(name));
+    if (regularExpression == null)
+    {
+        return "unknown";
+    }
+
+    return regularExpression.Name;
+}
+
+// *** FindRegularExpression
+
+private string FindRegularExpression(string name, ControllerTypeActionScalarParameter controllerTypeParameter)
+{
+    if (string.IsNullOrEmpty(name))
+    {
+        return "unknown";
+    }
+
+    if (controllerTypeParameter == null || controllerTypeParameter.ParentAction == null || controllerTypeParameter.ParentAction.ServiceModel == null)
+    {
+        return "unknown";
+    }
+
+    RegularExpression regularExpression = controllerTypeParameter.ParentAction.ServiceModel.RegularExpressions.FirstOrDefault(r => r.Name.EqualsNoCase(name));
+    if (regularExpression == null)
+    {
+        return "unknown";
+    }
+
+    return regularExpression.Name;
+}
+
+// *** WriteRequired
+
+public void WriteRequired(string parameterName, string errorName)
+{
+
+#>
+            .Required(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_Required)
+<#+
+
+}
+
+private void WriteMinLen(string parameterName, string errorName, object value)
+{
+
+#>
+            .MinLength(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                <#= value #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_MinLength,
+                <#= value #>)
+<#+
+
+}
+
+private void WriteMaxLen(string parameterName, string errorName, object value)
+{
+
+#>
+            .MaxLength(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                <#= value #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_MaxLength,
+                <#= value #>)
+<#+
+
+}
+
+private void WriteRegularExpression(string parameterName, string errorName, string regularExpression)
+{
+
+#>
+            .RegularExpression(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>,
+                Common.Metadata.RegularExpressions.<#= regularExpression #>(),
+                Localization.ValidationResources.RES_Error_<#= errorName #>_RegularExpression,
+                Common.Metadata.RegularExpressions.<#= regularExpression #>Value)
+<#+
+
+}
+
+private void WriteNotEmpty(string parameterName, string errorName)
+{
+
+#>
+            .NotEmpty(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_NotEmpty)
+<#+
+
+}
+
+private void WriteUriAbsolute(string parameterName, string errorName)
+{
+
+#>
+            .IsAbsoluteUri(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_NotAbsoluteUri)
+<#+
+
+}
+
+private void WriteEmail(string parameterName, string errorName)
+{
+
+#>
+            .IsEmail(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_NotEmail)
+<#+
+
+}
+
+private void WriteInternationalPhoneNumber(string parameterName, string errorName)
+{
+
+#>
+            .IsInternationalPhoneNumber(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_NotPhoneNumber)
+<#+
+
+}
+
+private void WritePhoneNumber(string parameterName, string errorName)
+{
+#>
+            .IsPhoneNumber(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_NotPhoneNumber)
+<#+
+}
+
+private void WriteGreaterThan(string parameterName, string errorName, object value, string type)
+{
+
+#>
+            .GreaterThan(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                <#= value #><#= type #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_GreaterThan,
+                <#= value #><#= type #>)
+<#+
+
+}
+
+private void WriteGreaterThanOrEqualTo(string parameterName, string errorName, object value, string type)
+{
+
+#>
+            .GreaterThanOrEqualTo(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                <#= value #><#= type #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_GreaterThanOrEqualTo,
+                <#= value #><#= type #>)
+<#+
+
+}
+
+private void WriteLessThan(string parameterName, string errorName, object value, string type)
+{
+
+#>
+            .LessThan(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                <#= value #><#= type #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_LessThan,
+                <#= value #><#= type #>)
+<#+
+
+}
+
+private void WriteLessThanOrEqualTo(string parameterName, string errorName, object value, string type)
+{
+
+#>
+            .LessThanOrEqualTo(
+                nameof(<#= parameterName #>),
+                <#= parameterName #>, 
+                <#= value #><#= type #>, 
+                Localization.ValidationResources.RES_Error_<#= errorName #>_LessThanOrEqualTo,
+                <#= value #><#= type #>)
+<#+
+
+}
+
+// *** WriteNotFound
+
+public void WriteNotFound(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(value, nameof(value));
+
+        value.Status = 404;
+        value.Type = this.Request.GetRestProblemDetailsType(value.Code);
+
+        return new Microsoft.AspNetCore.Mvc.NotFoundObjectResult(value)
+        {
+            ContentTypes =
+            {
+                Primavera.Hydrogen.Net.Http.HttpHeader.Common.JsonProblemContentType.Value!
+            }
+        };
+<#+
+
+}
+
+// *** WriteBadRequest
+
+public void WriteBadRequest(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(value, nameof(value));
+
+        value.Status = 400;
+        value.Type = this.Request.GetRestProblemDetailsType(value.Code);
+
+        return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(value)
+        {
+            ContentTypes =
+            {
+                Primavera.Hydrogen.Net.Http.HttpHeader.Common.JsonProblemContentType.Value!
+            }
+        };
+<#+
+
+}
+
+// *** WriteConflict
+
+public void WriteConflict(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(value, nameof(value));
+
+        value.Status = 409;
+        value.Type = this.Request.GetRestProblemDetailsType(value.Code);
+
+        return new Microsoft.AspNetCore.Mvc.ConflictObjectResult(value)
+        {
+            ContentTypes =
+            {
+                Primavera.Hydrogen.Net.Http.HttpHeader.Common.JsonProblemContentType.Value!
+            }
+        };
+<#+
+
+}
+
+// *** WriteActionValidation
+
+public void WriteActionValidation(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        error = null;
+        return true;
+<#+
+
+}
+
+#>

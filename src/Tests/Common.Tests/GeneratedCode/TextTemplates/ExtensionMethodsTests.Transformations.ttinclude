@@ -1,0 +1,317 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Common.Tests");
+
+    ClassModel testBaseClass = targetModel.Namespace
+        .AddClass(new ClassModel("ExtensionMethodsTests")
+        {
+            Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+            Documentation = new DocumentationModel("Provides unit tests for the <see cref=\"ExtensionMethods\"/> type.")
+        })
+            .AddMethod(new MethodModel("ExtensionMethods_GetId_Principal_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetId(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetId_Subject")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetId(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetId_NameIdentifier")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetId(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetId_NotFound")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetEmail_Principal_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetEmail_Email1")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetEmail_Email2")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetEmail_NotFound")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetClientId_Principal_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetClientId(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetClientId_ClientId")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetClientId(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetClientId_NotFound")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetClientId(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetDisplayName_Principal_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetDisplayName_DisplayName")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetDisplayName_Email")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetDisplayName_NotFound")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsApi_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsApi(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsApi_True")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsApi(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsApi_False")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsApi(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsMonitoring_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsMonitoring_Monitoring")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsMonitoring_AdminFunctions")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsMonitoring_False")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsDocumentation_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsDocumentation(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsDocumentation_True")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsDocumentation(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsDocumentation_False")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsDocumentation(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsRestApiDocumentation_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsRestApiDocumentation(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsRestApiDocumentation_True")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsRestApiDocumentation(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsRestApiDocumentation_False")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsRestApiDocumentation(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsRestApiDocumentationCustomization_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsRestApiDocumentationCustomization(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsRestApiDocumentationCustomization_True")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsRestApiDocumentationCustomization(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsRestApiDocumentationCustomization_False")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsRestApiDocumentationCustomization(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsContent_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsContent_Css")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsContent_Fonts")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsContent_Img")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsContent_Lib")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_PathIsContent_False")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetBaseUri_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetBaseUri(Microsoft.AspNetCore.Http.HttpRequest)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetBaseUri")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetBaseUri(Microsoft.AspNetCore.Http.HttpRequest?)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetRestProblemDetailsType_Request_Null")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetRestProblemDetailsType(Microsoft.AspNetCore.Http.HttpRequest, string)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetRestProblemDetailsType_ErrorCode_NullOrWhiteSpace")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetRestProblemDetailsType(Microsoft.AspNetCore.Http.HttpRequest, string)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("ExtensionMethods_GetRestProblemDetailsType")
+            {
+                Modifiers = MethodModifiers.Public,
+                Documentation = new DocumentationModel("Tests the <see cref=\"ExtensionMethods.GetRestProblemDetailsType(Microsoft.AspNetCore.Http.HttpRequest, string)\"/> method.")
+            })
+                .WithAttribute(new AttributeModel("Fact"))
+                .ParentModelAs<ClassModel>();
+}
+
+#>

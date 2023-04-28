@@ -1,0 +1,71 @@
+﻿<#+
+
+public void WriteProperties(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model == null)
+    {
+        return;
+    }
+    
+    string assemblyName = model.Namespace + ".Server.Common";
+    string version = VersioningHelper.GetVersionString(model);
+
+#>
+<Project>
+
+    <!-- Assembly name and namespace -->
+
+    <PropertyGroup>
+        <RootNamespace><#= assemblyName #></RootNamespace>
+        <AssemblyName><#= assemblyName #></AssemblyName>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Nullable reference types -->
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <!-- Global implicit using statements -->
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System" />
+        <Using Include="System.Collections" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Globalization" />
+        <Using Include="Microsoft.AspNetCore.Http" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Include="Microsoft.Extensions.Hosting" />
+        <Using Include="Microsoft.Extensions.Logging" />
+        <Using Include="Primavera.Hydrogen" />
+    </ItemGroup>
+
+    <!-- NuGet properties -->
+
+    <!-- Ignore Spelling: <#= model.Copyright #> -->
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <Authors><#= model.Company #></Authors>
+        <Company><#= model.Company #></Company>
+        <Copyright><#= model.Copyright #></Copyright>
+        <Description>Class library that provides common types used by the <#= model.DisplayName #>.</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Primavera;Lithium</PackageTags>
+        <Product><#= model.Product #></Product>
+    </PropertyGroup>
+
+</Project>
+<#+
+
+}
+
+#>

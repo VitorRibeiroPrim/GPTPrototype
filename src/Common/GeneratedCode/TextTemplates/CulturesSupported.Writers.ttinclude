@@ -1,0 +1,244 @@
+﻿<#+
+
+// *** WriteGetSupportedCulturesInstance
+
+public void WriteGetSupportedCulturesInstance(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            return new ExtendedCultureInfo[]
+            {
+                new ExtendedCultureInfo()
+                {
+                    BaseCulture = CulturesSupported.EnglishBaseCulture,
+                    DefaultInstance =  CulturesSupported.EnglishDefaultCulture,
+                    Instances = new System.Collections.Generic.List<string>()
+                    {
+                        CulturesSupported.EnglishFromIrelandCulture,
+                        CulturesSupported.EnglishFromGreatBritainCulture,
+                        CulturesSupported.EnglishFromUnitedStatesCulture,
+                        CulturesSupported.EnglishFromCanadaCulture
+                    }
+                },
+                new ExtendedCultureInfo()
+                {
+                    BaseCulture = CulturesSupported.PortugueseBaseCulture,
+                    DefaultInstance =  CulturesSupported.PortugueseDefaultCulture,
+                    Instances = new System.Collections.Generic.List<string>()
+                    {
+                        CulturesSupported.PortugueseFromAngolaCulture,
+                        CulturesSupported.PortugueseFromCapeVerdeCulture,
+                        CulturesSupported.PortugueseFromMozambiqueCulture,
+                        CulturesSupported.PortugueseFromPortugalCulture
+                    }
+                },
+                new ExtendedCultureInfo()
+                {
+                    BaseCulture = CulturesSupported.SpanishBaseCulture,
+                    DefaultInstance =  CulturesSupported.SpanishDefaultCulture,
+                    Instances = new System.Collections.Generic.List<string>()
+                    {
+                        CulturesSupported.SpanishFromArgentinaCulture,
+                        CulturesSupported.SpanishFromChileCulture,
+                        CulturesSupported.SpanishFromMexicoCulture,
+                        CulturesSupported.SpanishFromSpainCulture
+                    }
+                },
+                new ExtendedCultureInfo()
+                {
+                    BaseCulture = CulturesSupported.CatalanBaseCulture,
+                    DefaultInstance =  CulturesSupported.CatalanDefaultCulture,
+                    Instances = new System.Collections.Generic.List<string>()
+                    {
+                        CulturesSupported.CatalanFromSpainCulture
+                    }
+                },
+                new ExtendedCultureInfo()
+                {
+                    BaseCulture = CulturesSupported.ItalianBaseCulture,
+                    DefaultInstance =  CulturesSupported.ItalianDefaultCulture,
+                    Instances = new System.Collections.Generic.List<string>()
+                    {
+                        CulturesSupported.ItalianFromItalyCulture,
+                        CulturesSupported.ItalianFromSwitzerlandCulture
+                    }
+                },
+                new ExtendedCultureInfo()
+                {
+                    BaseCulture = CulturesSupported.RomanianBaseCulture,
+                    DefaultInstance =  CulturesSupported.RomanianDefaultCulture,
+                    Instances = new System.Collections.Generic.List<string>()
+                    {
+                        CulturesSupported.RomanianFromRomaniaCulture
+                    }
+                },
+                new ExtendedCultureInfo()
+                {
+                    BaseCulture = CulturesSupported.FrenchBaseCulture,
+                    DefaultInstance =  CulturesSupported.FrenchDefaultCulture,
+                    Instances = new System.Collections.Generic.List<string>()
+                    {
+                        CulturesSupported.FrenchFromFranceCulture,
+                        CulturesSupported.FrenchFromBelgiumCulture,
+                        CulturesSupported.FrenchFromCanadaCulture,
+                        CulturesSupported.FrenchFromLuxembourgCulture,
+                        CulturesSupported.FrenchFromSwitzerlandCulture
+                    }
+                }
+            };
+        }
+<#+
+
+}
+
+// *** WriteGetDefaultCultureInstance
+
+public void WriteGetDefaultCultureInstance(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            return SupportedCultures
+                .FirstOrDefault(i => i.BaseCulture.EqualsNoCase(CulturesSupported.EnglishBaseCulture))!;
+        }
+<#+
+
+}
+
+// *** WriteGetDefaultCulture
+
+public void WriteGetDefaultCulture(ModelWriter modelWriter, PropertyGetAccessorModel model)
+{
+
+#>
+        get
+        {
+            return Instance.DefaultCulture.DefaultInstance!;
+        }
+<#+
+
+}
+
+// *** WriteGet
+
+public void WriteGet(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Collections.Generic.List<string> result = new System.Collections.Generic.List<string>();
+    
+        foreach (ExtendedCultureInfo info in Instance.SupportedCultures)
+        {
+            if (includeBaseCultures && !string.IsNullOrEmpty(info.BaseCulture))
+            {
+                result.Add(info.BaseCulture);
+            }
+
+            if (includeInstanceCultures && info.Instances != null)
+            {
+                result.AddRange(info.Instances);
+            }
+        }
+
+        return result;
+<#+
+
+}
+
+// *** WriteToBaseCulture
+
+public void WriteToBaseCulture(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (!string.IsNullOrWhiteSpace(culture))
+        {
+            foreach (ExtendedCultureInfo info in Instance.SupportedCultures)
+            {
+                if (culture.EqualsNoCase(info.BaseCulture))
+                {
+                    return info.BaseCulture!;
+                }
+
+                if (culture.EqualsAnyNoCase(info.Instances))
+                {
+                    return info.BaseCulture!;
+                }
+
+                if (culture.StartsWithNoCase(info.BaseCulture + "-"))
+                {
+                    return info.BaseCulture!;
+                }
+            }
+        }
+
+        return Instance.DefaultCulture.BaseCulture!;
+<#+
+
+}
+
+// *** WriteToDefaultCulture
+
+public void WriteToDefaultCulture(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (!string.IsNullOrWhiteSpace(culture))
+        {
+            foreach (ExtendedCultureInfo info in Instance.SupportedCultures)
+            {
+                if (culture.EqualsNoCase(info.BaseCulture))
+                {
+                    return info.DefaultInstance!;
+                }
+
+                if (culture.EqualsAnyNoCase(info.Instances))
+                {
+                    return info.DefaultInstance!;
+                }
+
+                if (culture.StartsWithNoCase(info.BaseCulture + "-"))
+                {
+                    return info.DefaultInstance!;
+                }
+            }
+        }
+
+        return Instance.DefaultCulture.DefaultInstance!;
+<#+
+
+}
+
+// *** WriteToSupportedCulture
+
+public void WriteToSupportedCulture(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (!string.IsNullOrWhiteSpace(culture))
+        {
+            System.Collections.Generic.IEnumerable<string> cultures = Get(includeBaseCultures, includeInstanceCultures);
+
+            if (culture.EqualsAnyNoCase(cultures))
+            {
+                return culture.Transform().ToLowerCase()!;
+            }
+
+            foreach (ExtendedCultureInfo info in Instance.SupportedCultures)
+            {
+                if (culture.EqualsNoCase(info.BaseCulture) || culture.StartsWithNoCase(info.BaseCulture + "-"))
+                {
+                    return info.DefaultInstance!;
+                }
+            }
+        }
+
+        return DefaultCulture;
+<#+
+
+}
+
+#>

@@ -1,0 +1,869 @@
+﻿<#+
+
+// *** WriteActionCancellationValidation
+
+public void WriteActionCancellationValidation(ControllerTypeAction sourceModel)
+{
+    if (!sourceModel.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in sourceModel.ParentController.ChildParameters)
+        {
+            this.WriteActionCancellationValidation(parameter);
+        }
+    }
+
+    foreach (ControllerTypeActionParameter parameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide))
+    {
+        this.WriteActionCancellationValidation(parameter);
+    }
+
+    if (sourceModel.ODataEnabled && sourceModel.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+    {
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(queryOptions, nameof(queryOptions));
+<#+
+
+    }
+}
+
+// *** WriteActionCancellationValidation (ControllerTypeParameter)
+
+public void WriteActionCancellationValidation(ControllerTypeParameter parameter)
+{
+    this.WriteActionCancellationValidation(parameter as ControllerTypeScalarParameter);
+}
+
+// *** WriteActionCancellationValidation (ControllerTypeActionParameter)
+
+public void WriteActionCancellationValidation(ControllerTypeActionParameter parameter)
+{
+    this.WriteActionCancellationValidation(parameter as ControllerTypeActionScalarParameter);
+    this.WriteActionCancellationValidation(parameter as ControllerTypeActionEnumParameter);
+    this.WriteActionCancellationValidation(parameter as ControllerTypeActionModelParameter);
+    this.WriteActionCancellationValidation(parameter as ControllerTypeActionJsonParameter);
+}
+
+// *** WriteActionCancellationValidation (ControllerTypeScalarParameter)
+
+public void WriteActionCancellationValidation(ControllerTypeScalarParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    if (parameter.Behavior.AllowIsNullable)
+    {
+        this.WriteNotNull(parameter);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName);
+    }
+
+    if (parameter.IsEmailValue.GetValueOrDefault(false))
+    {
+        this.WriteEmail(parameterName);
+    }
+
+    if (parameter.IsMinLengthValue != null)
+    {
+        this.WriteMinLength(parameterName, parameter.IsMinLengthValue.Value);
+    }
+
+    if (parameter.IsMaxLengthValue != null)
+    {
+        this.WriteMaxLength(parameterName, parameter.IsMaxLengthValue.Value);
+    }
+
+    if (parameter.IsRegularExpressionValue != null)
+    {
+        this.WriteRegularExpression(parameterName, parameter.IsRegularExpressionValue);
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        this.WriteLessThan(parameterName, parameter.IsLessThanValue.Value);
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        this.WriteLessThanOrEqualTo(parameterName, parameter.IsLessThanOrEqualToValue.Value);
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        this.WriteGreaterThan(parameterName, parameter.IsGreaterThanValue.Value);
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        this.WriteGreaterThanOrEqualTo(parameterName, parameter.IsGreaterThanOrEqualToValue.Value);
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WritePhoneNumber(parameterName);
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WriteInternationalPhoneNumber(parameterName);
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        this.WriteUriAbsolute(parameterName);
+    }
+}
+
+// *** WriteActionCancellationValidation (ControllerTypeActionScalarParameter)
+
+public void WriteActionCancellationValidation(ControllerTypeActionScalarParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    if (parameter.Cardinality == Cardinality.Single)
+    {
+        this.WriteActionCancellationValidationSingle(parameter);
+    }
+    else
+    {
+        this.WriteActionCancellationValidationMultiple(parameter);
+    }
+}
+
+// *** WriteActionCancellationValidationSingle (ControllerTypeActionScalarParameter)
+
+public void WriteActionCancellationValidationSingle(ControllerTypeActionScalarParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteNotNull(parameter);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName);
+    }
+    
+    if (parameter.IsEmailValue.GetValueOrDefault(false))
+    {
+        this.WriteEmail(parameterName);
+    }
+
+    if (parameter.IsMinLengthValue != null)
+    {
+        this.WriteMinLength(parameterName, parameter.IsMinLengthValue.Value);
+    }
+
+    if (parameter.IsMaxLengthValue != null)
+    {
+        this.WriteMaxLength(parameterName, parameter.IsMaxLengthValue.Value);
+    }
+
+    if (parameter.IsRegularExpressionValue != null)
+    {
+        this.WriteRegularExpression(parameterName, parameter.IsRegularExpressionValue);
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        this.WriteLessThan(parameterName, parameter.IsLessThanValue.Value);
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        this.WriteLessThanOrEqualTo(parameterName, parameter.IsLessThanOrEqualToValue.Value);
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        this.WriteGreaterThan(parameterName, parameter.IsGreaterThanValue.Value);
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        this.WriteGreaterThanOrEqualTo(parameterName, parameter.IsGreaterThanOrEqualToValue.Value);
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WritePhoneNumber(parameterName);
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        this.WriteInternationalPhoneNumber(parameterName);
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        this.WriteUriAbsolute(parameterName);
+    }
+}
+
+// *** WriteActionCancellationValidationMultiple (ControllerTypeActionScalarParameter)
+
+public void WriteActionCancellationValidationMultiple(ControllerTypeActionScalarParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteNotNull(parameterName);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName);
+    }
+
+    // NOTES:
+    // When cardinality is dictionary, Guard does not support these methods (mismatch in the nullability):
+    // ... ItemsNotNullOrWhiteSpace
+    // ... ItemsEmail
+    // ... ItemsMinLength
+    // ... ItemsMaxLength
+    // ... ItemsRegularExpression
+
+    if (!parameter.IsNullableItemsValue.GetValueOrDefault(false) && parameter.Cardinality != Cardinality.Dictionary)
+    {
+        switch (parameter.Type)
+        {
+            // NOTES:
+            // This is probably incomplete
+
+            case ScalarType.ByteArray:
+            case ScalarType.Url:
+                this.WriteItemsNotNull(parameterName);
+                break;
+            case ScalarType.String:
+            case ScalarType.Password:
+            case ScalarType.Email:
+                this.WriteItemsNotNullOrWhiteSpace(parameterName);
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (parameter.IsEmailValue.GetValueOrDefault(false) && parameter.Cardinality != Cardinality.Dictionary)
+    {
+        this.WriteItemsEmail(parameterName);
+    }
+
+    if (parameter.IsMinLengthValue != null && parameter.Cardinality != Cardinality.Dictionary)
+    {
+        this.WriteItemsMinLength(parameterName, parameter.IsMinLengthValue.Value);
+    }
+
+    if (parameter.IsMaxLengthValue != null && parameter.Cardinality != Cardinality.Dictionary)
+    {
+        this.WriteItemsMaxLength(parameterName, parameter.IsMaxLengthValue.Value);
+    }
+
+    if (parameter.IsRegularExpressionValue != null && parameter.Cardinality != Cardinality.Dictionary)
+    {
+        this.WriteItemsRegularExpression(parameterName, parameter.IsRegularExpressionValue);
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        this.WriteItemsLessThan(parameterName, parameter.IsLessThanValue.Value);
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        this.WriteItemsLessThanOrEqualTo(parameterName, parameter.IsLessThanOrEqualToValue.Value);
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        this.WriteItemsGreaterThan(parameterName, parameter.IsGreaterThanValue.Value);
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        this.WriteItemsGreaterThanOrEqualTo(parameterName, parameter.IsGreaterThanOrEqualToValue.Value);
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        // NOTES:
+        // If IsNullableItems is false, Guard does not support this method
+
+        if (parameter.IsNullableItemsValue.GetValueOrDefault(false))
+        {
+            this.WriteItemsPhoneNumber(parameterName);
+        }
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        // NOTES:
+        // If IsNullableItems is false, Guard does not support this method
+
+        if (parameter.IsNullableItemsValue.GetValueOrDefault(false))
+        {
+            this.WriteItemsInternationalPhoneNumber(parameterName);
+        }
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        // NOTES:
+        // If IsNullableItems is false, Guard does not support this method
+
+        if (parameter.IsNullableItemsValue.GetValueOrDefault(false))
+        {
+            this.WriteItemsUriAbsolute(parameterName);
+        }
+    }
+}
+
+// *** WriteActionCancellationValidation (ControllerTypeActionEnumParameter)
+
+public void WriteActionCancellationValidation(ControllerTypeActionEnumParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    if (parameter.Cardinality == Cardinality.Single)
+    {
+        this.WriteActionCancellationValidationSingle(parameter);
+    }
+    else
+    {
+        this.WriteActionCancellationValidationMultiple(parameter);
+    }
+}
+
+// *** WriteActionCancellationValidationSingle (ControllerTypeActionEnumParameter)
+
+public void WriteActionCancellationValidationSingle(ControllerTypeActionEnumParameter parameter)
+{
+}
+
+// *** WriteActionCancellationValidationMultiple (ControllerTypeActionEnumParameter)
+
+public void WriteActionCancellationValidationMultiple(ControllerTypeActionEnumParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteNotNull(parameterName);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName);
+    }
+}
+
+// *** WriteActionCancellationValidation (ControllerTypeActionModelParameter)
+
+public void WriteActionCancellationValidation(ControllerTypeActionModelParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    if (parameter.Cardinality == Cardinality.Single)
+    {
+        this.WriteActionCancellationValidationSingle(parameter);
+    }
+    else
+    {
+        this.WriteActionCancellationValidationMultiple(parameter);
+    }
+}
+
+// *** WriteActionCancellationValidationSingle (ControllerTypeActionModelParameter)
+
+public void WriteActionCancellationValidationSingle(ControllerTypeActionModelParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteNotNull(parameterName);
+    }
+
+    this.WriteIsValid(parameterName);
+}
+
+// *** WriteActionCancellationValidationMultiple (ControllerTypeActionModelParameter)
+
+public void WriteActionCancellationValidationMultiple(ControllerTypeActionModelParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        this.WriteNotNull(parameterName);
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        this.WriteNotEmpty(parameterName);
+    }
+
+    if (!parameter.IsNullableItemsValue.GetValueOrDefault(false))
+    {
+        this.WriteItemsNotNull(parameterName);
+    }
+
+    this.WriteIsValid(parameterName);
+}
+
+// *** WriteActionCancellationValidation (ControllerTypeActionJsonParameter)
+
+public void WriteActionCancellationValidation(ControllerTypeActionJsonParameter parameter)
+{
+    if (parameter == null)
+    {
+        return;
+    }
+
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    this.WriteNotUndefined(parameterName);
+}
+
+// *** WriteIsValid
+
+private void WriteIsValid(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.IsValid(<#= parameterName #>, nameof(<#= parameterName #>), 10, true);
+<#+
+
+}
+
+// *** WriteNotNull (ControllerTypeScalarParameter)
+
+public void WriteNotNull(ControllerTypeScalarParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    switch (parameter.Type)
+    {
+        case ScalarType.String:
+        case ScalarType.Email:
+        case ScalarType.Password:
+        case ScalarType.PhoneNumber:
+            this.WriteNotNullOrWhiteSpace(parameterName);
+            break;
+        case ScalarType.Url:
+        case ScalarType.ByteArray:
+            this.WriteNotNull(parameterName);
+            break;
+        default:
+            break;
+    }
+}
+
+// *** WriteNotNull (ControllerTypeActionScalarParameter)
+
+public void WriteNotNull(ControllerTypeActionScalarParameter parameter)
+{
+    string parameterName = parameter.Name.Transform().ToCamelCase();
+
+    switch (parameter.Type)
+    {
+        case ScalarType.String:
+        case ScalarType.Email:
+        case ScalarType.Password:
+        case ScalarType.PhoneNumber:
+            this.WriteNotNullOrWhiteSpace(parameterName);
+            break;
+        case ScalarType.Url:
+        case ScalarType.ByteArray:
+            this.WriteNotNull(parameterName);
+            break;
+        default:
+            break;
+    }
+}
+
+// *** WriteNotNull
+
+private void WriteNotNull(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteNotEmpty
+
+private void WriteNotEmpty(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotEmpty(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteNotNullOrEmpty
+
+private void WriteNotNullOrEmpty(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNullOrEmpty(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteNotNullOrWhiteSpace
+
+private void WriteNotNullOrWhiteSpace(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteGreaterThan
+
+private void WriteGreaterThan(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.GreaterThan(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteGreaterThanOrEqualTo
+
+private void WriteGreaterThanOrEqualTo(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.GreaterThanOrEqualTo(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteLessThan
+
+private void WriteLessThan(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.LessThan(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteLessThanOrEqualTo
+
+private void WriteLessThanOrEqualTo(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.LessThanOrEqualTo(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteItemsGreaterThan
+
+private void WriteItemsGreaterThan(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsGreaterThan(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteItemsGreaterThanOrEqualTo
+
+private void WriteItemsGreaterThanOrEqualTo(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsGreaterThanOrEqualTo(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteItemsLessThan
+
+private void WriteItemsLessThan(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsLessThan(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteItemsLessThanOrEqualTo
+
+private void WriteItemsLessThanOrEqualTo(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsLessThanOrEqualTo(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteMinLength
+
+private void WriteMinLength(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.MinLength(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteMaxLength
+
+private void WriteMaxLength(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.MaxLength(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteItemsMinLength
+
+private void WriteItemsMinLength(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsMinLength(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteItemsMaxLength
+
+private void WriteItemsMaxLength(string parameterName, object value)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsMaxLength(<#= parameterName #>, nameof(<#= parameterName #>), <#= value #>);
+<#+
+
+}
+
+// *** WriteRegularExpression
+
+private void WriteRegularExpression(string parameterName, string regularExpression)
+{
+
+#>
+        Primavera.Hydrogen.Guard.RegularExpression(<#= parameterName #>, nameof(<#= parameterName #>), Client.Rest.Metadata.RegularExpressions.<#= regularExpression #>Value);
+<#+
+
+}
+
+// *** WriteItemsRegularExpression
+
+private void WriteItemsRegularExpression(string parameterName, string regularExpression)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsRegularExpression(<#= parameterName #>, nameof(<#= parameterName #>), Client.Rest.Metadata.RegularExpressions.<#= regularExpression #>Value);
+<#+
+
+}
+
+// *** WriteEmail
+
+private void WriteEmail(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.Email(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteItemsEmail
+
+private void WriteItemsEmail(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsEmail(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WritePhoneNumber
+
+private void WritePhoneNumber(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.PhoneNumber(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteItemsPhoneNumber
+
+private void WriteItemsPhoneNumber(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsPhoneNumber(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteInternationalPhoneNumber
+
+private void WriteInternationalPhoneNumber(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.InternationalPhoneNumber(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteItemsInternationalPhoneNumber
+
+private void WriteItemsInternationalPhoneNumber(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsInternationalPhoneNumber(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteUriAbsolute
+
+private void WriteUriAbsolute(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.UriAbsolute(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteItemsUriAbsolute
+
+private void WriteItemsUriAbsolute(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsUriAbsolute(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteItemsNotNull
+
+private void WriteItemsNotNull(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsNotNull(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** WriteItemsNotNullOrWhiteSpace
+
+private void WriteItemsNotNullOrWhiteSpace(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.ItemsNotNullOrWhiteSpace(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+// *** FindRegularExpression
+
+private string FindRegularExpression(string name, ControllerTypeScalarParameter controllerTypeParameter)
+{
+    if (string.IsNullOrEmpty(name))
+    {
+        return "unknown";
+    }
+
+    if (controllerTypeParameter == null || controllerTypeParameter.ParentController == null || controllerTypeParameter.ParentController.ServiceModel == null)
+    {
+        return "unknown";
+    }
+
+    RegularExpression regularExpression = controllerTypeParameter.ParentController.ServiceModel.RegularExpressions.FirstOrDefault(r => r.Name.EqualsNoCase(name));
+    if (regularExpression == null)
+    {
+        return "unknown";
+    }
+
+    return regularExpression.Name;
+}
+
+// *** FindRegularExpression
+
+private string FindRegularExpression(string name, ControllerTypeActionScalarParameter controllerTypeActionParameter)
+{
+    if (string.IsNullOrEmpty(name))
+    {
+        return "unknown";
+    }
+
+    if (controllerTypeActionParameter == null || controllerTypeActionParameter.ParentAction == null || controllerTypeActionParameter.ParentAction.ServiceModel == null)
+    {
+        return "unknown";
+    }
+
+    RegularExpression regularExpression = controllerTypeActionParameter.ParentAction.ServiceModel.RegularExpressions.FirstOrDefault(r => r.Name.EqualsNoCase(name));
+    if (regularExpression == null)
+    {
+        return "unknown";
+    }
+
+    return regularExpression.Name;
+}
+
+// *** WriteNotUndefined
+
+private void WriteNotUndefined(string parameterName)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotUndefined(<#= parameterName #>, nameof(<#= parameterName #>));
+<#+
+
+}
+
+#>

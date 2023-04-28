@@ -1,0 +1,357 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+
+    // Empty
+
+    if (sourceModel.Webhooks.Count == 0 && !sourceModel.Controllers.Any(i => i.Visibility != ControllerTypeVisibility.ClientSide))
+    {
+        targetModel.WithEmptyComment("This file is empty because the service model does not include\nany controllers visible server-side.");
+        return;
+    }
+
+    // Namespace
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.RestApi.Controllers");
+
+    // Webhooks controller
+
+    if (sourceModel.Webhooks.Count > 0)
+    {
+        targetModel.Namespace
+            .AddInterface(new InterfaceModel("IWebhooksController")
+            {
+                Modifiers = InterfaceModifiers.Public | InterfaceModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the interface of the controller that provides monitoring routes.")
+            })
+                .AddMethod(new MethodModel("CreateSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows to create a new webhook subscription.")
+                    {
+                        Returns = "The webhook subscription identifier."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.CreateWebhookSubscriptionRequest")
+                    {
+                        Documentation = new DocumentationModel("The request to create a new webhook subscription.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("UpdateSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows to update a webhook subscription.")
+                    {
+                        Returns = "None."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Webhooks.UpdateWebhookSubscriptionRequest")
+                    {
+                        Documentation = new DocumentationModel("The request to update a webhook subscription.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("GetSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows to retrieve a webhook subscription.")
+                    {
+                        Returns = "The webhook subscription."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("DeleteSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows to delete a webhook subscription.")
+                    {
+                        Returns = "None."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("GetSubscriptionsAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows to retrieve all the webhook subscriptions for a client application.")
+                    {
+                        Returns = "A list containing the webhooks subscriptions."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("DeleteSubscriptionsAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows to delete all the webhook subscriptions for a client application.")
+                    {
+                        Returns = "None."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("PingSubscriptionAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows pinging a webhook subscription.")
+                    {
+                        Returns = "None."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("clientId", "string")
+                    {
+                        Documentation = new DocumentationModel("The client application identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("subscriptionId", "string")
+                    {
+                        Documentation = new DocumentationModel("The webhook subscription identifier.")
+                    })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>()
+                .AddMethod(new MethodModel("GetWebhooksMetadataAsync", "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+                {
+                    Documentation = new DocumentationModel("Provides an action that allows to retrieve metadata about all the webhooks available.")
+                    {
+                        Returns = "A list containing the metadata for all webhooks available."
+                    }
+                })
+                    .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+                    {
+                        Documentation = new DocumentationModel("The cancellation token.")
+                    })
+                    .ParentModelAs<InterfaceModel>();
+    }
+}
+
+// *** TransformController
+
+public void TransformController(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ControllerType sourceModel = sourceElement as ControllerType;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    // Ignore?
+
+    if (sourceModel.Visibility == ControllerTypeVisibility.ClientSide)
+    {
+        return;
+    }
+
+    InterfaceModel interfaceModel = targetModel.Namespace
+        .AddInterface(new InterfaceModel("I{0}Controller".Format(sourceModel.Name))
+        {
+            Modifiers = InterfaceModifiers.Public | InterfaceModifiers.Partial,
+            Documentation = new DocumentationModel(sourceModel.Summary)
+        });
+
+    foreach (ControllerTypeAction action in sourceModel.ChildActions.OrderBy(n => n.Name2))
+    {
+        this.TransformControllerAction(action, interfaceModel);
+    }
+}
+
+// *** TransformControllerAction
+
+public void TransformControllerAction(ControllerTypeAction action, InterfaceModel interfaceModel)
+{
+    if (action.Visibility == ControllerTypeActionVisibility.ClientSide)
+    {
+        return;
+    }
+
+    IList<string> versions = action.GetApiVersionsInUse();
+
+    bool onlyNew = versions.All(i => this.ApiVersionIsNew(action.ServiceModel, i));
+    bool onlyLegacy = versions.All(i => this.ApiVersionIsLegacy(action.ServiceModel, i));
+    bool generateLegacy = !onlyLegacy && !onlyNew;
+
+    // Normal method
+
+    MethodModel method = interfaceModel
+        .AddMethod(
+            new MethodModel("{0}Async".Format(action.Name2), "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Documentation = new DocumentationModel(action.Summary)
+                {
+                    Remarks = action.Remarks,
+                    Returns = action.Returns
+                }
+            });
+
+    if (!action.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in action.ParentController.ChildParameters)
+        {
+            this.TransformControllerTypeParameter(parameter, method);
+        }
+    }
+
+    foreach (ControllerTypeActionParameter parameter in action.ChildParameters)
+    {
+        this.TransformControllerTypeActionParameter(parameter, method);
+    }
+
+    if (action.ODataEnabled)
+    {
+        string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+        method
+            .WithParameter(
+                new MethodParameterModel("queryOptions", $"Microsoft.AspNetCore.OData.Query.ODataQueryOptions<{modelsTypeSingle}>")
+                {
+                    Documentation = new DocumentationModel("The OData query options.")
+                });
+    }
+
+    method
+        .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+        {
+            Documentation = new DocumentationModel("The cancellation token.")
+        });
+
+    // API Error Response Compatibility
+
+    if (generateLegacy)
+    {
+        MethodModel errorResponseCompatMethod = interfaceModel
+            .AddMethod(new MethodModel("{0}LegacyAsync".Format(action.Name2), "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>")
+            {
+                Documentation = new DocumentationModel(action.Summary)
+                {
+                    Remarks = action.Remarks,
+                    Returns = action.Returns
+                }
+            });
+
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter parameter in action.ParentController.ChildParameters)
+            {
+                this.TransformControllerTypeParameter(parameter, errorResponseCompatMethod);
+            }
+        }
+
+        foreach (ControllerTypeActionParameter parameter in action.ChildParameters)
+        {
+            this.TransformControllerTypeActionParameter(parameter, errorResponseCompatMethod);
+        }
+
+        if (action.ODataEnabled)
+        {
+            string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+            errorResponseCompatMethod
+                .WithParameter(
+                    new MethodParameterModel("queryOptions", $"Microsoft.AspNetCore.OData.Query.ODataQueryOptions<{modelsTypeSingle}>")
+                    {
+                        Documentation = new DocumentationModel("The OData query options.")
+                    });
+        }
+
+        errorResponseCompatMethod
+            .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken", "default")
+            {
+                Documentation = new DocumentationModel("The cancellation token.")
+            });
+    }
+}
+
+// *** TransformControllerTypeParameter
+
+public void TransformControllerTypeParameter(ControllerTypeParameter parameter, MethodModel methodModel)
+{
+    methodModel
+        .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true))
+        {
+            Documentation = new DocumentationModel(parameter.Summary)
+        });
+}
+
+// *** TransformControllerTypeActionParameter
+
+public void TransformControllerTypeActionParameter(ControllerTypeActionParameter parameter, MethodModel methodModel)
+{
+    methodModel
+        .AddParameter(new MethodParameterModel(parameter.Name.Transform().ToCamelCase(), parameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true))
+        {
+            DefaultValue = NormalizeControllerActionParameterDefaultValue(parameter, "Server.RestApi.Models"),
+            Documentation = new DocumentationModel(parameter.Summary)
+        });
+}
+
+// *** ApiVersionIsLegacy
+
+private bool ApiVersionIsLegacy(ServiceModel serviceModel, string version)
+{
+    if (version.EqualsNoCase(serviceModel.Version))
+    {
+        return false;
+    }
+
+    ApiVersion apiVersion = serviceModel.ApiVersions.FirstOrDefault(i => version.EqualsNoCase(i.Version));
+
+    return apiVersion != null && apiVersion.ErrorResponse == ErrorResponseKind.RestServiceError;
+}
+
+// *** ApiVersionIsNew
+
+private bool ApiVersionIsNew(ServiceModel serviceModel, string version)
+{
+    if (version.EqualsNoCase(serviceModel.Version))
+    {
+        return true;
+    }
+
+    ApiVersion apiVersion = serviceModel.ApiVersions.FirstOrDefault(i => version.EqualsNoCase(i.Version));
+
+    return apiVersion != null && apiVersion.ErrorResponse == ErrorResponseKind.RestProblemDetails;
+}
+
+#>

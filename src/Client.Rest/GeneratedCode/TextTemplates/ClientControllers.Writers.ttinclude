@@ -1,0 +1,1307 @@
+﻿<#+
+
+// *** WriteBaseClassConstructor
+
+public void WriteBaseClassConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(client, nameof(client));
+
+        this.client = client;
+
+        this.Initialize();
+<#+
+
+}
+
+// *** WriteActionCancellation
+
+public void WriteActionCancellation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel parentMethod = model.ParentModelAs<MethodModel>();
+    ControllerTypeAction controllerTypeAction = parentMethod.GetFacet<ControllerTypeAction>("Action");
+    ServiceModel serviceModel = controllerTypeAction.ServiceModel;
+
+    bool generateWithRestApi = true;
+
+    if (controllerTypeAction.ParentController.Visibility == ControllerTypeVisibility.ClientSide && !controllerTypeAction.ParentController.GenerateClientSideImplementation)
+    {
+        generateWithRestApi = false;
+    }
+    else if (controllerTypeAction.Visibility == ControllerTypeActionVisibility.ClientSide && !controllerTypeAction.GenerateClientSideImplementation)
+    {
+        generateWithRestApi = false;
+    }
+
+    if (generateWithRestApi)
+    {
+        this.WriteActionCancellationWithRestApi(modelWriter, parentMethod, controllerTypeAction, serviceModel);
+    }
+    else
+    {
+        this.WriteActionCancellationWithoutRestApi(modelWriter, parentMethod, controllerTypeAction, serviceModel);
+    }
+}
+
+// *** WriteActionCancellationWithRestApi
+
+public void WriteActionCancellationWithRestApi(ModelWriter modelWriter, MethodModel methodModel, ControllerTypeAction controllerTypeAction, ServiceModel serviceModel)
+{
+    string parameters = string.Join(
+        ", ", 
+        methodModel.Parameters
+            .Where(p => p.Type != "System.Threading.CancellationToken")
+            .Select(p => p.Name));
+
+#>
+        // Begin Validation
+
+<#+
+    
+    this.WriteActionCancellationValidation(controllerTypeAction);
+
+#>
+
+        this.Validate<#= controllerTypeAction.Name2 #>(<#= parameters #>);
+
+        // End Validation
+
+        // Route
+
+<#+
+    
+    this.WriteActionCancellationRoute(controllerTypeAction);
+
+#>
+        // Headers
+
+<#+
+    
+    this.WriteActionCancellationHeaders(controllerTypeAction);
+
+#>
+        // Result
+
+<#+
+    
+    this.WriteActionCancellationResult(controllerTypeAction);
+}
+
+// *** WriteActionCancellationWithoutRestApi
+
+public void WriteActionCancellationWithoutRestApi(ModelWriter modelWriter, MethodModel methodModel, ControllerTypeAction controllerTypeAction, ServiceModel serviceModel)
+{
+    string parameters = string.Join(
+        ", ", 
+        methodModel.Parameters
+            .Where(p => p.Type != "System.Threading.CancellationToken")
+            .Select(p => p.Name));
+
+#>
+        // Begin Validation
+
+<#+
+    
+    this.WriteActionCancellationValidation(controllerTypeAction);
+
+#>
+
+        this.Validate<#= controllerTypeAction.Name2 #>(<#= parameters #>);
+
+        // End Validation
+
+        // Execute
+
+        return this.<#= controllerTypeAction.Name2 #>CoreAsync(<#= parameters #>);
+<#+
+    
+}
+
+// *** WriteActionCancellationRoute
+
+public void WriteActionCancellationRoute(ControllerTypeAction sourceModel)
+{
+    if (sourceModel.ParentController.ChildParameters.Count == 0 && sourceModel.ChildParameters.Where(i => i.IncludeClientSide).Count() == 0)
+    {
+
+#>
+        System.Collections.Generic.Dictionary<string, object?> routeParameters = new System.Collections.Generic.Dictionary<string, object?>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            ["version"] = this.client.DefaultApiVersion
+        };
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.<#= sourceModel.ParentController.Name #>.<#= sourceModel.Name2 #>,
+            routeParameters);
+
+        this.Configure<#= sourceModel.Name2 #>Route(routeParameters);
+
+<#+
+
+    }
+    else
+    {
+        List<string> parameters = new List<string>();
+
+        if (!sourceModel.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter parameter in sourceModel.ParentController.ChildParameters)
+            {
+                ControllerTypeScalarParameter scalarParameter = parameter as ControllerTypeScalarParameter;
+                if (scalarParameter != null)
+                {
+                    string parameterName = scalarParameter.Name.Transform().ToCamelCase();
+                    parameters.Add("[\"{0}\"] = {0}".Format(parameterName));
+                }
+
+                ControllerTypeEnumParameter enumParameter = parameter as ControllerTypeEnumParameter;
+                if (enumParameter != null)
+                {
+                    string parameterName = enumParameter.Name.Transform().ToCamelCase();
+                    parameters.Add("[\"{0}\"] = {0}".Format(parameterName));
+                }
+            }
+        }
+
+        foreach (ControllerTypeActionParameter parameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide))
+        {
+            ControllerTypeActionScalarParameter scalarParameter = parameter as ControllerTypeActionScalarParameter;
+            if (scalarParameter != null && scalarParameter.Cardinality == Cardinality.Single)
+            {
+                string bindingName = scalarParameter.Extensions().BindingName;
+                string parameterName = scalarParameter.Name.Transform().ToCamelCase();
+                parameters.Add($"[\"{bindingName}\"] = {parameterName}");
+            }
+
+            ControllerTypeActionEnumParameter enumParameter = parameter as ControllerTypeActionEnumParameter;
+            if (enumParameter != null && enumParameter.Cardinality == Cardinality.Single)
+            {
+                string bindingName = enumParameter.Extensions().BindingName;
+                string parameterName = enumParameter.Name.Transform().ToCamelCase();
+                parameters.Add($"[\"{bindingName}\"] = {parameterName}");
+            }
+        }
+
+        if (parameters.Count == 0)
+        {
+
+#>
+        System.Collections.Generic.Dictionary<string, object?> routeParameters = new System.Collections.Generic.Dictionary<string, object?>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            ["version"] = this.client.DefaultApiVersion
+        };
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.<#= sourceModel.ParentController.Name #>.<#= sourceModel.Name2 #>,
+            routeParameters);
+
+        this.Configure<#= sourceModel.Name2 #>Route(routeParameters);
+
+<#+
+
+        }
+        else
+        {
+            string routeName = sourceModel.Name2;
+
+            bool withQueryString = false;
+
+            if (sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionScalarParameter>().Any(p => p.Binding == BindingKind.FromQuery))
+            {
+                withQueryString = true;
+            }
+
+            if (sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionEnumParameter>().Any(p => p.Binding == BindingKind.FromQuery))
+            {
+                withQueryString = true;
+            }
+
+            if (withQueryString)
+            {
+                routeName = "WithQueryString." + routeName;
+            }
+
+#>
+        System.Collections.Generic.Dictionary<string, object?> routeParameters = new System.Collections.Generic.Dictionary<string, object?>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            ["version"] = this.client.DefaultApiVersion,
+<#+
+
+            foreach (string parameter in parameters)
+            {
+
+#>
+            <#= parameter #>,
+<#+
+
+            }
+
+#>
+        };
+
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.<#= sourceModel.ParentController.Name #>.<#= routeName #>,
+            routeParameters);
+
+        this.Configure<#= sourceModel.Name2 #>Route(routeParameters);
+
+<#+
+
+        }
+    }
+}
+
+// *** WriteActionCancellationHeaders
+
+public void WriteActionCancellationHeaders(ControllerTypeAction sourceModel)
+{
+
+#>
+        System.Collections.Generic.Dictionary<string, string?> headers = new System.Collections.Generic.Dictionary<string, string?>(System.StringComparer.OrdinalIgnoreCase)
+        {
+<#+
+
+    foreach (ControllerTypeActionScalarParameter headerParameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide)
+        .OfType<ControllerTypeActionScalarParameter>()
+        .Where(i => i.Binding == BindingKind.FromHeader && i.Cardinality == Cardinality.Single))
+    {
+        string headerName = headerParameter.Extensions().BindingName;
+        string parameterName = headerParameter.Name.Transform().ToCamelCase();
+
+#>
+            ["<#= headerName #>"] = <#= parameterName #>,
+<#+
+
+    }
+
+    foreach (ControllerTypeActionEnumParameter headerParameter in sourceModel.ChildParameters.Where(i => i.IncludeClientSide)
+        .OfType<ControllerTypeActionEnumParameter>()
+        .Where(i => i.Binding == BindingKind.FromHeader && i.Cardinality == Cardinality.Single))
+    {
+        string headerName = headerParameter.Extensions().BindingName;
+        string parameterName = headerParameter.Name.Transform().ToCamelCase();
+
+#>
+            ["<#= headerName #>"] = <#= parameterName #>,
+<#+
+
+    }
+
+#>
+        };
+
+        this.Configure<#= sourceModel.Name2 #>Headers(headers);
+
+<#+
+
+}
+
+// *** WriteActionCancellationResult
+
+public void WriteActionCancellationResult(ControllerTypeAction sourceModel)
+{
+    switch (sourceModel.HttpMethod)
+    {
+        case ControllerTypeActionHttpMethodKind.Post:
+            this.WriteActionCancellationResultPost(sourceModel);
+            break;
+        case ControllerTypeActionHttpMethodKind.Get:
+            this.WriteActionCancellationResultGet(sourceModel);
+            break;
+        case ControllerTypeActionHttpMethodKind.Delete:
+            this.WriteActionCancellationResultDelete(sourceModel);
+            break;
+        case ControllerTypeActionHttpMethodKind.Put:
+            this.WriteActionCancellationResultPut(sourceModel);
+            break;
+        default:
+            this.WriteActionCancellationResultUnsupported(sourceModel);
+            break;
+    }
+}
+
+// *** WriteActionCancellationResultPost
+
+public void WriteActionCancellationResultPost(ControllerTypeAction sourceModel)
+{
+    string returnValueType = sourceModel.Extensions().AsCSharpType("Client.Rest.Models", true);
+
+    ControllerTypeActionModelParameter modelParameter = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionModelParameter>().FirstOrDefault();
+    ControllerTypeActionJsonParameter jsonParameter = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionJsonParameter>().FirstOrDefault();
+    ControllerTypeActionScalarParameter scalarNotSingle = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionScalarParameter>().FirstOrDefault(p => p.Cardinality != Cardinality.Single);
+    ControllerTypeActionEnumParameter enumNotSingle = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionEnumParameter>().FirstOrDefault(p => p.Cardinality != Cardinality.Single);
+
+    if (string.IsNullOrEmpty(returnValueType))
+    {
+        if (modelParameter != null)
+        {
+            string parameterName = modelParameter.Name.Transform().ToCamelCase();
+            string parameterType = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !modelParameter.IsNullable,
+                false,
+                "Post (no result, model parameter)");
+        }
+        else if (jsonParameter != null)
+        {
+            string parameterName = jsonParameter.Name.Transform().ToCamelCase();
+            string parameterType = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !jsonParameter.IsNullable,
+                true,
+                "Post (no result, JSON parameter)");
+        }
+        else if (scalarNotSingle != null)
+        {
+            string parameterName = scalarNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !scalarNotSingle.IsNullable,
+                false,
+                "Post (no result, scalar parameter)");
+        }
+        else if (enumNotSingle != null)
+        {
+            string parameterName = enumNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !enumNotSingle.IsNullable,
+                false,
+                "Post (no result, enumeration parameter)");
+        }
+        else
+        {
+
+#>
+        // Post (no result, no parameter)
+
+        return this.client.PipelineInvoker.InvokePostWithHeadersAsync(
+            requestUri, 
+            headers,
+            <#= sourceModel.SuccessStatusCode.AsCSharpType() #>, 
+            cancellationToken);
+<#+
+
+        }
+    }
+    else
+    {
+        if (modelParameter != null)
+        {
+            string parameterName = modelParameter.Name.Transform().ToCamelCase();
+            string parameterType = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !modelParameter.IsNullable,
+                false,
+                "Post (result, model parameter)");
+        }
+        else if (jsonParameter != null)
+        {
+            string parameterName = jsonParameter.Name.Transform().ToCamelCase();
+            string parameterType = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !jsonParameter.IsNullable,
+                true,
+                "Post (result, model parameter)");
+        }
+        else if (scalarNotSingle != null)
+        {
+            string parameterName = scalarNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !scalarNotSingle.IsNullable,
+                false,
+                "Post (result, scalar parameter)");
+        }
+        else if (enumNotSingle != null)
+        {
+            string parameterName = enumNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePostWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !enumNotSingle.IsNullable,
+                false,
+                "Post (result, enumeration parameter)");
+        }
+        else
+        {
+
+#>
+        // Post (result, no parameter)
+
+        return this.client.PipelineInvoker.InvokePostWithHeadersAsync<<#= returnValueType #>>(
+            requestUri, 
+            headers,
+            <#= sourceModel.SuccessStatusCode.AsCSharpType() #>, 
+            cancellationToken);
+<#+
+
+        }
+    }
+}
+
+// *** WriteActionCancellationResultGet
+
+public void WriteActionCancellationResultGet(ControllerTypeAction sourceModel)
+{
+    string returnValueType = sourceModel.Extensions().AsCSharpType("Client.Rest.Models", true);
+
+    if (sourceModel.ODataEnabled)
+    {
+        returnValueType = sourceModel.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+        returnValueType = $"Primavera.Hydrogen.Rest.ODataResult<{returnValueType}>";
+    }
+
+    if (string.IsNullOrEmpty(returnValueType))
+    {
+
+#>
+        return this.client.PipelineInvoker.InvokeGetWithHeadersAsync(
+            requestUri,
+            headers,
+            <#= sourceModel.SuccessStatusCode.AsCSharpType() #>,
+            cancellationToken);
+<#+
+
+    }
+    else
+    {
+        if (sourceModel.ODataEnabled)
+        {
+
+#>
+        string? queryString = queryOptions?.ToString();
+        if (!string.IsNullOrWhiteSpace(queryString))
+        {
+            System.UriBuilder builder = new UriBuilder(requestUri);
+            builder.Query = queryString;
+            requestUri = builder.Uri;
+        }
+
+<#+
+
+        }
+
+#>
+        return this.client.PipelineInvoker.InvokeGetWithHeadersAsync<<#= returnValueType #>>(
+            requestUri,
+            headers,
+            <#= sourceModel.SuccessStatusCode.AsCSharpType() #>,
+            cancellationToken);
+<#+
+
+    }
+}
+
+// *** WriteActionCancellationResultDelete
+
+public void WriteActionCancellationResultDelete(ControllerTypeAction sourceModel)
+{
+
+    ControllerTypeActionModelParameter modelParameter = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionModelParameter>().FirstOrDefault();
+    ControllerTypeActionJsonParameter jsonParameter = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionJsonParameter>().FirstOrDefault();
+    ControllerTypeActionScalarParameter scalarNotSingle = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionScalarParameter>().FirstOrDefault(p => p.Cardinality != Cardinality.Single);
+    ControllerTypeActionEnumParameter enumNotSingle = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionEnumParameter>().FirstOrDefault(p => p.Cardinality != Cardinality.Single);
+
+    if (modelParameter != null)
+    {
+        string parameterName = modelParameter.Name.Transform().ToCamelCase();
+        string parameterType = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+        string parameterTypeNotNullable = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+        this.WriteDeleteWithoutResult(
+            parameterName,
+            parameterType,
+            parameterTypeNotNullable,
+            sourceModel.SuccessStatusCode.AsCSharpType(),
+            !modelParameter.IsNullable,
+            false,
+            "Delete (model parameter)");
+    }
+    else if (jsonParameter != null)
+    {
+        string parameterName = jsonParameter.Name.Transform().ToCamelCase();
+        string parameterType = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+        string parameterTypeNotNullable = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+        this.WriteDeleteWithoutResult(
+            parameterName,
+            parameterType,
+            parameterTypeNotNullable,
+            sourceModel.SuccessStatusCode.AsCSharpType(),
+            !jsonParameter.IsNullable,
+            true,
+            "Delete (JSON parameter)");
+    }
+    else if (scalarNotSingle != null)
+    {
+        string parameterName = scalarNotSingle.Name.Transform().ToCamelCase();
+        string parameterType = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+        string parameterTypeNotNullable = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+        this.WriteDeleteWithoutResult(
+            parameterName,
+            parameterType,
+            parameterTypeNotNullable,
+            sourceModel.SuccessStatusCode.AsCSharpType(),
+            !scalarNotSingle.IsNullable,
+            false,
+            "Delete (scalar parameter)");
+    }
+    else if (enumNotSingle != null)
+    {
+        string parameterName = enumNotSingle.Name.Transform().ToCamelCase();
+        string parameterType = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+        string parameterTypeNotNullable = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+        this.WriteDeleteWithoutResult(
+            parameterName,
+            parameterType,
+            parameterTypeNotNullable,
+            sourceModel.SuccessStatusCode.AsCSharpType(),
+            !enumNotSingle.IsNullable,
+            false,
+            "Delete (enumeration parameter)");
+    }
+    else
+    {
+
+#>
+        return this.client.PipelineInvoker.InvokeDeleteWithHeadersAsync(
+            requestUri, 
+            headers,
+            <#= sourceModel.SuccessStatusCode.AsCSharpType() #>, 
+            cancellationToken);
+<#+
+
+    }
+}
+
+// *** WriteActionCancellationResultPut
+
+public void WriteActionCancellationResultPut(ControllerTypeAction sourceModel)
+{
+    string returnValueType = sourceModel.Extensions().AsCSharpType("Client.Rest.Models", true);
+
+    ControllerTypeActionModelParameter modelParameter = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionModelParameter>().FirstOrDefault();
+    ControllerTypeActionJsonParameter jsonParameter = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionJsonParameter>().FirstOrDefault();
+    ControllerTypeActionScalarParameter scalarNotSingle = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionScalarParameter>().FirstOrDefault(p => p.Cardinality != Cardinality.Single);
+    ControllerTypeActionEnumParameter enumNotSingle = sourceModel.ChildParameters.Where(i => i.IncludeClientSide).OfType<ControllerTypeActionEnumParameter>().FirstOrDefault(p => p.Cardinality != Cardinality.Single);
+
+    if (string.IsNullOrEmpty(returnValueType))
+    {
+        if (modelParameter != null)
+        {
+            string parameterName = modelParameter.Name.Transform().ToCamelCase();
+            string parameterType = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !modelParameter.IsNullable,
+                false,
+                "Put (no result, model parameter)");
+        }
+        else if (jsonParameter != null)
+        {
+            string parameterName = jsonParameter.Name.Transform().ToCamelCase();
+            string parameterType = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !jsonParameter.IsNullable,
+                true,
+                "Put (no result, JSON parameter)");
+        }
+        else if (scalarNotSingle != null)
+        {
+            string parameterName = scalarNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !scalarNotSingle.IsNullable,
+                false,
+                "Put (no result, scalar parameter)");
+        }
+        else if (enumNotSingle != null)
+        {
+            string parameterName = enumNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithoutResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !enumNotSingle.IsNullable,
+                false,
+                "Put (no result, enumeration parameter)");
+        }
+        else
+        {
+#>
+        return this.client.PipelineInvoker.InvokePutWithHeadersAsync(
+            requestUri, 
+            headers,
+            <#= sourceModel.SuccessStatusCode.AsCSharpType() #>, 
+            cancellationToken);
+<#+
+
+        }
+    }
+    else
+    {
+        if (modelParameter != null)
+        {
+            string parameterName = modelParameter.Name.Transform().ToCamelCase();
+            string parameterType = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = modelParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !modelParameter.IsNullable,
+                false,
+                "Put (result, model parameter)");
+        }
+        else if (jsonParameter != null)
+        {
+            string parameterName = jsonParameter.Name.Transform().ToCamelCase();
+            string parameterType = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = jsonParameter.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !jsonParameter.IsNullable,
+                true,
+                "Put (result, JSON parameter)");
+        }
+        else if (scalarNotSingle != null)
+        {
+            string parameterName = scalarNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = scalarNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !scalarNotSingle.IsNullable,
+                false,
+                "Put (result, scalar parameter)");
+        }
+        else if (enumNotSingle != null)
+        {
+            string parameterName = enumNotSingle.Name.Transform().ToCamelCase();
+            string parameterType = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            string parameterTypeNotNullable = enumNotSingle.Extensions().AsCSharpType("Client.Rest.Models", false, true, true);
+
+            this.WritePutWithResult(
+                parameterName,
+                parameterType,
+                parameterTypeNotNullable,
+                returnValueType,
+                sourceModel.SuccessStatusCode.AsCSharpType(),
+                !enumNotSingle.IsNullable,
+                false,
+                "Put (result, enumeration parameter)");
+        }
+        else
+        {
+
+#>
+        return this.client.PipelineInvoker.InvokePutWithHeadersAsync<<#= returnValueType #>>(
+            requestUri, 
+            headers,
+            <#= sourceModel.SuccessStatusCode.AsCSharpType() #>, 
+            cancellationToken);
+<#+
+
+        }
+    }
+}
+
+// *** WriteActionCancellationResultUnsupported
+
+public void WriteActionCancellationResultUnsupported(ControllerTypeAction sourceModel)
+{
+
+#>
+        throw new NotSupportedException();
+<#+
+
+}
+
+// *** WriteActionSync
+
+public void WriteActionSync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel parentMethod = model.ParentModelAs<MethodModel>();
+    ControllerTypeAction sourceModel = parentMethod.GetFacet<ControllerTypeAction>("Action");
+
+    string controllerParametersText = string.Empty;
+
+    if (!sourceModel.RouteIgnoreControllerParameters && sourceModel.ParentController.ChildParameters.Count > 0)
+    {
+        controllerParametersText = string.Join(", ", sourceModel.ParentController.ChildParameters.Select(p => p.Name.Transform().ToCamelCase()));
+    }
+
+    string actionParametersText = string.Empty;
+
+    if (sourceModel.ChildParameters.Where(i => i.IncludeClientSide).Count() > 0)
+    {
+        actionParametersText = string.Join(", ", sourceModel.ChildParameters.Where(i => i.IncludeClientSide).Select(p => p.Name.Transform().ToCamelCase()));
+    }
+
+    if (sourceModel.ODataEnabled)
+    {
+        if (string.IsNullOrEmpty(actionParametersText))
+        {
+            actionParametersText = "queryOptions";
+        }
+        else
+        {
+            actionParametersText = string.Join(", ", actionParametersText, "queryOptions");
+        }
+    }
+
+    string parametersText = string.Empty;
+
+    if (!string.IsNullOrEmpty(controllerParametersText) && !string.IsNullOrEmpty(actionParametersText))
+    {
+        parametersText = string.Join(", ", controllerParametersText, actionParametersText);
+    }
+    else if (!string.IsNullOrEmpty(controllerParametersText))
+    {
+        parametersText = controllerParametersText;
+    }
+    else if (!string.IsNullOrEmpty(actionParametersText))
+    {
+        parametersText = actionParametersText;
+    }
+
+#>
+        // Result
+
+        return this.<#= sourceModel.Name2 #>Async(<#= parametersText #>)
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteProbeActionCancellation
+
+public void WriteProbeActionCancellation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Build the URL of the request
+            
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Monitoring.Probe);
+
+        // Result
+            
+        return this.client.PipelineInvoker.InvokeGetAsync<Primavera.Hydrogen.HealthMonitoring.HealthResult>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteDiagnosticsActionCancellation
+
+public void WriteDiagnosticsActionCancellation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Build the URL of the request
+            
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Monitoring.Diagnostics);
+
+        // Result
+            
+        return this.client.PipelineInvoker.InvokeGetAsync<Primavera.Hydrogen.HealthMonitoring.HealthResult>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteEndpointsActionCancellation
+
+public void WriteEndpointsActionCancellation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Build the URL of the request
+            
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Monitoring.Endpoints);
+            
+        // Result
+            
+        return this.client.PipelineInvoker.InvokeGetAsync<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteConfigurationActionCancellation
+
+public void WriteConfigurationActionCancellation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Build the URL of the request
+            
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Monitoring.Configuration);
+
+        // Result
+            
+        return this.client.PipelineInvoker.InvokeGetAsync<Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteInformationActionCancellation
+
+public void WriteInformationActionCancellation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // Build the URL of the request
+            
+        System.Uri requestUri = Primavera.Hydrogen.Rest.Routing.RouteTemplateResolver.Resolve(
+            this.client.ServiceUri,
+            Metadata.Routes.Monitoring.Information);
+
+        // Result
+            
+        return this.client.PipelineInvoker.InvokeGetAsync<Primavera.Hydrogen.Rest.Description.ServiceInfo>(
+            requestUri, 
+            System.Net.HttpStatusCode.OK, 
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteProbeAction
+
+public void WriteProbeAction(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.ProbeAsync()
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteDiagnosticsAction
+
+public void WriteDiagnosticsAction(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.DiagnosticsAsync()
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteEndpointsAction
+
+public void WriteEndpointsAction(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.EndpointsAsync()
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteConfigurationAction
+
+public void WriteConfigurationAction(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.ConfigurationAsync()
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WriteInformationAction
+
+public void WriteInformationAction(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Result
+            
+        return this.InformationAsync()
+            .ConfigureAwait(false)
+            .GetAwaiter()
+            .GetResult();
+<#+
+
+}
+
+// *** WritePostWithResult
+
+public void WritePostWithResult(string parameterName, string parameterType, string parameterTypeNotNullable, string returnValueType, string successStatusCode, bool required, bool nullableValue, string label)
+{
+    if (!required)
+    {
+        string parameterValue = nullableValue ? $"{parameterName}.Value" : parameterName;
+
+#>
+        // <#= label #>
+
+        if (<#= parameterName #> == null)
+        {
+            return this.client.PipelineInvoker.InvokePostWithHeadersAsync<<#= returnValueType #>>(
+                requestUri, 
+                headers,
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+        else
+        {
+            return this.client.PipelineInvoker.InvokePostWithHeadersAsync<<#= parameterTypeNotNullable #>, <#= returnValueType #>>(
+                requestUri, 
+                headers,
+                <#= parameterValue #>, 
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+<#+
+
+    }
+    else
+    {
+
+#>
+        // <#= label #>
+
+        return this.client.PipelineInvoker.InvokePostWithHeadersAsync<<#= parameterType #>, <#= returnValueType #>>(
+            requestUri, 
+            headers,
+            <#= parameterName #>, 
+            <#= successStatusCode #>, 
+            cancellationToken);
+<#+
+
+    }
+}
+
+// *** WritePostWithoutResult
+
+public void WritePostWithoutResult(string parameterName, string parameterType, string parameterTypeNotNullable, string successStatusCode, bool required, bool nullableValue, string label)
+{
+    if (!required)
+    {
+        string parameterValue = nullableValue ? $"{parameterName}.Value" : parameterName;
+
+#>
+        // <#= label #>
+
+        if (<#= parameterName #> == null)
+        {
+            return this.client.PipelineInvoker.InvokePostWithHeadersAsync(
+                requestUri, 
+                headers,
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+        else
+        {
+            return this.client.PipelineInvoker.InvokePostWithHeadersAsync<<#= parameterTypeNotNullable #>>(
+                requestUri, 
+                headers,
+                <#= parameterValue #>, 
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+<#+
+
+    }
+    else
+    {
+
+#>
+        // <#= label #>
+
+        return this.client.PipelineInvoker.InvokePostWithHeadersAsync<<#= parameterType #>>(
+            requestUri, 
+            headers,
+            <#= parameterName #>, 
+            <#= successStatusCode #>, 
+            cancellationToken);
+<#+
+
+    }
+}
+
+// *** WritePutWithResult
+
+public void WritePutWithResult(string parameterName, string parameterType, string parameterTypeNotNullable, string returnValueType, string successStatusCode, bool required, bool nullableValue, string label)
+{
+    if (!required)
+    {
+        string parameterValue = nullableValue ? $"{parameterName}.Value" : parameterName;
+
+#>
+        // <#= label #>
+
+        if (<#= parameterName #> == null)
+        {
+            return this.client.PipelineInvoker.InvokePutWithHeadersAsync<<#= returnValueType #>>(
+                requestUri, 
+                headers,
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+        else
+        {
+            return this.client.PipelineInvoker.InvokePutWithHeadersAsync<<#= parameterTypeNotNullable #>, <#= returnValueType #>>(
+                requestUri, 
+                headers,
+                <#= parameterValue #>, 
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+<#+
+
+    }
+    else
+    {
+
+#>
+        // <#= label #>
+
+        return this.client.PipelineInvoker.InvokePutWithHeadersAsync<<#= parameterType #>, <#= returnValueType #>>(
+            requestUri, 
+            headers,
+            <#= parameterName #>, 
+            <#= successStatusCode #>, 
+            cancellationToken);
+<#+
+
+    }
+}
+
+// *** WritePutWithoutResult
+
+public void WritePutWithoutResult(string parameterName, string parameterType, string parameterTypeNotNullable, string successStatusCode, bool required, bool nullableValue, string label)
+{
+    if (!required)
+    {
+        string parameterValue = nullableValue ? $"{parameterName}.Value" : parameterName;
+
+#>
+        // <#= label #>
+
+        if (<#= parameterName #> == null)
+        {
+            return this.client.PipelineInvoker.InvokePutWithHeadersAsync(
+                requestUri, 
+                headers,
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+        else
+        {
+            return this.client.PipelineInvoker.InvokePutWithHeadersAsync<<#= parameterTypeNotNullable #>>(
+                requestUri, 
+                headers,
+                <#= parameterValue #>, 
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+<#+
+
+    }
+    else
+    {
+
+#>
+        // <#= label #>
+
+        return this.client.PipelineInvoker.InvokePutWithHeadersAsync<<#= parameterType #>>(
+            requestUri, 
+            headers,
+            <#= parameterName #>, 
+            <#= successStatusCode #>, 
+            cancellationToken);
+<#+
+
+    }
+}
+
+
+// *** WriteDeleteWithoutResult
+
+public void WriteDeleteWithoutResult(string parameterName, string parameterType, string parameterTypeNotNullable, string successStatusCode, bool required, bool nullableValue, string label)
+{
+    if (!required)
+    {
+        string parameterValue = nullableValue ? $"{parameterName}.Value" : parameterName;
+
+#>
+        // <#= label #>
+
+        if (<#= parameterName #> == null)
+        {
+            return this.client.PipelineInvoker.InvokeDeleteWithHeadersAsync(
+                requestUri, 
+                headers,
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+        else
+        {
+            return this.client.PipelineInvoker.InvokeDeleteWithHeadersAsync<<#= parameterTypeNotNullable #>>(
+                requestUri, 
+                headers,
+                <#= parameterValue #>, 
+                <#= successStatusCode #>, 
+                cancellationToken);
+        }
+<#+
+
+    }
+    else
+    {
+
+#>
+        // <#= label #>
+
+        return this.client.PipelineInvoker.InvokeDeleteWithHeadersAsync<<#= parameterType #>>(
+            requestUri, 
+            headers,
+            <#= parameterName #>, 
+            <#= successStatusCode #>, 
+            cancellationToken);
+<#+
+
+    }
+}
+
+#>

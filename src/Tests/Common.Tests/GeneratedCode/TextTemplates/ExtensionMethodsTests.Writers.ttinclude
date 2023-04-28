@@ -1,0 +1,559 @@
+﻿<#+
+
+// *** WriteGetIdPrincipalNull
+
+public void WriteGetIdPrincipalNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = null;
+        principal.GetId().Should().BeNull();
+<#+
+
+}
+
+// *** WriteGetIdSubject
+
+public void WriteGetIdSubject(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsIdentity identity = new System.Security.Claims.ClaimsIdentity(new System.Security.Claims.Claim[] { new System.Security.Claims.Claim(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Subject, "subject") });
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal(identity);
+        principal.GetId().Should().Be("subject");
+<#+
+
+}
+
+// *** WriteGetIdNameIdentifier
+
+public void WriteGetIdNameIdentifier(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsIdentity identity = new System.Security.Claims.ClaimsIdentity(new System.Security.Claims.Claim[] { new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "identifier") });
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal(identity);
+        principal.GetId().Should().Be("identifier");
+<#+
+
+}
+
+// *** WriteGetIdNotFound
+
+public void WriteGetIdNotFound(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal();
+        principal.GetId().Should().BeNull();
+<#+
+
+}
+
+// *** WriteGetEmailPrincipalNull
+
+public void WriteGetEmailPrincipalNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = null;
+        principal.GetEmail().Should().BeNull();
+<#+
+
+}
+
+// *** WriteGetEmailEmail1
+
+public void WriteGetEmailEmail1(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsIdentity identity = new System.Security.Claims.ClaimsIdentity(new System.Security.Claims.Claim[] { new System.Security.Claims.Claim(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Email, "email") });
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal(identity);
+        principal.GetEmail().Should().Be("email");
+<#+
+
+}
+
+// *** WriteGetEmailEmail2
+
+public void WriteGetEmailEmail2(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsIdentity identity = new System.Security.Claims.ClaimsIdentity(new System.Security.Claims.Claim[] { new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, "email") });
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal(identity);
+        principal.GetEmail().Should().Be("email");
+<#+
+
+}
+
+// *** WriteGetEmailNotFound
+
+public void WriteGetEmailNotFound(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal();
+        principal.GetEmail().Should().BeNull();
+<#+
+
+}
+
+// *** WriteGetClientIdPrincipalNull
+
+public void WriteGetClientIdPrincipalNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = null;
+        principal.GetClientId().Should().BeNull();
+<#+
+
+}
+
+// *** WriteGetClientIdClientId
+
+public void WriteGetClientIdClientId(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsIdentity identity = new System.Security.Claims.ClaimsIdentity(new System.Security.Claims.Claim[] { new System.Security.Claims.Claim(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.ClientId, "clientId") });
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal(identity);
+        principal.GetClientId().Should().Be("clientId");
+<#+
+
+}
+
+// *** WriteGetClientIdNotFound
+
+public void WriteGetClientIdNotFound(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal();
+        principal.GetClientId().Should().BeNull();
+<#+
+
+}
+
+// *** WriteGetDisplayNamePrincipalNull
+
+public void WriteGetDisplayNamePrincipalNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = null;
+        principal.GetDisplayName().Should().BeNull();
+<#+
+
+}
+
+// *** WriteGetDisplayNameDisplayName
+
+public void WriteGetDisplayNameDisplayName(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsIdentity identity = new System.Security.Claims.ClaimsIdentity(new System.Security.Claims.Claim[] { new System.Security.Claims.Claim(Primavera.Hydrogen.IdentityModel.JwtCustomClaimTypes.DisplayName, "display") });
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal(identity);
+        principal.GetDisplayName().Should().Be("display");
+<#+
+
+}
+
+// *** WriteGetDisplayNameEmail
+
+public void WriteGetDisplayNameEmail(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsIdentity identity = new System.Security.Claims.ClaimsIdentity(new System.Security.Claims.Claim[] { new System.Security.Claims.Claim(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Email, "email") });
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal(identity);
+        principal.GetDisplayName().Should().Be("email");
+<#+
+
+}
+
+// *** WriteGetDisplayNameNotFound
+
+public void WriteGetDisplayNameNotFound(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Security.Claims.ClaimsPrincipal principal = new System.Security.Claims.ClaimsPrincipal();
+        principal.GetDisplayName().Should().BeNull();
+<#+
+
+}
+
+// *** WritePathIsApiRequestNull
+
+public void WritePathIsApiRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        request.PathIsApi().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsApiTrue
+
+public void WritePathIsApiTrue(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: api
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/api/path");
+        httpContext.Request.PathIsApi().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsApiFalse
+
+public void WritePathIsApiFalse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/path");
+        httpContext.Request.PathIsApi().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsMonitoringRequestNull
+
+public void WritePathIsMonitoringRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        request.PathIsMonitoring().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsMonitoringMonitoring
+
+public void WritePathIsMonitoringMonitoring(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/.monitoring/probe");
+        httpContext.Request.PathIsMonitoring().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsMonitoringAdminFunctions
+
+public void WritePathIsMonitoringAdminFunctions(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: admin
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/admin/functions");
+        httpContext.Request.PathIsMonitoring().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsMonitoringFalse
+
+public void WritePathIsMonitoringFalse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/path");
+        httpContext.Request.PathIsMonitoring().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsDocumentationRequestNull
+
+public void WritePathIsDocumentationRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        request.PathIsDocumentation().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsDocumentationTrue
+
+public void WritePathIsDocumentationTrue(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/.doc/path");
+        httpContext.Request.PathIsDocumentation().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsDocumentationFalse
+
+public void WritePathIsDocumentationFalse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/path");
+        httpContext.Request.PathIsDocumentation().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsRestApiDocumentationRequestNull
+
+public void WritePathIsRestApiDocumentationRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        request.PathIsRestApiDocumentation().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsRestApiDocumentationTrue
+
+public void WritePathIsRestApiDocumentationTrue(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString(Common.Constants.Documentation.RestApiBaseRoute);
+        httpContext.Request.PathIsRestApiDocumentation().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsRestApiDocumentationFalse
+
+public void WritePathIsRestApiDocumentationFalse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString(Common.Constants.Controllers.ClientLibDocumentation.Routes.Documentation);
+        httpContext.Request.PathIsRestApiDocumentation().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsRestApiDocumentationCustomizationRequestNull
+
+public void WritePathIsRestApiDocumentationCustomizationRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        request.PathIsRestApiDocumentationCustomization().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsRestApiDocumentationCustomizationTrue
+
+public void WritePathIsRestApiDocumentationCustomizationTrue(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/" + Common.Constants.Documentation.RestApiStyleSheetPath);
+        httpContext.Request.PathIsRestApiDocumentationCustomization().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsRestApiDocumentationCustomizationFalse
+
+public void WritePathIsRestApiDocumentationCustomizationFalse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: clientlib
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/.doc/clientlib");
+        httpContext.Request.PathIsRestApiDocumentationCustomization().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsContentRequestNull
+
+public void WritePathIsContentRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        request.PathIsContent().Should().BeFalse();
+<#+
+
+}
+
+// *** WritePathIsContentCss
+
+public void WritePathIsContentCss(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: css
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/css/x.css");
+        httpContext.Request.PathIsContent().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsContentFonts
+
+public void WritePathIsContentFonts(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/fonts/font.ttf");
+        httpContext.Request.PathIsContent().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsContentLib
+
+public void WritePathIsContentLib(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/lib/lib.js");
+        httpContext.Request.PathIsContent().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsContentImg
+
+public void WritePathIsContentImg(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: img
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/img/image.jpg");
+        httpContext.Request.PathIsContent().Should().BeTrue();
+<#+
+
+}
+
+// *** WritePathIsContentFalse
+
+public void WritePathIsContentFalse(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Path = new Microsoft.AspNetCore.Http.PathString("/path");
+        httpContext.Request.PathIsContent().Should().BeFalse();
+<#+
+
+}
+
+// *** WriteGetBaseUriRequestNull
+
+public void WriteGetBaseUriRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        Action action = () => request.GetBaseUri();
+        action.Should().ThrowIfNull();
+<#+
+
+}
+
+// *** WriteGetBaseUri
+
+public void WriteGetBaseUri(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: https
+        // Ignore Spelling: localhost
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Scheme = "https";
+        httpContext.Request.Host = new Microsoft.AspNetCore.Http.HostString("localhost", 1001);
+        httpContext.Request.GetBaseUri().AbsoluteUri.Should().Be("https://localhost:1001/");
+<#+
+
+}
+
+// *** WriteGetRestProblemDetailsTypeRequestNull
+
+public void WriteGetRestProblemDetailsTypeRequestNull(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Http.HttpRequest request = null;
+        Action action = () => request.GetRestProblemDetailsType("Error");
+        action.Should().ThrowIfNull();
+<#+
+
+}
+
+// *** WriteGetRestProblemDetailsTypeErrorCodeNullOrWhiteSpace
+
+public void WriteGetRestProblemDetailsTypeErrorCodeNullOrWhiteSpace(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: https
+        // Ignore Spelling: localhost
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Scheme = "https";
+        httpContext.Request.Host = new Microsoft.AspNetCore.Http.HostString("localhost");
+        Action<string> action = (x) => httpContext.Request.GetRestProblemDetailsType(x);
+        action.Should().ThrowIfNullOrWhiteSpace();
+<#+
+
+}
+
+// *** WriteGetRestProblemDetailsType
+
+public void WriteGetRestProblemDetailsType(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Ignore Spelling: https
+        // Ignore Spelling: localhost
+
+        Microsoft.AspNetCore.Http.HttpContext httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+        httpContext.Request.Scheme = "https";
+        httpContext.Request.Host = new Microsoft.AspNetCore.Http.HostString("localhost");
+        string result = httpContext.Request.GetRestProblemDetailsType("Error");
+        result.Should().Be("https://localhost/.doc/restapi/errors/Error");
+<#+
+
+}
+
+#>

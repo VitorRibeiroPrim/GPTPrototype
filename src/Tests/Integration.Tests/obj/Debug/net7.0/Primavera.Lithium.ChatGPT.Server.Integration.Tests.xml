@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Lithium.ChatGPT.Server.Integration.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1">
+            <summary>
+            Defines the base class for a test fixture used for integration tests.
+            </summary>
+            <typeparam name="TStartup">The startup class.</typeparam>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.CurrentOperation">
+            <summary>
+            Gets or sets the operation being tested.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.Application">
+            <summary>
+            Gets the application test host.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.ConfigureLoggingDelegate">
+            <summary>
+            Gets or sets a delegate used to configure the logging.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.ConfigureServicesDelegate">
+            <summary>
+            Gets or sets a delegate used to configure the application services.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1"/> class.
+            </summary>
+            <param name="startupType">The type of the startup class. Optional (if not specified the default mock startup will be used).</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.GetServiceClientAsync">
+            <summary>
+            Returns an instance of the service client.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.WarmUpApplicationAsync(System.Threading.CancellationToken)">
+            <summary>
+            Warms up the application.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <remarks>
+            This method may be used to start the application and let it finish background services (for example) before executing tests.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.Initialize">
+            <summary>
+            Initializes the fixture.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.ConfigureServiceClientOptions(Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions)">
+            <summary>
+            Allows configuring the service client options.
+            </summary>
+            <param name="clientOptions">The client options.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1.BuildApplication">
+            <summary>
+            Builds the application test host.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.DesignTime.Testing.AspNetCore.WebApplicationTestHost"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixture`1">
+            <summary>
+            Defines a test fixture used for integration tests.
+            </summary>
+            <typeparam name="TStartup">The startup class.</typeparam>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixture`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixture`1"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixture">
+            <summary>
+            Defines a test fixture used for integration tests.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixtureBase`1" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixture.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.IntegrationTestFixture"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartupBase">
+            <summary>
+            Defines the base class for a mock startup class used by the text fixtures.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.Host.Startup" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartupBase.#ctor(Microsoft.Extensions.Hosting.IHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartupBase"/> class.
+            </summary>
+            <param name="env">The current host environment.</param>
+            <param name="configuration">The current configuration.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartupBase.AddConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartupBase.ConfigureMvc(Microsoft.Extensions.DependencyInjection.IMvcBuilder,Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartupBase.ConfigureHostConfiguration(Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartup">
+            <summary>
+            Defines a mock startup class used by the text fixtures.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartupBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartup.#ctor(Microsoft.Extensions.Hosting.IHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.MockStartup"/> class.
+            </summary>
+            <param name="env">The current host environment.</param>
+            <param name="configuration">The current configuration.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase">
+            <summary>
+            Defines the base class for <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase.TestProbeAsync">
+            <summary>
+            Tests the probe endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase.TestDiagnosticsAsync">
+            <summary>
+            Tests the diagnostics endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase.TestEndpointsAsync">
+            <summary>
+            Tests the endpoints endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase.TestConfigurationAsync">
+            <summary>
+            Tests the configuration analyzer endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase.TestInformationAsync">
+            <summary>
+            Tests the information endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests">
+            <summary>
+            Provides integration tests for <see cref="T:Primavera.Lithium.ChatGPT.Server.Host.Controllers.MonitoringController"/>.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTestsBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests.MonitoringController_ProbeAsync">
+            <summary>
+            Tests the probe endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests.MonitoringController_DiagnosticsAsync">
+            <summary>
+            Tests the diagnostics endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests.MonitoringController_EndpointsAsync">
+            <summary>
+            Tests the endpoints endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests.MonitoringController_ConfigurationAsync">
+            <summary>
+            Tests the configuration analyzer endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Integration.Tests.Controllers.MonitoringControllerTests.MonitoringController_InformationAsync">
+            <summary>
+            Tests the information endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+    </members>
+</doc>

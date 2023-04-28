@@ -1,0 +1,680 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Lithium.ChatGPT.Client.Console</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase">
+            <summary>
+            Defines the base class for the type that implements the application.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Hosting.ConsoleApplication" />
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.Configuration">
+            <summary>
+            Gets the configuration.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.Client">
+            <summary>
+            Gets the service client.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.#ctor(Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase"/> class.
+            </summary>
+            <param name="options">The application configuration options.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.RunAsync(System.String[],System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetServiceClient">
+            <summary>
+            Creates an instance of the service client.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetServiceClientOptions">
+            <summary>
+            Creates an instance of the service client options.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClientOptions"/> instance.
+            </returns>
+            <remarks>
+            This method is invoked from <see cref="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetServiceClient"/>, before the new instance is created.
+            Override this method to customize the service client options before it is created.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.InitializeServiceClient(Primavera.Lithium.ChatGPT.Client.Rest.ChatGPTClient)">
+            <summary>
+            Initializes the service client instance.
+            </summary>
+            <param name="client">The service client instance.</param>
+            <remarks>
+            This method is invoked from <see cref="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetServiceClient"/>, after the new instance is created.
+            Override this method to customize the service client options after the service client instance is created.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.ResetServiceClient">
+            <summary>
+            Resets the current instance of the service client.
+            </summary>
+            <remarks>
+            Invoke this method to force the service client to be created again.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.PrintCustomMenuOptions">
+            <summary>
+            Prints the custom menu options.
+            </summary>
+            <remarks>
+            This method needs to be overridden to build the application menu.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.HandleCustomMenuOptionsAsync(System.ConsoleKeyInfo)">
+            <summary>
+            Handles the custom menu options.
+            </summary>
+            <param name="key">The key pressed by the user.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the application should continue execution.
+            </returns>
+            <remarks>
+            This method needs to be overridden to handle the custom application menu options.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteHealthResult(Primavera.Hydrogen.HealthMonitoring.HealthResult)">
+            <summary>
+            Writes the specified health result to the console.
+            </summary>
+            <param name="result">The health result.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteHealthResultResults(System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,Primavera.Hydrogen.HealthMonitoring.HealthResultEntry})">
+            <summary>
+            Writes the specified health results to the console.
+            </summary>
+            <param name="spacing">spacing.</param>
+            <param name="results">The health results.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteHealthResultResult(System.String,System.Collections.Generic.KeyValuePair{System.String,Primavera.Hydrogen.HealthMonitoring.HealthResultEntry})">
+            <summary>
+            Writes the specified health result to the console.
+            </summary>
+            <param name="spacing">spacing.</param>
+            <param name="result">The health result.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteEndpoints(System.Collections.Generic.IEnumerable{Primavera.Hydrogen.Rest.Routing.EndpointInfo})">
+            <summary>
+            Writes the specified endpoints to the console.
+            </summary>
+            <param name="endpoints">The endpoints.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteConfigurationLocation(Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation)">
+            <summary>
+            Writes the specified configuration location to the console.
+            </summary>
+            <param name="location">The configuration location.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteServiceInfo(Primavera.Hydrogen.Rest.Description.ServiceInfo)">
+            <summary>
+            Writes the specified service information to the console.
+            </summary>
+            <param name="info">The service information.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteEndpoint(System.String,Primavera.Hydrogen.Rest.Routing.EndpointInfo)">
+            <summary>
+            Writes the specified endpoint to the console.
+            </summary>
+            <param name="spacing">The spacing.</param>
+            <param name="endpoint">The endpoint.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteException(System.Exception)">
+            <summary>
+            Writes the specified exception to the console.
+            </summary>
+            <param name="ex">The exception.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteRestRequestException(Primavera.Hydrogen.Rest.Client.RestRequestException,System.Boolean)">
+            <summary>
+            Writes the specified service exception to the console.
+            </summary>
+            <param name="ex">The exception.</param>
+            <param name="writeTitle">A value indicating whether the title should be written.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteRestRequestExceptionError(System.String,Primavera.Hydrogen.Rest.RestProblemDetails)">
+            <summary>
+            Writes the specified service error to the console.
+            </summary>
+            <param name="spacing">The spacing.</param>
+            <param name="error">The service error.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteRestServiceRequest(Primavera.Hydrogen.Rest.Client.RestServiceRequest,System.Boolean)">
+            <summary>
+            Writes the specified request message to the console.
+            </summary>
+            <param name="request">The request message.</param>
+            <param name="error">A value indicating if the headers are written in the context of an error.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteRestServiceResponse(Primavera.Hydrogen.Rest.Client.RestServiceResponse,System.Boolean)">
+            <summary>
+            Writes the specified response message to the console.
+            </summary>
+            <param name="response">The response message.</param>
+            <param name="error">A value indicating if the response message is written in the context of an error.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteBinaryData(System.BinaryData,System.Boolean)">
+            <summary>
+            Writes the specified binary data to the console.
+            </summary>
+            <param name="data">The binary data.</param>
+            <param name="error">A value indicating if the data is written in the context of an error.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteRestRequestExceptionInner(System.Exception)">
+            <summary>
+            Writes the specified inner exception to the console.
+            </summary>
+            <param name="ex">The exception.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteHeaders(Primavera.Hydrogen.Rest.Client.RestServiceRequestHeaders,System.Boolean)">
+            <summary>
+            Writes the specified headers to the console.
+            </summary>
+            <param name="headers">The headers.</param>
+            <param name="error">A value indicating if the headers are written in the context of an error.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteHeaders(Primavera.Hydrogen.Rest.Client.RestServiceResponseHeaders,System.Boolean)">
+            <summary>
+            Writes the specified headers to the console.
+            </summary>
+            <param name="headers">The headers.</param>
+            <param name="error">A value indicating if the headers are written in the context of an error.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.CheckConfiguration">
+            <summary>
+            Checks the configuration.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.Initialize">
+            <summary>
+            Initializes the application.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.SelectEnvironment">
+            <summary>
+            Selects the active environment.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteAdditionalConfiguration">
+            <summary>
+            Writes the additional configuration.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.WriteConfiguration">
+            <summary>
+            Writes the configuration.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.ShowMonitoringMenuAsync">
+            <summary>
+            Shows the monitoring menu.
+            </summary>
+            <returns>
+            A value indicating whether the user chose to quit the application.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.ProbeAsync">
+            <summary>
+            Executes the probe endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.DiagnosticsAsync">
+            <summary>
+            Executes the diagnosis endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.EndpointsAsync">
+            <summary>
+            Executes the endpoints analyzer endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.ConfigurationAsync">
+            <summary>
+            Executes the configuration analyzer endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.InformationAsync">
+            <summary>
+            Executes the information endpoint.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueString(System.String,System.String)">
+            <summary>
+            Gets a required string value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The string value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueString(System.String,System.Boolean,System.String,System.Boolean)">
+            <summary>
+            Gets a string value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The string value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueBoolean(System.String,System.Nullable{System.Boolean})">
+            <summary>
+            Gets a required boolean value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The boolean value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueBoolean(System.String,System.Boolean,System.Nullable{System.Boolean},System.Boolean)">
+            <summary>
+            Gets a boolean value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The boolean value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueInteger(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Gets a required integer value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The integer value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueInteger(System.String,System.Boolean,System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Gets an integer value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The integer value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueLong(System.String,System.Nullable{System.Int64})">
+            <summary>
+            Gets a required long value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The long value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueLong(System.String,System.Boolean,System.Nullable{System.Int64},System.Boolean)">
+            <summary>
+            Gets a long value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The long value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueDouble(System.String,System.Nullable{System.Double})">
+            <summary>
+            Gets a required double value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The double value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueDouble(System.String,System.Boolean,System.Nullable{System.Double},System.Boolean)">
+            <summary>
+            Gets a double value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The double value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueDecimal(System.String,System.Nullable{System.Decimal})">
+            <summary>
+            Gets a required decimal value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The decimal value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueDecimal(System.String,System.Boolean,System.Nullable{System.Decimal},System.Boolean)">
+            <summary>
+            Gets a decimal value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The decimal value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueUri(System.String,System.Uri)">
+            <summary>
+            Gets a required URI value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The URL value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueUri(System.String,System.Boolean,System.Uri,System.Boolean)">
+            <summary>
+            Gets a URI value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The URL value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueDateTime(System.String,System.Nullable{System.DateTime})">
+            <summary>
+            Gets a required date time value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The date time value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueDateTime(System.String,System.Boolean,System.Nullable{System.DateTime},System.Boolean)">
+            <summary>
+            Gets a date time value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The date time value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueGuid(System.String,System.Nullable{System.Guid})">
+            <summary>
+            Gets a required unique identifier value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The unique identifier value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueGuid(System.String,System.Boolean,System.Nullable{System.Guid},System.Boolean)">
+            <summary>
+            Gets a unique identifier value from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The unique identifier value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueEnum``1(System.String,System.Nullable{``0})">
+            <summary>
+            Gets a required enumeration value from user input.
+            </summary>
+            <typeparam name="TEnum">The type of the enumeration.</typeparam>
+            <param name="name">The value name.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The enumeration value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValueEnum``1(System.String,System.Boolean,System.Nullable{``0},System.Boolean)">
+            <summary>
+            Gets an enumeration value from user input.
+            </summary>
+            <typeparam name="TEnum">The type of the enumeration.</typeparam>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="blankToStop">A value indicating whether a blank value equals stopping.</param>
+            <returns>
+            The enumeration value specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValuesString(System.String,System.Boolean,System.String)">
+            <summary>
+            Gets a list of string values from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The list of string values specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValuesInteger(System.String,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Gets a list of int values from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The list of int values specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValuesUri(System.String,System.Boolean,System.Uri)">
+            <summary>
+            Gets a list of URI values from user input.
+            </summary>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The list of URI values specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetValuesEnum``1(System.String,System.Boolean,System.Nullable{``0})">
+            <summary>
+            Gets a list of enumeration values from user input.
+            </summary>
+            <typeparam name="TEnum">The type of the enumeration.</typeparam>
+            <param name="name">The value name.</param>
+            <param name="required">A value indicating whether the value is required.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>
+            The list of enumeration values specified by the user.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase.GetDictionaryString(System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Gets a dictionary of string values from user input.
+            </summary>
+            <param name="keyName">The key name.</param>
+            <param name="valueName">The value name.</param>
+            <param name="notEmpty">A value indicating whether the result is required to be not empty.</param>
+            <param name="valueRequired">A value indicating whether the value for each dictionary item is required.</param>
+            <returns>
+            The dictionary of string values specified by the user.
+            </returns>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Console.Application">
+            <summary>
+            Defines the type that implements the application.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Console.ApplicationBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Application.#ctor(Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Console.Application"/> class.
+            </summary>
+            <param name="options">The application configuration options.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfigurationBase">
+            <summary>
+            Defines the base class for the configuration used by the application.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfigurationBase.ServiceBaseUri">
+            <summary>
+            Gets or sets the service base URI.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfigurationBase.Environments">
+            <summary>
+            Gets or sets the environments configuration.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfigurationBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfigurationBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfigurationBase.SetDefaultValues">
+            <summary>
+            Sets the default values.
+            </summary>
+            <remarks>
+            This method should be overridden to set the default values of properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfiguration">
+            <summary>
+            Defines the configuration used by the application.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfigurationBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.ApplicationConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfigurationBase">
+            <summary>
+            Defines the base class for the configuration of an environment.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfigurationBase.ServiceBaseUri">
+            <summary>
+            Gets or sets the service base URI.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfigurationBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfigurationBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfigurationBase.SetDefaultValues">
+            <summary>
+            Sets the default values.
+            </summary>
+            <remarks>
+            This method should be overridden to set the default values of properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfiguration">
+            <summary>
+            Defines the configuration of an environment.
+            </summary>
+            <seealso cref="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfigurationBase" />
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Client.Console.Configuration.EnvironmentConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Client.Console.Program">
+            <summary>
+            Defines the starting point of the application.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Program.Main(System.String[])">
+            <summary>
+            Executes the application.
+            </summary>
+            <param name="args">The command line arguments.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Program.ConfigureHostConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String[])">
+            <summary>
+            Set up the configuration for the builder itself.
+            </summary>
+            <param name="builder">The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder"/> instance.</param>
+            <param name="args">The command line arguments.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Program.ConfigureAppConfiguration(Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String[])">
+            <summary>
+            Sets up the configuration for the remainder of the build process and application.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.Extensions.Hosting.HostBuilderContext"/> instance.</param>
+            <param name="builder">The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder"/> instance.</param>
+            <param name="args">The command line arguments.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Program.ConfigureServices(Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String[])">
+            <summary>
+            Adds services to the container.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.Extensions.Hosting.HostBuilderContext"/> instance.</param>
+            <param name="services">The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.</param>
+            <param name="args">The command line arguments.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Client.Console.Program.ConfigureLogging(Microsoft.Extensions.Hosting.HostBuilderContext,Microsoft.Extensions.Logging.ILoggingBuilder,System.String[])">
+            <summary>
+            Adds a delegate for configuring the provided <see cref="T:Microsoft.Extensions.Logging.ILoggingBuilder"/>.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.Extensions.Hosting.HostBuilderContext"/> instance.</param>
+            <param name="builder">The <see cref="T:Microsoft.Extensions.Logging.ILoggingBuilder"/> instance.</param>
+            <param name="args">The command line arguments.</param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,353 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.AspNetCore.Azure</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants">
+            <summary>
+            Defines constants used to configure the Azure Managed Configuration service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.PrimaryAppConfigurationService">
+            <summary>
+            The name of the primary Azure App Configuration service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.PrimaryAppConfigurationServiceFailover">
+            <summary>
+            The name of the primary Azure App Configuration service fail-over.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.SecondaryAppConfigurationService">
+            <summary>
+            The name of the secondary Azure App Configuration service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.SecondaryAppConfigurationServiceFailover">
+            <summary>
+            The name of the secondary Azure App Configuration service fail-over.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.DefaultCacheExpirationInSeconds">
+            <summary>
+            The default cache expiration in seconds.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.AzureAppConfigurationProviderName">
+            <summary>
+            The Azure App Configuration provider name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.EndpointSuffix">
+            <summary>
+            The suffix of the endpoint environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.ConnectionStringSuffix">
+            <summary>
+            The suffix of the connection string environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.KeyFilterSuffix">
+            <summary>
+            The suffix of the key filter environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.LabelFilterSuffix">
+            <summary>
+            The suffix of the label filter environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.TrimPrefixSuffix">
+            <summary>
+            The suffix of the trim prefix environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.RefreshTimeoutSuffix">
+            <summary>
+            The suffix of the refresh timeout environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.SentinelKeySuffix">
+            <summary>
+            The suffix of the sentinel key environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.OptionalSuffix">
+            <summary>
+            The suffix of the optional environment variable name.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.AzureClientId">
+            <summary>
+            The name of the environment variable that contains the client identifier.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder"/>, <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> and
+            <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/> types to configure managed configuration using Azure App Configuration.
+            </summary>
+            <remarks>
+            Managed configuration (and Azure App Configuration) provide a service to centrally manage application settings
+            and feature flags.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder)">
+            <summary>
+            Adds the managed configuration provider, using Azure App Configuration services, to the application configuration builder.
+            </summary>
+            <param name="builder">The configuration builder.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder"/> instance.
+            </returns>
+            <remarks>
+            This method should be invoked when initializing the host, when configuring the app configuration (ConfigureAppConfiguration()).
+            The managed configuration service will try to configure 4 services in the following order:
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.PrimaryAppConfigurationServiceFailover"/>
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.PrimaryAppConfigurationService"/>
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.SecondaryAppConfigurationServiceFailover"/>
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.SecondaryAppConfigurationService"/>.
+            For the service to work, it is also necessary to add services to the service collection (<see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/>)
+            and add the service middleware to the application (<see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.UseAzureManagedConfiguration(Microsoft.AspNetCore.Builder.IApplicationBuilder)"/>).
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String)">
+            <summary>
+            Adds the managed configuration provider, using the specified Azure App Configuration service, to the application configuration builder.
+            </summary>
+            <param name="builder">The configuration builder.</param>
+            <param name="serviceName">The service name.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder"/> instance.
+            </returns>
+            <remarks>
+            This method should be invoked when initializing the host, when configuring the app configuration (ConfigureAppConfiguration()).
+            The service configuration options are read from environment variables.
+            For the service to work, it is also necessary to add services to the service collection (<see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/>)
+            and add the service middleware to the application (<see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.UseAzureManagedConfiguration(Microsoft.AspNetCore.Builder.IApplicationBuilder)"/>).
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder,Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions)">
+            <summary>
+            Adds the managed configuration provider, using the specified configuration options, to the application configuration builder.
+            </summary>
+            <param name="builder">The configuration builder.</param>
+            <param name="options">The configuration options.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder"/> instance.
+            </returns>
+            <remarks>
+            This method should be invoked when initializing the host, when configuring the app configuration (ConfigureAppConfiguration()).
+            The service configuration options are read from environment variables.
+            For the service to work, it is also necessary to add services to the service collection (<see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/>)
+            and add the service middleware to the application (<see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.UseAzureManagedConfiguration(Microsoft.AspNetCore.Builder.IApplicationBuilder)"/>).
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the services required by the managed configuration service, using Azure App Configuration, to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" /> instance.
+            </returns>
+            <remarks>
+            This method will only adds the services if the Azure App Configuration provider
+            is found, which happens when <see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder)"/> is invoked
+            and the corresponding environment variables are set.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.UseAzureManagedConfiguration(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Configures the managed configuration service using Azure App Configuration.
+            </summary>
+            <param name="builder">The application builder.</param>
+            <returns>
+            The <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder" /> instance.
+            </returns>
+            <remarks>
+            This method will only add the Azure App Configuration middleware if the Azure App Configuration provider
+            is found, which happens when <see cref="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.AddAzureManagedConfiguration(Microsoft.Extensions.Configuration.IConfigurationBuilder)"/> is invoked
+            and the corresponding environment variables are set.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationExtensions.HasAzureAppConfigurationProvider(System.IServiceProvider)">
+            <summary>
+            Determines whether the Azure App Configuration provider was added to the configuration.
+            </summary>
+            <param name="provider">The provider.</param>
+            <returns>
+            A value indicating whether the Azure App Configuration provider was added to the configuration.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions">
+            <summary>
+            Defines configuration options for the Azure Managed Configuration service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.ServiceName">
+            <summary>
+            Gets or sets the name of the Azure App Configuration service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.ConnectionString">
+            <summary>
+            Gets or sets the connection string used to authenticate with Azure App Configuration.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.Endpoint">
+            <summary>
+            Gets or sets the endpoint for the Azure App configuration. 
+            If the endpoint is set, Azure Managed Identity will be used.       
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.KeyFilter">
+            <summary>
+            Gets or sets the key filter to apply when querying Azure App Configuration for key-values.
+            The characters asterisk (*), comma (,) and backslash (\) are reserved and must
+            be escaped using a backslash (\). Built-in key filter options: <see cref="T:Microsoft.Extensions.Configuration.AzureAppConfiguration.KeyFilter"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.LabelFilter">
+            <summary>
+            Gets or sets the label filter to apply when querying Azure App Configuration for key-values.
+            By default the null label will be used. Built-in label filter options: <see cref="T:Microsoft.Extensions.Configuration.AzureAppConfiguration.LabelFilter"/>.
+            The characters asterisk (*) and comma (,) are not supported. Backslash (\) character
+            is reserved and must be escaped using another backslash (\).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.TrimPrefix">
+            <summary>
+            Gets or sets the trim prefix.
+            Trims the provided prefix from the keys of all key-values retrieved from Azure.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.CacheExpirationTime">
+            <summary>
+            Gets or sets the cache expiration time.
+            Minimum time that must elapse before the cache is expired. Default is 30 seconds.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.SentinelKey">
+            <summary>
+            Gets or sets the sentinel key.
+            This key indicates that all configuration values should be refreshed after this key is updated.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.Optional">
+            <summary>
+            Gets or sets a value indicating whether exceptions should be raised when initializing the configuration provider.
+            When <see langword="true"/>, no exceptions will be raised and no settings will be populated from managed
+            configuration.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationOptions.Validate">
+            <summary>
+            Validates the configuration options.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationHealthExtensions.DefaultProbeName">
+            <summary>
+            The default name used for probes.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationHealthExtensions.AddAzureManagedConfigurationProbes(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds the probes for the Azure Managed Configuration service.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The health probe name.</param>
+            <param name="unhealthyDescription">The description that should be used if the probe determines that the service is unhealthy.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            The managed configuration service will only be probed if the service was configured and the sentinel key is set.
+            This probe will try to read the value of the sentinel, and signal the service unhealthy if that value is not set.
+            The following services will be probed:
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.PrimaryAppConfigurationServiceFailover"/>
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.PrimaryAppConfigurationService"/>
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.SecondaryAppConfigurationServiceFailover"/>
+            - <see cref="F:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationConstants.SecondaryAppConfigurationService"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.AspNetCore.Azure.Configuration.AzureManagedConfigurationHealthExtensions.AddAzureManagedConfigurationProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.String,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a probe for the specified Azure Managed Configuration service.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="serviceName">The managed configuration service name.</param>
+            <param name="name">The health probe name.</param>
+            <param name="unhealthyDescription">The description that should be used if the probe determines that the service is unhealthy.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            The managed configuration service will only be probed if the service was configured and the sentinel key is set.
+            This probe will try to read the value of the sentinel, and signal the service unhealthy if that value is not set.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.RES_Exception_ConfigurationOptions_CacheExpirationTime_Invalid">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The cache expiration time must be greater than 0..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.RES_Exception_ConfigurationOptions_ConnectionStringOrEndpoint_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. Either a connection string or an App Configuration endpoint is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.RES_Exception_ConfigurationOptions_ServiceName_Required">
+            <summary>
+              Looks up a localized string similar to Invalid configuration options. The service name is required..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.RES_Health_ConfigurationProviderNotInitialized">
+            <summary>
+              Looks up a localized string similar to The Azure App Configuration provider was not initialized..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.RES_Health_ConfigurationRefreshDisabled">
+            <summary>
+              Looks up a localized string similar to Configuration refresh is disabled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.AspNetCore.Azure.Properties.Resources.RES_Health_SentinelNotAvailable">
+            <summary>
+              Looks up a localized string similar to Managed configuration sentinel &apos;{0}&apos; could not be read. The value retrieved from configuration is null or empty..
+            </summary>
+        </member>
+    </members>
+</doc>

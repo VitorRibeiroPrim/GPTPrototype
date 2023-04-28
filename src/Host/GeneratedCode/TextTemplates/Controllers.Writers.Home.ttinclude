@@ -1,0 +1,139 @@
+﻿<#+
+
+// *** WriteIndexAsync
+
+public void WriteIndexAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Show the view
+
+        return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(
+            this.View(<#= serviceModel.Namespace #>.Server.Common.Constants.Views.Home));
+<#+
+
+}
+
+// *** WriteShowErrorAsync
+
+public void WriteShowErrorAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Primavera.Hydrogen.Guard.NotNull(model, nameof(model));
+
+        // Show the view
+
+        return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(
+            this.View(
+                <#= serviceModel.Namespace #>.Server.Common.Constants.Views.Error,
+                model));
+<#+
+
+}
+
+// *** WriteAccessDeniedAsync
+
+public void WriteAccessDeniedAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Build the view model
+
+        ViewModels.ErrorViewModel model = new ViewModels.ErrorViewModel(
+            403,
+            this.Request.Path,
+            this.Request.QueryString.Value,
+            this.User?.Identity != null ? this.User.Identity.IsAuthenticated : false,
+            this.User?.GetEmail());
+
+        // Show the error
+
+        return this.ShowErrorAsync(
+            model,
+            cancellationToken);
+<#+
+
+}
+
+// *** WriteSignoutAsync
+
+public void WriteSignoutAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Sign-out all authentication schemes
+
+        await this.HttpContext.SignOutAsync(
+            Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Cookies)
+            .ConfigureAwait(false);
+
+        await this.HttpContext.SignOutAsync(
+            Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Oidc, 
+            new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
+            {
+                RedirectUri = returnUri
+            })
+            .ConfigureAwait(false);
+<#+
+
+}
+
+// *** WriteErrorAsync
+
+public void WriteErrorAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // If status code is 0, then use the status code in the response
+
+        if (statusCode == 0 && this.HttpContext.Response != null)
+        {
+            statusCode = this.HttpContext.Response.StatusCode;
+        }
+
+        // Original path and query string
+
+        string? originalPath = null;
+        string? originalQueryString = null;
+
+        // Exception feature
+
+        Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature? exceptionHandlerFeature = this.HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+        if (exceptionHandlerFeature != null)
+        {
+            originalPath = exceptionHandlerFeature.Path;
+        }
+
+        // Status code feature
+
+        Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature? statusCodeFeature = this.HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>();
+        if (statusCodeFeature != null)
+        {
+            originalPath = statusCodeFeature.OriginalPath;
+            originalQueryString = statusCodeFeature.OriginalQueryString;
+        }
+
+        // Build the view model
+
+        ViewModels.ErrorViewModel model = new ViewModels.ErrorViewModel(
+            statusCode, 
+            originalPath,
+            originalQueryString,
+            this.User?.Identity != null ? this.User.Identity.IsAuthenticated : false,
+            this.User?.GetEmail());
+
+        // Show the error
+
+        return this.ShowErrorAsync(
+            model,
+            cancellationToken);
+<#+
+
+}
+
+#>

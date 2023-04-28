@@ -1,0 +1,29 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cshtml" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Add writers
+
+controller.AddModelWriter<ServiceModel>(
+    (w, m) =>
+    {
+        if (m.Settings.GenerateHomeController)
+        {
+            this.WriteHomeView(w, m);
+        }
+        else
+        {
+            this.WriteHomeViewEmpty(w, m);
+        }
+    });
+
+// Generate code
+
+controller.Write(this.ServiceModel);
+
+#>

@@ -1,0 +1,212 @@
+﻿<#+
+
+public void WriteProperties(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model == null)
+    {
+        return;
+    }
+    
+    string assemblyName = model.Namespace + ".Server.Host";
+
+    List<string> additionalUsings = new List<string>();
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.DistributedCache))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Caching.Distributed.Redis");
+        additionalUsings.Add("Primavera.Hydrogen.Caching.Distributed.Resilience");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.TableStorage))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Storage.Tables");
+        additionalUsings.Add("Primavera.Hydrogen.Storage.Azure.Tables");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.BlobStorage))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Storage.Blobs");
+        additionalUsings.Add("Primavera.Hydrogen.Storage.Azure.Blobs");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.Search))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Search");
+        additionalUsings.Add("Primavera.Hydrogen.Search.Azure");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.DataProtection))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Storage.Azure.Blobs.DataProtection");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.SecretsStorage))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Security.Secrets");
+        additionalUsings.Add("Primavera.Hydrogen.Security.Azure.Secrets");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.MessageBus))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Messaging");
+        additionalUsings.Add("Primavera.Hydrogen.Messaging.Azure");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.MultiModelDatabase))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Storage.MultiModel");
+        additionalUsings.Add("Primavera.Hydrogen.Storage.Azure.MultiModel");
+    }
+
+    if (model.Dependencies.Any(d => d.Kind == DependencyKind.Taskbox))
+    {
+        additionalUsings.Add("Primavera.Hydrogen.Taskbox");
+    }
+
+    if (model.Extensions().HasApplicationLayer)
+    {
+        additionalUsings.Add($"{model.Namespace}.Server.Application");
+    }
+
+    if (model.Extensions().HasStorageLayer)
+    {
+        additionalUsings.Add($"{model.Namespace}.Server.Storage");
+    }
+
+    if (model.Extensions().HasDependenciesLayer)
+    {
+        additionalUsings.Add($"{model.Namespace}.Server.Dependencies");
+    }
+
+#>
+<Project>
+
+    <!-- Ignore Spelling: <#= model.Company #> -->
+    <!-- Ignore Spelling: <#= model.Copyright #> -->
+
+    <!-- Assembly name and namespace -->
+
+    <PropertyGroup>
+        <RootNamespace><#= assemblyName #></RootNamespace>
+        <AssemblyName><#= assemblyName #></AssemblyName>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Nullable reference types -->
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <!-- Global implicit using statements -->
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System" />
+        <Using Include="System.Collections" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Globalization" />
+        <Using Include="System.Text" />
+        <Using Include="System.Text.Json" />
+        <Using Include="System.Text.Json.Serialization" />
+        <Using Include="Microsoft.AspNetCore.Authorization" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Include="Microsoft.Extensions.Logging" />
+        <Using Include="Microsoft.Extensions.Options" />
+        <Using Include="Primavera.Hydrogen" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Azure.Configuration" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Hosting" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Webhooks" />
+        <Using Include="Primavera.Hydrogen.HealthMonitoring" />
+        <Using Include="Primavera.Hydrogen.Rest" />
+        <Using Include="<#= model.Namespace #>.Server.Common" />
+        <Using Include="<#= model.Namespace #>.Server.Common.Configuration" />
+        <Using Include="<#= model.Namespace #>.Server.RestApi" />
+<#+
+
+    if (model.Extensions().HasApplicationLayer)
+    {
+        if ((model.Extensions().UseMediatorOrCqrs && model.Actions.Count > 0) || model.Models.Any(i => i.Extensions().IsVisibleServerSide) || model.Enumerations.Any(i => i.Extensions().IsVisibleServerSide))
+        {
+
+#>
+        <Using Include="<#= model.Namespace #>.Server.Domain" />
+<#+
+
+        }
+    }
+
+    foreach (string additionalUsing in additionalUsings)
+    {
+#>
+        <Using Include="<#= additionalUsing #>" />
+<#+
+
+    }
+
+#>
+    </ItemGroup>
+
+    <!-- NuGet properties -->
+
+    <!-- Ignore Spelling: <#= model.Copyright #> -->
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <Authors><#= model.Company #></Authors>
+        <Company><#= model.Company #></Company>
+        <Copyright><#= model.Copyright #></Copyright>
+        <Description>Class library that provides the <#= model.DisplayName #> host.</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Primavera;Lithium</PackageTags>
+        <Product><#= model.Product #></Product>
+    </PropertyGroup>
+
+    <!-- Embedded Resources -->
+
+    <ItemGroup>
+        <EmbeddedResource Include="GeneratedCode\OpenApiCustomScript.gen.js" Condition="Exists('GeneratedCode\OpenApiCustomScript.gen.js')" />
+        <EmbeddedResource Include="GeneratedCode\assets\openapi.custom.css" Condition="Exists('GeneratedCode\assets\openapi.custom.css')" />
+        <EmbeddedResource Include="GeneratedCode\assets\favicon.png" Condition="Exists('GeneratedCode\assets\favicon.png')" />
+    </ItemGroup>
+
+    <!-- Content -->
+
+    <ItemGroup>
+        <Content Include="GeneratedCode\ClientLibDoc.gen.md" Condition="Exists('GeneratedCode\ClientLibDoc.gen.md')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="GeneratedCode\WebhooksDoc.gen.md" Condition="Exists('GeneratedCode\WebhooksDoc.gen.md')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <!-- XML documentation for package references -->
+    
+    <!-- This is important to make the OpenAPI documentation include descriptions -->
+    <!-- about types defined in Hydrogen or other dependencies -->
+    
+    <!-- More info: -->
+    <!-- https://github.com/dotnet/sdk/issues/9498 -->
+    <!-- https://the-photographing-programmer.com/packagereferences-and-xml-documentation/ -->
+
+     <Target Name="EnsureXmlDocumentation" BeforeTargets="Build">
+        <ItemGroup>
+          <DocumentationFiles Include="%(Reference.RelativeDir)%(Reference.Filename).xml" />
+        </ItemGroup>
+        <Copy SourceFiles="@(DocumentationFiles)" DestinationFolder="$(OutputPath)" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+    </Target>
+
+</Project>
+<#+
+
+}
+
+#>

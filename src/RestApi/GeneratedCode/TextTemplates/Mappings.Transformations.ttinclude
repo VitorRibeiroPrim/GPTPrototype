@@ -1,0 +1,85 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.RestApi");
+
+    ClassModel profileBaseClassModel = targetModel.Namespace
+        .AddClass(new ClassModel("MappingProfileBase")
+        {
+            Inheritance = "AutoMapper.Profile",
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial | ClassModifiers.Abstract,
+            Documentation = new DocumentationModel("Defines the base class of the mapping profile")
+        })
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Protected,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"MappingProfileBase\" /> class.")
+            })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("InitializeMappings")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Initializes the mappings.")
+            })
+                .ParentModelAs<ClassModel>();
+
+    foreach (ModelType modelType in serviceModel.Models.OrderBy(i => i.Name))
+    {
+        if (modelType.Extensions().IsVisibleServerSide && serviceModel.Extensions().UseMediatorOrCqrs)
+        {
+            profileBaseClassModel
+                .AddMethod(new MethodModel($"Map{modelType.Name}")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Maps <see cref=\"{serviceModel.Namespace}.Server.RestApi.Models.{modelType.Name}\" />."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "SourceElement", modelType }
+                    }
+                });
+        }
+    }
+
+    foreach (EnumType enumType in serviceModel.Enumerations.OrderBy(i => i.Name))
+    {
+        if (enumType.Extensions().IsVisibleServerSide && serviceModel.Extensions().UseMediatorOrCqrs)
+        {
+            profileBaseClassModel
+                .AddMethod(new MethodModel($"Map{enumType.Name}")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Maps <see cref=\"{serviceModel.Namespace}.Server.RestApi.Models.{enumType.Name}\" />."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "SourceElement", enumType }
+                    }
+                });
+        }
+    }
+
+    ClassModel profileClassModel = targetModel.Namespace
+        .AddClass(new ClassModel("MappingProfile")
+        {
+            Inheritance = "MappingProfileBase",
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+            Documentation = new DocumentationModel("Defines the mapping profile.")
+        })
+            .AddConstructor(new ConstructorModel()
+            {
+                Inheritance = "base()",
+                Modifiers = ConstructorModifiers.Public,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"MappingProfile\" /> class.")
+            })
+                .ParentModelAs<ClassModel>();
+}
+
+#>

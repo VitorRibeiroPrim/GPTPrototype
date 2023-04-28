@@ -1,0 +1,60 @@
+﻿<#+
+
+// *** WriteGetModel
+
+public void WriteGetModel(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel parentMethod = model.ParentModelAs<MethodModel>();
+
+    ControllerType controllerType = parentMethod.GetFacet<ControllerType>("GetModel");
+
+#>
+        Microsoft.OData.ModelBuilder.ODataConventionModelBuilder builder = new Microsoft.OData.ModelBuilder.ODataConventionModelBuilder();
+
+<#+
+
+    List<string> models = new List<string>();
+
+    foreach (ControllerTypeAction action in controllerType.ChildActions.Where(i => i.ODataEnabled && i.Extensions().IsVisibleServerSide))
+    {
+        if (!models.Contains(action.ReferencedModel.Name))
+        {
+            models.Add(action.ReferencedModel.Name);
+
+#>
+        this.Add<#= action.ReferencedModel.Name #>(builder);
+<#+
+
+        }
+    }
+
+#>
+        
+        return builder.GetEdmModel();
+<#+
+
+}
+
+// *** WriteAddModel
+
+public void WriteAddModel(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel parentMethod = model.ParentModelAs<MethodModel>();
+    ControllerTypeAction controllerTypeAction = parentMethod.GetFacet<ControllerTypeAction>("Action");
+
+    ModelType referencedModel = controllerTypeAction.ReferencedModel;
+
+    string actionRoute = new ActionRouteBuilder(controllerTypeAction)
+        .Build(true, false, false);
+
+    string[] parts = actionRoute.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+    string route = parts.Last();
+
+#>
+        builder.EntitySet<RestApi.Models.<#= referencedModel.Name #>>("<#= route #>");
+<#+
+
+}
+
+#>

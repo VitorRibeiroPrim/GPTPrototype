@@ -1,0 +1,14 @@
+﻿<#+
+
+public void WriteAttributes(ModelWriter modelWriter, ServiceModel model)
+{
+    this.WriteAssemblyInfoShared(
+        modelWriter, 
+        model,
+        $"{model.Product} {model.DisplayName} Host",
+        $"Class library that provides the {model.DisplayName} host.",
+        $"{model.Namespace}.Server.Host.Tests",
+        $"{model.Namespace}.Server.Integration.Tests");
+}
+
+#>

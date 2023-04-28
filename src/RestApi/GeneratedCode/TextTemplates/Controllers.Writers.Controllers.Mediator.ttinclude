@@ -1,0 +1,651 @@
+﻿<#+
+
+// *** WriteProjectResult
+
+public void WriteProjectResult(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel method = model.ParentModelAs<MethodModel>();
+
+    ControllerTypeAction action = method.GetFacet<ControllerTypeAction>("Action");
+
+    string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+#>
+        return result
+           .AsQueryable()
+           .ProjectTo<<#= modelsTypeSingle #>>(
+                this.Mapper.ConfigurationProvider);
+<#+
+
+}
+
+// *** WriteMapResult
+
+public void WriteMapResult(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel method = model.ParentModelAs<MethodModel>();
+
+    ControllerTypeAction action = method.GetFacet<ControllerTypeAction>("Action");
+
+    string domainType = action.Extensions().AsCSharpType("Server.Domain", true);
+    string modelsType = action.Extensions().AsCSharpType("Server.RestApi.Models", true);
+
+#>
+        return this.Mapper
+            .Map<<#= domainType #>, <#= modelsType #>>(
+                result);
+<#+
+
+}
+
+// *** WriteActionImplementation
+
+public void WriteActionImplementation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel method = model.ParentModelAs<MethodModel>();
+
+    ControllerTypeAction action = method.GetFacet<ControllerTypeAction>("Action");
+    if (action == null)
+    {
+        return;
+    }
+
+    string resultType = action.Extensions().AsCSharpType("Server.Domain", true);
+    if (string.IsNullOrEmpty(resultType))
+    {
+        resultType = $"Primavera.Hydrogen.Result";
+    }
+    else
+    {
+        resultType = $"Primavera.Hydrogen.Result<{resultType}>";
+    }
+
+    string parametersText1 = string.Empty;
+    string parametersText2 = string.Empty;
+    string parametersTextWithoutModel = string.Empty;
+
+    if (!action.RouteIgnoreControllerParameters && action.ParentController.ChildParameters.Count > 0)
+    {
+        parametersText1 = string.Join(
+            ", ", 
+            action.ParentController.ChildParameters
+                .Select(
+                    p =>
+                    {
+                        return p.Name.Transform().ToCamelCase();
+                    }));
+        
+        parametersText2 = string.Join(
+            ", ", 
+            action.ParentController.ChildParameters
+                .Select(
+                    p =>
+                    {
+                        if (p is ControllerTypeEnumParameter enumParameter)
+                        {
+                            return $"(Domain.{enumParameter.ReferencedEnum.Name})" + p.Name.Transform().ToCamelCase();
+                        }
+
+                        return p.Name.Transform().ToCamelCase();
+                    }));
+        
+        parametersTextWithoutModel = parametersText2;
+    }
+
+    if (action.ChildParameters.Count > 0)
+    {
+        if (string.IsNullOrEmpty(parametersText1))
+        {
+            parametersText1 = string.Join(
+                ", ", 
+                action.ChildParameters
+                    .Select(
+                        p =>
+                        {
+                            return p.Name.Transform().ToCamelCase();
+                        }));
+            
+            parametersText2 = string.Join(
+                ", ", 
+                action.ChildParameters
+                    .Select(
+                        p =>
+                        {
+                            if (p is ControllerTypeActionEnumParameter enumParameter)
+                            {
+                                return $"{p.Name.Transform().ToCamelCase()}Entity";
+                            }
+
+                            return p.Name.Transform().ToCamelCase();
+                        }));
+            
+            parametersTextWithoutModel = string.Join(
+                ", ", 
+                action.ChildParameters.Where(i => i is not ControllerTypeActionModelParameter)
+                    .Select(
+                        p =>
+                        {
+                            if (p is ControllerTypeActionEnumParameter enumParameter)
+                            {
+                                return $"{p.Name.Transform().ToCamelCase()}Entity";
+                            }
+
+                            return p.Name.Transform().ToCamelCase();
+                        }));
+        }
+        else
+        {
+            parametersText1 = string.Join(
+                ", ", 
+                parametersText1, 
+                string.Join(
+                    ", ", 
+                    action.ChildParameters
+                        .Select(
+                            p =>
+                            {
+                                return p.Name.Transform().ToCamelCase();
+                            })));
+            
+            parametersText2 = string.Join(
+                ", ", 
+                parametersText2, 
+                string.Join(
+                    ", ", 
+                    action.ChildParameters
+                        .Select(
+                            p =>
+                            {
+                                if (p is ControllerTypeActionEnumParameter enumParameter)
+                                {
+                                    return $"(Domain.{enumParameter.ReferencedEnum.Name})" + p.Name.Transform().ToCamelCase();
+                                }
+
+                                return p.Name.Transform().ToCamelCase();
+                            })));
+            
+            parametersTextWithoutModel = string.Join(
+                ", ", 
+                parametersTextWithoutModel, 
+                string.Join(
+                    ", ", 
+                    action.ChildParameters.Where(i => i is not ControllerTypeActionModelParameter)
+                        .Select(
+                            p => 
+                            {
+                                if (p is ControllerTypeActionEnumParameter enumParameter)
+                                {
+                                    return $"(Domain.{enumParameter.ReferencedEnum.Name})" + p.Name.Transform().ToCamelCase();
+                                }
+
+                                return p.Name.Transform().ToCamelCase();
+                            })));
+        }
+    }
+
+    string parametersTextWithoutCancellation = parametersText1;
+
+    string parametersTextWithCancellation = AddCancellationParameter(parametersTextWithoutCancellation);
+
+#>
+        // Mediator
+
+<#+
+
+    string requestName = $"Domain.{action.ParentController.Name}{action.Name2}Request";
+    string createRequestMethodName = $"Create{action.Name2}RequestAsync";
+
+    if (action.ServiceModel.Extensions().UseCqrs)
+    {
+        switch (action.Kind)
+        {
+            case ControllerTypeActionKind.Command:
+                requestName = $"Domain.{action.ParentController.Name}{action.Name2}Command";
+                createRequestMethodName = $"Create{action.Name2}CommandAsync";
+                break;
+            default:
+                requestName = $"Domain.{action.ParentController.Name}{action.Name2}Query";
+                createRequestMethodName = $"Create{action.Name2}QueryAsync";
+                break;
+        }
+    }
+
+    ControllerTypeActionModelParameter modelParameter = action.ChildParameters.OfType<ControllerTypeActionModelParameter>().FirstOrDefault();
+    if (modelParameter != null)
+    {
+        string domainType = modelParameter.Extensions().AsCSharpType("Server.Domain", true, true, true);
+        string modelsType = modelParameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true);
+
+        string parametersTextWithModel;
+        if (string.IsNullOrWhiteSpace(parametersTextWithoutModel))
+        {
+            parametersTextWithModel = "entity";
+        }
+        else
+        {
+            parametersTextWithModel = parametersTextWithoutModel.RemoveAtEndNoCase(", ") + ", entity";
+        }
+
+        if (action.ODataEnabled)
+        {
+            parametersTextWithModel = AddQueryOptionsParameter(parametersTextWithModel);
+        }
+
+#>
+        <#= domainType #> entity = this.Mapper
+            .Map<<#= modelsType #>, <#= domainType #>>(
+                <#= modelParameter.Name.Transform().ToCamelCase() #>);
+        <#= requestName #> mediatorRequest = await this.<#= createRequestMethodName #>(<#= AddCancellationParameter(parametersTextWithModel) #>)
+            .ConfigureAwait(false);
+
+<#+
+
+    }
+    else
+    {
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeEnumParameter enumParameter in action.ParentController.ChildParameters.OfType<ControllerTypeEnumParameter>())
+            {
+                string domainType = enumParameter.Extensions().AsCSharpType("Server.Domain", true);
+                string modelsType = enumParameter.Extensions().AsCSharpType("Server.RestApi.Models", true);
+                string parameterName = enumParameter.Name.Transform().ToCamelCase();
+
+#>
+        <#= domainType #> <#= parameterName #>Entity = this.Mapper
+            .Map<<#= modelsType #>, <#= domainType #>>(
+                <#= parameterName #>);
+<#+
+
+            }
+        }
+
+        foreach (ControllerTypeActionEnumParameter enumParameter in action.ChildParameters.OfType<ControllerTypeActionEnumParameter>())
+        {
+            string domainType = enumParameter.Extensions().AsCSharpType("Server.Domain", true, true, true);
+            string modelsType = enumParameter.Extensions().AsCSharpType("Server.RestApi.Models", true, true, true);
+            string parameterName = enumParameter.Name.Transform().ToCamelCase();
+
+#>
+        <#= domainType #> <#= parameterName #>Entity = this.Mapper
+            .Map<<#= modelsType #>, <#= domainType #>>(
+                <#= parameterName #>);
+<#+
+
+        }
+
+        if (action.ODataEnabled)
+        {
+            parametersTextWithoutModel = AddQueryOptionsParameter(parametersTextWithoutModel);
+        }
+
+#>
+        <#= requestName #> mediatorRequest = await this.<#= createRequestMethodName #>(<#= AddCancellationParameter(parametersTextWithoutModel) #>)
+            .ConfigureAwait(false);
+
+<#+
+
+    }
+
+#>
+        <#= resultType #> mediatorResult = await this.Mediator.SendAsync(
+            mediatorRequest,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        // Failure
+
+<#+
+
+    if (action.ProducesNotFound.IsTrue())
+    {
+
+#>
+        if (mediatorResult.IsFailureOf<Primavera.Hydrogen.ResultNotFoundError>())
+        {
+            return this.NotFound(
+                Primavera.Hydrogen.Rest.RestProblemDetails.FromResult(
+                    mediatorResult));
+        }
+
+<#+
+
+    }
+
+    if (action.ProducesConflict.IsTrue())
+    {
+
+#>
+        if (mediatorResult.IsFailureOf<Primavera.Hydrogen.ResultConflictError>())
+        {
+            return this.Conflict(
+                Primavera.Hydrogen.Rest.RestProblemDetails.FromResult(
+                    mediatorResult));
+        }
+
+<#+
+
+    }
+
+#>
+        if (mediatorResult.Failed)
+        {
+            return this.BadRequest(
+                Primavera.Hydrogen.Rest.RestProblemDetails.FromResult(
+                    mediatorResult));
+        }
+
+<#+
+
+    if (action.ReturnValueType == ControllerTypeActionReturnValueType.Model)
+    {
+        string domainType = action.Extensions().AsCSharpType("Server.Domain", true);
+        string modelsType = action.Extensions().AsCSharpType("Server.RestApi.Models", true);
+        string modelsTypeSingle = $"Server.RestApi.Models.{action.ReferencedModel.Name}";
+
+        if (action.ODataEnabled && action.ReturnValueCardinality == Cardinality.List)
+        {
+
+#>
+        // Projection
+
+        System.Linq.IQueryable<<#= modelsTypeSingle #>> result = this.Project<#= action.Name2 #>Result(mediatorResult.Value);
+
+<#+
+        
+        }
+        else
+        {
+
+#>
+        // Mapping
+
+        <#= modelsType #> result = this.Map<#= action.Name2 #>Result(mediatorResult.Value);
+
+<#+
+        
+        }
+    }
+    else if (action.ReturnValueType == ControllerTypeActionReturnValueType.Enumeration)
+    {
+        string domainType = action.Extensions().AsCSharpType("Server.Domain", true);
+        string modelsType = action.Extensions().AsCSharpType("Server.RestApi.Models", true);
+
+#>
+        // Mapping
+
+        <#= modelsType #> result = this.Map<#= action.Name2 #>Result(mediatorResult.Value);
+<#+
+
+    }
+    else if (action.ReturnValueType != ControllerTypeActionReturnValueType.None)
+    {
+
+#>
+        // Value
+
+        <#= action.Extensions().AsCSharpType("Server.Domain", true) #> result = mediatorResult.Value;
+
+<#+
+
+    }
+
+    if (action.ReturnValueType == ControllerTypeActionReturnValueType.None)
+    {
+
+#>
+        await this.On<#= action.Name2 #>Async(<#= parametersTextWithCancellation #>).ConfigureAwait(false);
+
+<#+
+
+    }
+    else if (string.IsNullOrEmpty(parametersTextWithoutCancellation))
+    {
+
+#>
+        await this.On<#= action.Name2 #>Async(result, cancellationToken).ConfigureAwait(false);
+
+<#+
+
+    }
+    else
+    {
+
+#>
+        await this.On<#= action.Name2 #>Async(<#= parametersTextWithoutCancellation #>, result, cancellationToken).ConfigureAwait(false);
+
+<#+
+
+    }
+
+#>
+        // Result
+
+<#+
+
+    if (action.ReturnValueType == ControllerTypeActionReturnValueType.None)
+    {
+        this.WriteActionResultWithoutResult(action, parametersTextWithoutCancellation);
+    }
+    else
+    {
+        this.WriteActionResultWithResult(action, parametersTextWithoutCancellation);
+    }
+
+}
+
+// *** WriteActionResultWithResult
+
+public void WriteActionResultWithResult(ControllerTypeAction action, string parameters)
+{
+    if (string.IsNullOrEmpty(parameters))
+    {
+        parameters = "result";
+    }
+    else
+    {
+        parameters += ", result";
+    }
+
+    switch (action.SuccessStatusCode)
+    {
+        case ControllerTypeActionHttpStatusCodeKind.Ok:
+
+#>
+        return this.Ok(
+            result);
+<#+
+
+            break;
+        case ControllerTypeActionHttpStatusCodeKind.Created:
+
+#>
+        return this.Created(
+            uri: this.Get<#= action.Name2 #>LocationUri(<#= parameters #>),
+            value: result);
+<#+
+
+            break;
+        case ControllerTypeActionHttpStatusCodeKind.Accepted:
+
+#>
+        Uri? location = this.Get<#= action.Name2 #>LocationUri(<#= parameters #>);
+        
+        if (location == null)
+        {
+            return this.Accepted(
+                value: result);
+        }
+        else
+        {
+            return this.Accepted(
+                uri: location,
+                value: result);
+        }
+<#+
+
+            break;
+        case ControllerTypeActionHttpStatusCodeKind.NoContent:
+
+#>
+        return this.NoContent();
+<#+
+
+            break;
+        default:
+            throw new InvalidOperationException($"Action '{action.Name}' has unexpected success status code '{action.SuccessStatusCode}'.");
+    }
+}
+
+// *** WriteActionResultWithoutResult
+
+public void WriteActionResultWithoutResult(ControllerTypeAction action, string parameters)
+{
+    switch (action.SuccessStatusCode)
+    {
+        case ControllerTypeActionHttpStatusCodeKind.Ok:
+
+#>
+        return this.Ok();
+<#+
+
+            break;
+        case ControllerTypeActionHttpStatusCodeKind.Created:
+
+#>
+        return this.Created(
+            uri: this.Get<#= action.Name2 #>LocationUri(<#= parameters #>),
+            value: null);
+<#+
+
+            break;
+        case ControllerTypeActionHttpStatusCodeKind.Accepted:
+
+#>
+        Uri? location = this.Get<#= action.Name2 #>LocationUri(<#= parameters #>);
+
+        if (location == null)
+        {
+            return this.Accepted();
+        }
+        else
+        {
+            return this.Accepted(
+                uri: location);
+        }
+<#+
+
+            break;
+        case ControllerTypeActionHttpStatusCodeKind.NoContent:
+
+#>
+        return this.NoContent();
+<#+
+
+            break;
+        default:
+            throw new InvalidOperationException($"Action '{action.Name}' has unexpected success status code '{action.SuccessStatusCode}'.");
+    }
+}
+
+// *** WriteExtensionPointAsync
+
+public void WriteExtensionPointAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return System.Threading.Tasks.ValueTask.CompletedTask;
+<#+
+
+}
+
+// *** WriteMediatorRequestBuilder
+
+public void WriteMediatorRequestBuilder(ModelWriter modelWriter, MethodBodyModel model)
+{
+    MethodModel method = model.ParentModelAs<MethodModel>();
+
+    ControllerTypeAction action = method.GetFacet<ControllerTypeAction>("Action");
+    if (action == null)
+    {
+        return;
+    }
+
+    string requestName = $"Domain.{action.ParentController.Name}{action.Name2}Request";
+
+    if (action.ServiceModel.Extensions().UseCqrs)
+    {
+        switch (action.Kind)
+        {
+            case ControllerTypeActionKind.Command:
+                requestName = $"Domain.{action.ParentController.Name}{action.Name2}Command";
+                break;
+            default:
+                requestName = $"Domain.{action.ParentController.Name}{action.Name2}Query";
+                break;
+        }
+    }
+
+    bool hasParameters = action.ChildParameters.Count > 0 || (!action.RouteIgnoreControllerParameters && action.ParentController.ChildParameters.Count > 0);
+
+    if (hasParameters)
+    {
+
+#>
+        return System.Threading.Tasks.ValueTask.FromResult(
+            new <#= requestName #>()
+            {
+<#+
+
+        if (!action.RouteIgnoreControllerParameters)
+        {
+            foreach (ControllerTypeParameter controllerParameter in action.ParentController.ChildParameters)
+            {
+
+#>
+                <#= controllerParameter.Name #> = <#= controllerParameter.Name.Transform().ToCamelCase() #>,
+<#+
+
+            }
+        }
+
+        foreach (ControllerTypeActionParameter actionParameter in action.ChildParameters)
+        {
+            bool useEntity = actionParameter is ControllerTypeActionModelParameter;
+
+#>
+                <#= actionParameter.Name #> = <#= useEntity ? "entity" : actionParameter.Name.Transform().ToCamelCase() #>,
+<#+
+        }
+
+#>
+            });
+<#+
+
+    }
+    else
+    {
+
+#>
+        return System.Threading.Tasks.ValueTask.FromResult(
+            new <#= requestName #>());
+<#+
+
+    }
+}
+
+// *** AddCancellationParameter
+
+public string AddCancellationParameter(string input)
+{
+    return string.IsNullOrEmpty(input) ? "cancellationToken" : input + ", cancellationToken";
+}
+
+// *** AddQueryOptionsParameter
+
+public string AddQueryOptionsParameter(string input)
+{
+    return string.IsNullOrEmpty(input) ? "queryOptions" : input + ", queryOptions";
+}
+
+#>

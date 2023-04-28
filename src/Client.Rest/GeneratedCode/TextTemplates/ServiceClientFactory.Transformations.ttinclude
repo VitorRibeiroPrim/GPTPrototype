@@ -1,0 +1,42 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    string serviceVersionString = VersioningHelper.GetApiVersionString(sourceModel);
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Rest");
+
+    // Class
+
+    ClassModel classModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel($"{sourceModel.Name}ClientFactory")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+                Inheritance = $"Primavera.Hydrogen.Rest.Client.RestServiceClientFactory<{sourceModel.Name}Client, {sourceModel.Name}ClientOptions>",
+                Documentation = new DocumentationModel($"Defines a factory to resolve <see cref=\"{sourceModel.Name}Client\"/> instances.")
+            })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base(serviceProvider)",
+                    Documentation = new DocumentationModel($"Initializes a new instance of the <see cref=\"{sourceModel.Name}ClientFactory\" /> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("serviceProvider", "System.IServiceProvider")
+                    {
+                        Documentation = new DocumentationModel("The service provider.")
+                    })
+                .ParentModelAs<ClassModel>();
+}
+
+#>

@@ -1,0 +1,1050 @@
+﻿<#+
+
+// *** WriteProbeAsync
+
+public void WriteProbeAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // NOTES:
+        // The Probe endpoint is used to monitor the health of the service
+        // to ensure its liveness and readiness and to drive routing, fail-over,
+        // and other infrastructure mechanisms.
+        // This endpoint will be invoked very frequently, so it is expected to
+        // check the service health very fast (and fail fast if something is
+        // wrong).
+        // It is paramount that the probes performed are as fast as possible,
+        // executing very simple and atomic operations.
+        // Be sure to use IHealthProbesBuilder so that all probes can be executed
+        // in parallel, exceptions are correctly handled, telemetry is collected,
+        // etc.
+        // By default, this implementation will probe the dependencies specified
+        // in the service model.
+        // Additional probes (e.g. dependencies that cannot be described in the
+        // service model, like a SQL server for example) may be implemented by
+        // overriding AddDependenciesProbes(), AddAdditionalProbes(), etc.
+
+        Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder builder = Primavera.Hydrogen.HealthMonitoring.HealthProbesBuilder
+            .Create();
+
+        this.AddAzureManagedConfigurationProbes(builder);
+
+        this.AddDependenciesProbes(builder);
+
+<#+
+
+    if (serviceModel.BackgroundServices.Any(i => i.PerformsInitialization.IsTrue()))
+    {
+
+#>
+        this.AddBackgroundServicesProbes(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Webhooks.Any())
+    {
+
+#>
+        this.AddWebhooksProbes(builder);
+
+<#+
+
+    }
+
+#>
+        this.AddAdditionalProbes(builder);
+
+        Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService service = this.HttpContext.RequestServices.GetRequiredService<Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService>();
+
+        Primavera.Hydrogen.HealthMonitoring.HealthResult result = await service.ProbeAsync(
+            builder,
+            cancellationToken)
+            .ConfigureAwait(false);
+
+        if (result.Status == Primavera.Hydrogen.HealthMonitoring.HealthStatus.Unhealthy)
+        {
+            return this.StatusCode(
+                (int)System.Net.HttpStatusCode.ServiceUnavailable,
+                result);
+        }
+
+        return this.Ok(result);
+<#+
+
+}
+
+// *** WriteDiagnosticsAsync
+
+public void WriteDiagnosticsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // NOTES:
+        // The Diagnostics endpoint is used to monitor the health of the service
+        // to ensure that it is capable of executing its business logic as expected.
+        // Unlike the Probe endpoint, this endpoint will be invoked much less
+        // frequently, so it is acceptable for it to take more time to check the
+        // service health from a business-logic standpoint.
+        // By default, this implementation will diagnose the dependencies and
+        // the service dependencies (dependencies on other services) specified 
+        // in the service model.
+        // Additional diagnostics (e.g. dependencies that cannot be described in the
+        // service model, like a SQL server for example) may be implemented by
+        // overriding AddDependenciesDiagnostics(), AddAdditionalDiagnostics(), etc.
+
+        Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder builder = Primavera.Hydrogen.HealthMonitoring.HealthProbesBuilder
+            .Create();
+
+        this.AddAzureManagedConfigurationDiagnostics(builder);
+
+        this.AddDependenciesDiagnostics(builder);
+
+        this.AddServiceDependenciesDiagnostics(builder);
+
+<#+
+
+    if (serviceModel.BackgroundServices.Any(i => i.PerformsInitialization.IsTrue()))
+    {
+
+#>
+        this.AddBackgroundServicesDiagnostics(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Webhooks.Any())
+    {
+
+#>
+        this.AddWebhooksDiagnostics(builder);
+
+<#+
+
+    }
+
+#>
+        this.AddAdditionalDiagnostics(builder);
+
+        Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService service = this.HttpContext.RequestServices.GetRequiredService<Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService>();
+
+        Primavera.Hydrogen.HealthMonitoring.HealthResult result = await service.ProbeAsync(
+            builder,
+            cancellationToken)
+            .ConfigureAwait(false);
+
+        if (result.Status == Primavera.Hydrogen.HealthMonitoring.HealthStatus.Unhealthy)
+        {
+            return this.StatusCode(
+                (int)System.Net.HttpStatusCode.ServiceUnavailable,
+                result);
+        }
+
+        return this.Ok(result);
+<#+
+
+}
+
+// *** WriteAddAzureManagedConfigurationProbes
+
+public void WriteAddAzureManagedConfigurationProbes(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return builder
+            .AddAzureManagedConfigurationProbes();
+<#+
+
+}
+
+// *** WriteAddAzureManagedConfigurationDiagnostics
+
+public void WriteAddAzureManagedConfigurationDiagnostics(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+        return builder
+            .AddAzureManagedConfigurationProbes();
+<#+
+
+}
+
+// *** WriteAddDependenciesProbes
+
+public void WriteAddDependenciesProbes(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // NOTES:
+        // Override this method to configure probes for dependencies
+        // that cannot be expressed in the service model
+
+<#+
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.DistributedCache))
+    {
+
+#>
+        this.AddProbeDistributedCache(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.TableStorage))
+    {
+
+#>
+        this.AddProbeTableStorage(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.BlobStorage))
+    {
+
+#>
+        this.AddProbeBlobStorage(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.Search))
+    {
+
+#>
+        this.AddProbeSearch(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.DataProtection))
+    {
+
+#>
+        this.AddProbeDataProtection(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.SecretsStorage))
+    {
+
+#>
+        this.AddProbeSecretsStorage(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.MessageBus))
+    {
+
+#>
+        this.AddProbeMessageBus(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.MultiModelDatabase))
+    {
+
+#>
+        this.AddProbeMultiModelDatabase(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.Taskbox))
+    {
+
+#>
+        this.AddProbeTaskbox(builder);
+
+<#+
+
+    }
+
+#>
+        return builder;
+<#+
+
+}
+
+// *** WriteAddDependenciesDiagnostics
+
+public void WriteAddDependenciesDiagnostics(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // NOTES:
+        // Override this method to configure diagnostics for dependencies
+        // that cannot be expressed in the service model
+
+<#+
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.DistributedCache))
+    {
+
+#>
+        this.AddDiagnosticDistributedCache(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.TableStorage))
+    {
+
+#>
+        this.AddDiagnosticTableStorage(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.BlobStorage))
+    {
+
+#>
+        this.AddDiagnosticBlobStorage(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.Search))
+    {
+
+#>
+        this.AddDiagnosticSearch(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.DataProtection))
+    {
+
+#>
+        this.AddDiagnosticDataProtection(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.SecretsStorage))
+    {
+
+#>
+        this.AddDiagnosticSecretsStorage(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.MessageBus))
+    {
+
+#>
+        this.AddDiagnosticMessageBus(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.MultiModelDatabase))
+    {
+
+#>
+        this.AddDiagnosticMultiModelDatabase(builder);
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any(d => d.Kind == DependencyKind.Taskbox))
+    {
+
+#>
+        this.AddDiagnosticTaskbox(builder);
+
+<#+
+
+    }
+
+#>
+        return builder;
+<#+
+
+}
+
+// *** WriteAddServiceDependenciesDiagnostics
+
+public void WriteAddServiceDependenciesDiagnostics(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+    if (!serviceModel.ServiceDependencies.Any())
+    {
+
+#>
+        // NOTES:
+        // The service has no service dependencies
+
+        return builder;
+<#+
+
+        return;
+    }
+
+#>
+        <#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration hostConfiguration = this.HttpContext.RequestServices.GetRequiredService<<#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration>();
+
+<#+
+
+    foreach (ServiceDependency dependency in serviceModel.ServiceDependencies)
+    {
+
+#>
+        builder.AddHttpEndpointDiagnostic(
+            new System.Uri($"{hostConfiguration.<#= dependency.Service #>ServiceBaseUri!}/.monitoring/info"),
+            "<#= dependency.Service #>ServiceDependency");
+
+<#+
+    
+    }
+
+#>
+        return builder;
+<#+
+
+}
+
+// *** WriteAddProbeDistributedCache
+
+public void WriteAddProbeDistributedCache(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return builder
+            .AddDistributedCacheProbe();
+<#+
+
+}
+
+// *** WriteAddDiagnosticDistributedCache
+
+public void WriteAddDiagnosticDistributedCache(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+        return builder
+            .AddDistributedCacheProbe();
+<#+
+
+}
+
+// *** WriteAddProbeTableStorage
+
+public void WriteAddProbeTableStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return builder
+            .AddAzureTableStorageProbe();
+<#+
+
+}
+
+// *** WriteAddDiagnosticTableStorage
+
+public void WriteAddDiagnosticTableStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+        return builder
+            .AddAzureTableStorageProbe();
+<#+
+
+}
+
+// *** WriteAddProbeBlobStorage
+
+public void WriteAddProbeBlobStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return builder
+            .AddAzureBlobStorageProbe();
+<#+
+
+}
+
+// *** WriteAddDiagnosticBlobStorage
+
+public void WriteAddDiagnosticBlobStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+<#+
+
+    if (serviceModel.BackgroundServices.Any(i => i.UseLocking) || serviceModel.Webhooks.Any())
+    {
+
+#>
+        return builder
+            .AddAzureBlobStorageDiagnostic(
+                "WorkLocks");
+<#+
+
+        return;
+    }
+
+#>
+        return builder
+            .AddAzureBlobStorageProbe();
+<#+
+
+}
+
+// *** WriteAddProbeSearch
+
+public void WriteAddProbeSearch(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return builder
+            .AddAzureSearchProbe();
+<#+
+
+}
+
+// *** WriteAddDiagnosticSearch
+
+public void WriteAddDiagnosticSearch(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+        return builder
+            .AddAzureSearchProbe();
+<#+
+
+}
+
+// *** WriteAddProbeDataProtection
+
+public void WriteAddProbeDataProtection(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // No probe is automatically generated for this dependency
+        // in the current version of the SDK
+
+        return builder;
+<#+
+
+}
+
+// *** WriteAddDiagnosticDataProtection
+
+public void WriteAddDiagnosticDataProtection(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // No diagnostic is automatically generated for this dependency
+        // in the current version of the SDK
+
+        return builder;
+<#+
+
+}
+
+// *** WriteAddProbeSecretsStorage
+
+public void WriteAddProbeSecretsStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // No probe is automatically generated for this dependency
+        // in the current version of the SDK
+
+        return builder;
+<#+
+
+}
+
+// *** WriteAddDiagnosticSecretsStorage
+
+public void WriteAddDiagnosticSecretsStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // No diagnostic is automatically generated for this dependency
+        // in the current version of the SDK
+
+        return builder;
+<#+
+
+}
+
+// *** WriteAddProbeMessageBus
+
+public void WriteAddProbeMessageBus(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return builder
+            .AddAzureServiceBusMessageBusProbe();
+<#+
+
+}
+
+// *** WriteAddDiagnosticMessageBus
+
+public void WriteAddDiagnosticMessageBus(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+        return builder
+            .AddAzureServiceBusMessageBusProbe();
+<#+
+
+}
+
+// *** WriteAddProbeMultiModelDatabase
+
+public void WriteAddProbeMultiModelDatabase(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return builder
+            .AddCosmosDbMultiModelDatabaseProbe();
+<#+
+
+}
+
+// *** WriteAddDiagnosticMultiModelDatabase
+
+public void WriteAddDiagnosticMultiModelDatabase(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+        return builder
+            .AddCosmosDbMultiModelDatabaseProbe();
+<#+
+
+}
+
+// *** WriteAddProbeTaskbox
+
+public void WriteAddProbeTaskbox(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // This probe checks if the taskbox instance is started
+        // Which depends on the taskbox being configured to auto start
+
+        return builder
+            .AddTaskboxProbe();
+<#+
+
+}
+
+// *** WriteAddDiagnosticTaskbox
+
+public void WriteAddDiagnosticTaskbox(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+        // This probe checks if the taskbox instance is started
+        // Which depends on the taskbox being configured to auto start
+
+        return builder
+            .AddTaskboxProbe();
+<#+
+
+}
+
+// *** WriteAddBackgroundServicesProbes
+
+public void WriteAddBackgroundServicesProbes(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // NOTES:
+        // Override this method to configure additional probes for background
+        // services
+
+<#+
+
+    foreach (BackgroundService backgroundService in serviceModel.BackgroundServices.Where(i => i.PerformsInitialization.IsTrue()))
+    {
+
+#>
+        builder
+            .AddBackgroundServiceProbe<<#= serviceModel.Namespace #>.Server.Host.BackgroundServices.<#= backgroundService.Name #>Service>("<#= backgroundService.Name #>BackgroundServiceProbe");
+
+<#+
+
+    }
+
+#>
+        return builder;
+<#+
+
+}
+
+// *** WriteAddBackgroundServicesDiagnostics
+
+public void WriteAddBackgroundServicesDiagnostics(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        // NOTES:
+        // Override this method to configure additional diagnostics for background
+        // services
+
+<#+
+
+    foreach (BackgroundService backgroundService in serviceModel.BackgroundServices.Where(i => i.PerformsInitialization.IsTrue()))
+    {
+
+#>
+        builder
+            .AddBackgroundServiceProbe<<#= serviceModel.Namespace #>.Server.Host.BackgroundServices.<#= backgroundService.Name #>Service>("<#= backgroundService.Name #>BackgroundServiceProbe");
+
+<#+
+
+    }
+
+#>
+        return builder;
+<#+
+
+}
+
+// *** WriteAddWebhooksProbes
+
+public void WriteAddWebhooksProbes(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // probe
+
+        return builder
+            .AddWebhooksProbe();
+<#+
+
+}
+
+// *** WriteAddWebhooksDiagnostics
+
+public void WriteAddWebhooksDiagnostics(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement a more specific
+        // diagnostic
+
+        return builder
+            .AddWebhooksDiagnostic();
+<#+
+
+}
+
+// *** WriteAddAdditionalProbes
+
+public void WriteAddAdditionalProbes(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement additional probes
+
+        return builder;
+<#+
+
+}
+
+// *** WriteAddAdditionalDiagnostics
+
+public void WriteAddAdditionalDiagnostics(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // Override this method to implement additional diagnostics
+
+        return builder;
+<#+
+
+}
+
+// *** WriteEndpointsAsync
+
+public void WriteEndpointsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Primavera.Hydrogen.AspNetCore.Routing.IEndpointAnalyzerService service = this.HttpContext.RequestServices.GetRequiredService<Primavera.Hydrogen.AspNetCore.Routing.IEndpointAnalyzerService>();
+
+        System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo> endpoints = service.Analyze();
+
+        return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(
+            this.Ok(
+                endpoints));
+<#+
+
+}
+
+// *** WriteConfigurationAsync
+
+public void WriteConfigurationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Primavera.Hydrogen.AspNetCore.Configuration.IConfigurationAnalyzerService service = this.HttpContext.RequestServices.GetRequiredService<Primavera.Hydrogen.AspNetCore.Configuration.IConfigurationAnalyzerService>();
+
+        Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation location = await service.SaveDebugAsync(
+            "<#= serviceModel.GUID #>", 
+            cancellationToken)
+            .ConfigureAwait(false);
+
+        return this.Ok(
+            location);
+<#+
+
+}
+
+// *** WriteInformationAsync
+
+public void WriteInformationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.GetInformationFromAssembly(out string version, out string build, out string copyright);
+
+        Primavera.Hydrogen.Rest.Description.ServiceInfo result = new Primavera.Hydrogen.Rest.Description.ServiceInfo()
+        {
+            Id = "<#= serviceModel.GUID #>",
+            Name = "<#= serviceModel.Name #>",
+            DisplayName = "<#= serviceModel.DisplayName #>",
+            Version = version,
+            Build = build,
+            Copyright = copyright,
+            Framework = "<#= SdkConstants.FrameworkVersion #>",
+            Host = new Primavera.Hydrogen.Rest.Description.HostInfo()
+            {
+                Application = this.HostEnvironment.ApplicationName,
+                Environment = this.HostEnvironment.EnvironmentName
+            }
+        };
+
+        result.ApiVersions = new List<string>()
+        {
+            "<#= serviceModel.Version #>",
+<#+
+
+    foreach (ApiVersion apiVersion in serviceModel.ApiVersions.OrderByDescending(i => i.Version))
+    {
+
+#>
+            "<#= apiVersion.Version #>",
+<#+
+
+    }
+
+#>
+        };
+
+<#+
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        result.ApiScopes = new List<string>()
+        {
+            "<#= serviceModel.DefaultScope #>",
+<#+
+
+        foreach (AuthorizationPolicy authorizationPolicy in serviceModel.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Scope))
+        {
+
+#>
+            "<#= authorizationPolicy.Scope #>",
+<#+
+
+        }
+
+        if (serviceModel.Webhooks.Count > 0)
+        {
+
+#>
+            "<#= serviceModel.DefaultScope #>-wh",
+<#+
+
+        }
+
+#>
+        };
+
+<#+
+
+    }
+
+    if (serviceModel.Webhooks.Any())
+    {
+
+#>
+        result.Webhooks = new List<string>()
+        {
+<#+
+
+        foreach (Webhook webhook in serviceModel.Webhooks.OrderBy(i => i.Name))
+        {
+
+#>
+            "<#= webhook.Name #>",
+<#+
+
+        }
+
+#>
+        };
+
+<#+
+
+    }
+
+    if (serviceModel.Dependencies.Any())
+    {
+
+#>
+        result.Dependencies = new List<string>()
+        {
+<#+
+
+        foreach (Dependency dependency in serviceModel.Dependencies.OrderBy(i => i.Kind.ToString()))
+        {
+
+#>
+            "<#= dependency.Kind #>",
+<#+
+
+        }
+
+#>
+        };
+
+<#+
+
+    }
+
+    if (serviceModel.ServiceDependencies.Any())
+    {
+
+#>
+        result.ServiceDependencies = new List<string>()
+        {
+<#+
+
+        foreach (ServiceDependency serviceDependency in serviceModel.ServiceDependencies.OrderBy(i => i.Service))
+        {
+
+#>
+            "<#= serviceDependency.Service #>",
+<#+
+
+        }
+
+#>
+        };
+
+<#+
+
+    }
+
+#>
+        return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(
+            this.Ok(
+                result));
+<#+
+
+}
+
+// *** WriteGetInformationFromAssembly
+
+public void WriteGetInformationFromAssembly(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Reflection.Assembly assembly = this.GetType().Assembly;
+
+        version = assembly.Reflector().AssemblyFileVersion.ToString();
+        build = assembly.Reflector().AssemblyInformationalVersion;
+        copyright = assembly.Reflector().AssemblyCopyright;
+<#+
+
+}
+
+#>

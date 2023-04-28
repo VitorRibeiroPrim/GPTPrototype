@@ -1,0 +1,151 @@
+﻿<#+
+
+// *** WriteMain
+
+public void WriteMain(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        HostBuilder builder = new HostBuilder();
+
+        Microsoft.Extensions.Hosting.IHost host = builder.Build(args);
+
+        host.Run();
+<#+
+
+}
+
+// *** WriteBuild
+
+public void WriteBuild(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.Extensions.Hosting.IHostBuilder builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+            .UseContentRoot(
+                System.IO.Directory.GetCurrentDirectory());
+
+        // NOTES:
+        // The call to ConfigureWebHostDefaults() must be the last
+        // so that Startup is initialized in the correct order,
+        // after everything else
+
+        return builder
+            .ConfigureHostConfiguration(
+                this.ConfigureHostConfiguration)
+            .ConfigureLogging(
+                this.ConfigureLogging)
+            .ConfigureServices(
+                this.ConfigureServices)
+            .ConfigureAppConfiguration(
+                this.ConfigureAppConfiguration)
+            .ConfigureWebHostDefaults(
+                this.ConfigureWebHostDefaults)
+            .Build();
+<#+
+
+}
+
+// *** WriteConfigureAppConfiguration
+
+public void WriteConfigureAppConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // This ensures that the wwwroot directory exists
+        // in the host so that middleware depending on
+        // that does not fail (e.g. markdown)
+
+        this.EnsureWebRootDirectory(context);
+
+        // NOTES:
+        // Order here is relevant
+        // File names are case sensitive in Linux
+
+        string? environmentName = context.HostingEnvironment.EnvironmentName
+            .Transform()
+            .ToLowerCase();
+
+        builder
+            .AddJsonFile($"GeneratedCode/appsettings.gen.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"CustomCode/appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"GeneratedCode/appsettings-{environmentName}.gen.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"CustomCode/appsettings-{environmentName}.json", optional: true, reloadOnChange: true);
+
+        builder
+            .AddEnvironmentVariables();
+
+        // NOTES:
+        // This adds Azure App Configuration, depending on the services'
+        // environment variables
+
+        builder
+            .AddAzureManagedConfiguration();
+<#+
+
+}
+
+// *** WriteEnsureWebRootDirectory
+
+public void WriteEnsureWebRootDirectory(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.IO.DirectoryInfo directory = new System.IO.DirectoryInfo(
+            System.IO.Path.Combine(
+                context.HostingEnvironment.ContentRootPath,
+                "wwwroot"));
+
+        if (!directory.Exists)
+        {
+            directory.Create();
+        }
+<#+
+
+}
+
+// *** WriteConfigureLogging
+
+public void WriteConfigureLogging(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        builder
+            .ClearProviders();
+
+        builder
+            .AddConfiguration(context.Configuration.GetSection("Logging"));
+
+        bool useDevelopmentSettings = this.UseDevelopmentSettings || context.HostingEnvironment.IsDevelopment();
+
+        if (useDevelopmentSettings)
+        {
+            builder
+                .AddConsole()
+                .AddDebug();
+        }
+<#+
+
+}
+
+// *** WriteConfigureWebHostDefaults
+
+public void WriteConfigureWebHostDefaults(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (this.CaptureStartupErrors)
+        {
+            builder
+                .UseSetting("detailedErrors", "true")
+                .CaptureStartupErrors(true);
+        }
+
+        builder
+            .UseStartup<Startup>();
+<#+
+
+}
+
+#>

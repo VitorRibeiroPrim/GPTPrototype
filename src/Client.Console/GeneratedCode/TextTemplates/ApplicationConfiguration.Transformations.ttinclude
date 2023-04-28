@@ -1,0 +1,163 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Console.Configuration");
+
+    // ApplicationConfigurationBase
+
+    ClassModel applicationConfigurationBaseClass = targetModel.Namespace
+        .AddClass(new ClassModel("ApplicationConfigurationBase")
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial | ClassModifiers.Abstract,
+            Documentation = new DocumentationModel("Defines the base class for the configuration used by the application.")
+        })
+            .AddProperty(new PropertyModel("ServiceBaseUri", "string?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the service base URI.")
+            })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1056:UriPropertiesShouldNotBeStrings\")"))
+                .ParentModelAs<ClassModel>()
+            .AddProperty(new PropertyModel("Environments", "System.Collections.Generic.IDictionary<string, EnvironmentConfiguration>?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the environments configuration.")
+            })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1056:UriPropertiesShouldNotBeStrings\")"))
+                .ParentModelAs<ClassModel>()
+            .WithConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Protected,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ApplicationConfigurationBase\"/> class.")
+            })
+            .WithMethod(new MethodModel("SetDefaultValues")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Sets the default values.")
+                {
+                    Remarks = "This method should be overridden to set the default values of properties."
+                }
+            });
+
+    // ApplicationConfiguration
+
+    ClassModel applicationConfigurationClass = targetModel.Namespace
+        .AddClass(new ClassModel("ApplicationConfiguration")
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+            Inheritance = "ApplicationConfigurationBase",
+            Documentation = new DocumentationModel("Defines the configuration used by the application.")
+            {
+                SeeAlso = new string[] { "ApplicationConfigurationBase" }
+            }
+        })
+            .WithConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base()",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ApplicationConfiguration\"/> class.")
+            });
+
+    // EnvironmentConfigurationBase
+
+    ClassModel environmentConfigurationBase = targetModel.Namespace
+        .AddClass(new ClassModel("EnvironmentConfigurationBase")
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial | ClassModifiers.Abstract,
+            Documentation = new DocumentationModel("Defines the base class for the configuration of an environment.")
+        })
+            .AddProperty(new PropertyModel("ServiceBaseUri", "string?")
+            {
+                Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                SetAccessor = new PropertySetAccessorModel(),
+                Documentation = new DocumentationModel("Gets or sets the service base URI.")
+            })
+                .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1056:UriPropertiesShouldNotBeStrings\")"))
+                .ParentModelAs<ClassModel>()
+            .WithConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Protected,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"EnvironmentConfigurationBase\"/> class.")
+            })
+            .WithMethod(new MethodModel("SetDefaultValues")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Sets the default values.")
+                {
+                    Remarks = "This method should be overridden to set the default values of properties."
+                }
+            });
+
+    // EnvironmentConfigurationBase
+
+    ClassModel environmentConfigurationClass = targetModel.Namespace
+        .AddClass(new ClassModel("EnvironmentConfiguration")
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+            Inheritance = "EnvironmentConfigurationBase",
+            Documentation = new DocumentationModel("Defines the configuration of an environment.")
+            {
+                SeeAlso = new string[] { "EnvironmentConfigurationBase" }
+            }
+        })
+            .WithConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base()",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"EnvironmentConfiguration\"/> class.")
+            });
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+        applicationConfigurationBaseClass
+            .WithProperty(
+                new PropertyModel("ClientId", "string?")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the client identifier.")
+                })
+            .WithProperty(
+                new PropertyModel("ClientSecret", "string?")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the client secret.")
+                });
+
+        environmentConfigurationBase
+            .WithProperty(
+                new PropertyModel("ClientId", "string?")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the client identifier.")
+                })
+                .WithProperty(new PropertyModel("ClientSecret", "string?")
+                {
+                    Modifiers = PropertyModifiers.Public | PropertyModifiers.Virtual,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    SetAccessor = new PropertySetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets or sets the client secret.")
+                });
+    }
+}
+
+#>

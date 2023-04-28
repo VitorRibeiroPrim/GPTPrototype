@@ -1,0 +1,259 @@
+﻿<#+
+
+// *** WriteMonitoringProbe
+
+public void WriteMonitoringProbe(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.TestProbeAsync();
+<#+
+
+}
+
+// *** WriteMonitoringDiagnostics
+
+public void WriteMonitoringDiagnostics(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.TestDiagnosticsAsync();
+<#+
+
+}
+
+// *** WriteMonitoringEndpoints
+
+public void WriteMonitoringEndpoints(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.TestEndpointsAsync();
+<#+
+
+}
+
+// *** WriteMonitoringConfiguration
+
+public void WriteMonitoringConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.TestConfigurationAsync();
+<#+
+
+}
+
+// *** WriteMonitoringInformation
+
+public void WriteMonitoringInformation(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return this.TestInformationAsync();
+<#+
+
+}
+
+// *** WriteTestProbeAsync
+
+public void WriteTestProbeAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        using MemoryLoggerProvider loggerProvider = new MemoryLoggerProvider();
+
+        using IntegrationTestFixture fixture = new IntegrationTestFixture()
+        {
+            CurrentOperation = "Monitoring.Probe",
+            ConfigureLoggingDelegate = builder =>
+            {
+                builder
+                    .SetMinimumLevel(LogLevel.Error)
+                    .AddProvider(loggerProvider);
+            }
+        };
+
+<#+
+
+    if (serviceModel.BackgroundServices.Any(i => i.PerformsInitialization.IsTrue()))
+    {
+
+#>
+        await fixture.WarmUpApplicationAsync().ConfigureAwait(false);
+
+<#+
+
+    }
+
+#>
+        <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>Client serviceClient = await fixture.GetServiceClientAsync()
+            .ConfigureAwait(false);
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult> result1 = await serviceClient.Monitoring.ProbeAsync().ConfigureAwait(false);
+            result1.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+            result1.Result.Should().NotBeNull();
+            result1.Result.Status.Should().Be(Primavera.Hydrogen.HealthMonitoring.HealthStatus.Healthy);
+
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult> result2 = serviceClient.Monitoring.Probe();
+            result2.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+            result2.Result.Should().NotBeNull();
+            result2.Result.Status.Should().Be(Primavera.Hydrogen.HealthMonitoring.HealthStatus.Healthy);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            Primavera.Hydrogen.HealthMonitoring.HealthResult healthResult = Primavera.Hydrogen.HealthMonitoring.HealthResultSerializer.Deserialize(
+                ex.Response.Content.ToString());
+            
+            healthResult.Status.Should().Be(Primavera.Hydrogen.HealthMonitoring.HealthStatus.Healthy, $"actual result is '{healthResult}' (application error log is '{loggerProvider.Output}')");
+        }
+<#+
+
+}
+
+// *** WriteTestDiagnosticsAsync
+
+public void WriteTestDiagnosticsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        using MemoryLoggerProvider loggerProvider = new MemoryLoggerProvider();
+
+        using IntegrationTestFixture fixture = new IntegrationTestFixture()
+        {
+            CurrentOperation = "Monitoring.Diagnostics",
+            ConfigureLoggingDelegate = builder =>
+            {
+                builder
+                    .SetMinimumLevel(LogLevel.Error)
+                    .AddProvider(loggerProvider);
+            }
+        };
+
+<#+
+
+    if (serviceModel.BackgroundServices.Any(i => i.PerformsInitialization.IsTrue()))
+    {
+
+#>
+        await fixture.WarmUpApplicationAsync().ConfigureAwait(false);
+
+<#+
+
+    }
+
+#>
+        <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>Client serviceClient = await fixture.GetServiceClientAsync()
+            .ConfigureAwait(false);
+
+        try
+        {
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult> result1 = await serviceClient.Monitoring.DiagnosticsAsync().ConfigureAwait(false);
+            result1.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+            result1.Result.Should().NotBeNull();
+            result1.Result.Status.Should().Be(Primavera.Hydrogen.HealthMonitoring.HealthStatus.Healthy);
+
+            Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.HealthMonitoring.HealthResult> result2 = serviceClient.Monitoring.Diagnostics();
+            result2.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+            result2.Result.Should().NotBeNull();
+            result2.Result.Status.Should().Be(Primavera.Hydrogen.HealthMonitoring.HealthStatus.Healthy);
+        }
+        catch (Primavera.Hydrogen.Rest.Client.RestRequestException ex)
+        {
+            Primavera.Hydrogen.HealthMonitoring.HealthResult healthResult = Primavera.Hydrogen.HealthMonitoring.HealthResultSerializer.Deserialize(
+                ex.Response.Content.ToString());
+            
+            healthResult.Status.Should().Be(Primavera.Hydrogen.HealthMonitoring.HealthStatus.Healthy, $"actual result is '{healthResult} (application error log is '{loggerProvider.Output}')'");
+        }
+<#+
+
+}
+
+// *** WriteTestEndpointsAsync
+
+public void WriteTestEndpointsAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        using IntegrationTestFixture fixture = new IntegrationTestFixture()
+        {
+            CurrentOperation = "Monitoring.Endpoints"
+        };
+
+        <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>Client serviceClient = await fixture.GetServiceClientAsync()
+            .ConfigureAwait(false);
+
+        Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>> result1 = await serviceClient.Monitoring.EndpointsAsync().ConfigureAwait(false);
+        result1.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+        result1.Result.Should().NotBeEmpty();
+
+        Primavera.Hydrogen.Rest.Client.RestServiceResult<System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>> result2 = serviceClient.Monitoring.Endpoints();
+        result2.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+        result2.Result.Should().NotBeEmpty();
+<#+
+
+}
+
+// *** WriteTestConfigurationAsync
+
+public void WriteTestConfigurationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        using IntegrationTestFixture fixture = new IntegrationTestFixture()
+        {
+            CurrentOperation = "Monitoring.Configuration"
+        };
+
+        <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>Client serviceClient = await fixture.GetServiceClientAsync()
+            .ConfigureAwait(false);
+
+        Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation> result1 = await serviceClient.Monitoring.ConfigurationAsync().ConfigureAwait(false);
+        result1.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+        result1.Result.Should().NotBeNull();
+
+        Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation> result2 = serviceClient.Monitoring.Configuration();
+        result2.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+        result2.Result.Should().NotBeNull();
+<#+
+
+}
+
+// *** WriteTestInformationAsync
+
+public void WriteTestInformationAsync(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        using IntegrationTestFixture fixture = new IntegrationTestFixture()
+        {
+            CurrentOperation = "Monitoring.Information"
+        };
+
+        <#= serviceModel.Namespace #>.Client.Rest.<#= serviceModel.Name #>Client serviceClient = await fixture.GetServiceClientAsync()
+            .ConfigureAwait(false);
+
+        Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Description.ServiceInfo> result1 = await serviceClient.Monitoring.InformationAsync().ConfigureAwait(false);
+        result1.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+        result1.Result.Should().NotBeNull();
+
+        Primavera.Hydrogen.Rest.Client.RestServiceResult<Primavera.Hydrogen.Rest.Description.ServiceInfo> result2 = serviceClient.Monitoring.Information();
+        result2.Response.StatusCode.Should().Be((int)System.Net.HttpStatusCode.OK);
+        result2.Result.Should().NotBeNull();
+<#+
+
+}
+
+#>

@@ -1,0 +1,55 @@
+﻿<#+
+
+// *** WriteStartupAddRestApiPart
+
+public void WriteStartupAddRestApiPart(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.TestAddRestApiPart();
+<#+
+
+}
+
+// *** WriteTestAddRestApiPart
+
+public void WriteTestAddRestApiPart(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        <#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration hostConfiguration = new <#= serviceModel.Namespace #>.Server.Common.Configuration.HostConfiguration();
+
+        Microsoft.Extensions.DependencyInjection.ServiceCollection services = this.CreateServiceCollection();
+
+        Microsoft.Extensions.DependencyInjection.IMvcBuilder builder = services.AddMvc();
+
+        builder.AddRestApiPart(hostConfiguration);
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+
+        provider.Should().HaveSingleton<AutoMapper.Profile>()
+            .Which.Should().BeOfType<MappingProfile>();
+
+        this.TestAddRestApiPartServices(services, provider);
+<#+
+
+}
+
+// *** WriteCreateServiceCollection
+
+public void WriteCreateServiceCollection(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        return new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+<#+
+
+}
+
+#>

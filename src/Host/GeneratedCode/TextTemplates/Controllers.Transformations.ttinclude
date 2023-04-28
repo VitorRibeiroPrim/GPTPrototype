@@ -1,0 +1,68 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Host.Controllers");
+
+    ClassModel baseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("AppControllerBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+                Inheritance = "Microsoft.AspNetCore.Mvc.Controller",
+                Documentation = new DocumentationModel("Defines the base class for all the controllers in the MVC application.")
+            })
+            .WithProperty(
+                new PropertyModel("HostConfiguration", $"{sourceModel.Namespace}.Server.Common.Configuration.HostConfiguration", $"this.HttpContext.RequestServices.GetRequiredService<{sourceModel.Namespace}.Server.Common.Configuration.HostConfiguration>()")
+                {
+                    Modifiers = PropertyModifiers.Protected,
+                    Documentation = new DocumentationModel("Gets the host configuration options.")
+                })
+            .WithProperty(
+                new PropertyModel("HostEnvironment", $"Microsoft.Extensions.Hosting.IHostEnvironment", $"this.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Hosting.IHostEnvironment>()")
+                {
+                    Modifiers = PropertyModifiers.Protected,
+                    Documentation = new DocumentationModel("Gets the host environment.")
+                })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"AppControllerBase\" /> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("logger", "Microsoft.Extensions.Logging.ILogger")
+                    {
+                        Documentation = new DocumentationModel("The logger.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddProperty(
+                new PropertyModel("Logger", "Microsoft.Extensions.Logging.ILogger")
+                {
+                    Modifiers = PropertyModifiers.Protected,
+                    GetAccessor = new PropertyGetAccessorModel(),
+                    Documentation = new DocumentationModel("Gets the logger.")
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("Validate", "Primavera.Hydrogen.AspNetCore.Mvc.Validation.ApiControllerValidator")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Initializes a new validator.")
+                    {
+                        Returns = "The <see cref=\"Primavera.Hydrogen.AspNetCore.Mvc.Validation.ApiControllerValidator\" /> instance."
+                    }
+                })
+                .ParentModelAs<ClassModel>();
+}
+
+#>

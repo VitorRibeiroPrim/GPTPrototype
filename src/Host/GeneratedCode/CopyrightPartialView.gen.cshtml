@@ -1,0 +1,24 @@
+﻿@using System.Net
+@using Microsoft.Extensions.DependencyInjection
+@using Primavera.Hydrogen.Net
+@using Primavera.Lithium.ChatGPT.Server.Host.Localization
+@{
+    // Configuration
+
+    HostConfiguration configuration = this.Context.RequestServices.GetRequiredService<HostConfiguration>();
+
+    // IP Address
+
+    IPAddress? address = await IPConfig.MyIpAsync().ConfigureAwait(false);
+
+    string ipAddress = address?.ToString() ?? "Unavailable";
+}
+
+    <div class="info-content">
+        <span>@Html.Raw(configuration.Information!.Copyright)</span>
+        <span>Powered by Lithium v5</span>
+        <span>@Html.Raw($"{ViewsResources.RES_Version}: {configuration.Information.Version}")</span>
+        <span>@Html.Raw($"{ViewsResources.RES_Build}: {configuration.Information.InformationalVersion}")</span>
+        <span hidden>IP: @Html.Raw(ipAddress)</span>
+    </div>
+

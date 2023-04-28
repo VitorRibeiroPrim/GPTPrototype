@@ -1,0 +1,232 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    targetModel.WithComment("Ignore Spelling: ro");
+
+    targetModel.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.RestApi");
+
+    // MvcBuilder extensions
+
+    ClassModel extensionsClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("MvcBuilderExtensions")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Provides extension methods for the <see cref=\"Microsoft.Extensions.DependencyInjection.IMvcBuilder\" /> type.")
+            })
+            .AddMethod(
+                new MethodModel(
+                    "AddRestApiPart", "Microsoft.Extensions.DependencyInjection.IMvcBuilder")
+                    {
+                        Modifiers = MethodModifiers.Public | MethodModifiers.Static,
+                        Documentation = new DocumentationModel("Configures the REST API part.")
+                        {
+                            Returns = "The MVC builder instance.",
+                            Remarks = "This method is called from the host startup."
+                        }
+                    })
+                .WithParameter(
+                    new MethodParameterModel("builder", "Microsoft.Extensions.DependencyInjection.IMvcBuilder")
+                    {
+                        Modifiers = MethodParameterModifiers.This,
+                        Documentation = new DocumentationModel("The MVC builder.")
+                    })
+                .WithParameter(
+                    new MethodParameterModel("hostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                    {
+                        Documentation = new DocumentationModel("The host configuration.")
+                    })
+                .ParentModelAs<ClassModel>();
+
+    // Startup
+
+    ClassModel startupBaseClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("StartupBase")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Partial | ClassModifiers.Abstract,
+                Documentation = new DocumentationModel("Defines the base class for <see cref=\"Startup\" /> to allow customization.")
+            })
+            .WithProperty(
+                new PropertyModel("HostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                {
+                    Modifiers = PropertyModifiers.Protected,
+                    Documentation = new DocumentationModel("Gets the host configuration."),
+                    GetAccessor = new PropertyGetAccessorModel()
+                })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"StartupBase\" /> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("hostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                    {
+                        Documentation = new DocumentationModel("The host configuration.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("AddServices")
+                {
+                    Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the services.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("AddMvc")
+                {
+                    Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures MVC.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("builder", "Microsoft.Extensions.DependencyInjection.IMvcBuilder")
+                    {
+                        Documentation = new DocumentationModel("The MVC builder.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("AddMappings")
+                {
+                    Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the mappings.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureJsonOptions")
+                {
+                    Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the MVC JSON serializer options.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .ParentModelAs<ClassModel>();
+
+    if (serviceModel.Extensions().HasODataServerSide)
+    {
+        startupBaseClassModel
+            .AddMethod(
+                new MethodModel("AddOData")
+                {
+                    Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Adds the OData MVC services.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("builder", "Microsoft.Extensions.DependencyInjection.IMvcBuilder")
+                    {
+                        Documentation = new DocumentationModel("The MVC builder.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureOData")
+                {
+                    Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the OData MVC services.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("options", "Microsoft.AspNetCore.OData.ODataOptions")
+                    {
+                        Documentation = new DocumentationModel("The options.")
+                    });
+    }
+
+    if (serviceModel.Webhooks.Any())
+    {
+        startupBaseClassModel
+            .AddMethod(
+                new MethodModel("ConfigureWebhooksOptions")
+                {
+                    Modifiers = MethodModifiers.Internal | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the Webhooks options.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("services", "Microsoft.Extensions.DependencyInjection.IServiceCollection")
+                    {
+                        Documentation = new DocumentationModel("The service collection.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("ConfigureWebhooksOptions")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Configures the Webhooks options.")
+                    {
+                        Remarks = "This method is called from ConfigureWebhooksOptions()."
+                    }
+                })
+                .WithParameter(
+                    new MethodParameterModel("options", "Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions")
+                    {
+                        Documentation = new DocumentationModel("The webhooks options.")
+                    })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(new MethodModel("GetResourceValueForCulture", "string?")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Retrieves the specified resource in the specified culture.")
+                {
+                    Returns = "The specified resource in the specified culture."
+                }
+            })
+                .WithParameter(new MethodParameterModel("name", "string")
+                {
+                    Documentation = new DocumentationModel("The resource name.")
+                })
+                .WithParameter(new MethodParameterModel("culture", "string")
+                {
+                    Documentation = new DocumentationModel("The culture.")
+                })
+                .WithParameter(new MethodParameterModel("resourcesType", "System.Type")
+                {
+                    Documentation = new DocumentationModel("The type that contains the resources.")
+                });
+    }
+
+    // Startup
+
+    ClassModel startupClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("Startup")
+            {
+                Inheritance = "StartupBase",
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Provides methods to startup the REST API part.")
+            })
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base(hostConfiguration)",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"Startup\" /> class.")
+                })
+                .WithParameter(
+                    new MethodParameterModel("hostConfiguration", $"{serviceModel.Namespace}.Server.Common.Configuration.HostConfiguration")
+                    {
+                        Documentation = new DocumentationModel("The host configuration.")
+                    })
+                .ParentModelAs<ClassModel>();
+}
+
+#>

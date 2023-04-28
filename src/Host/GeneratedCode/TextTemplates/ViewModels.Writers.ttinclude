@@ -1,0 +1,232 @@
+﻿<#+
+
+// *** WriteErrorViewModelBaseConstructor1
+
+public void WriteErrorViewModelBaseConstructor1(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+#>
+        this.IsStatusCodeError = true;
+        this.ErrorStatusCode = statusCode;
+        this.ErrorOriginalPath = originalPath;
+        this.ErrorOriginalQueryString = originalQueryString;
+        this.UserSignedIn = userSignedIn;
+        this.UserEmail = userEmail;
+<#+
+
+}
+
+// *** WriteErrorViewModelBaseConstructor2
+
+public void WriteErrorViewModelBaseConstructor2(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+#>
+        Primavera.Hydrogen.Guard.NotNullOrWhiteSpace(errorId, nameof(errorId));
+        Primavera.Hydrogen.Guard.NotNull(message, nameof(message));
+
+        this.IsStatusCodeError = false;
+        this.ErrorId = errorId;
+        this.Message = message;
+<#+
+
+}
+
+// *** WriteGetPageTitle
+
+public void WriteGetPageTitle(ModelWriter modelWriter, MethodBodyModel model)
+{
+#>
+        Primavera.Hydrogen.Guard.NotNull(hostConfiguration, nameof(hostConfiguration));
+
+        if (model == null)
+        {
+            return Localization.ViewsResources.RES_PageTitle_Error.Format(hostConfiguration.Information?.HostTitle);
+        }
+
+        if (model.IsStatusCodeError)
+        {
+            return Localization.ViewsResources.RES_PageTitle_Error_StatusCode.Format(hostConfiguration.Information?.HostTitle, model.ErrorStatusCode);
+        }
+
+        return Localization.ViewsResources.RES_PageTitle_Error.Format(hostConfiguration.Information?.HostTitle);
+<#+
+
+}
+
+// *** WriteGetTitle
+
+public void WriteGetTitle(ModelWriter modelWriter, MethodBodyModel model)
+{
+#>
+        if (model == null)
+        {
+            title = Localization.ViewsResources.RES_Title_Error;
+            return;
+        }
+
+        if (model.IsStatusCodeError)
+        {
+            switch (model.ErrorStatusCode)
+            {
+                case 0:
+                    title = Localization.ViewsResources.RES_Title_Error;
+                    return;
+                case 400:
+                    title = Localization.ViewsResources.RES_Title_400;
+                    return;
+                case 401:
+                    title = Localization.ViewsResources.RES_Title_401;
+                    return;
+                case 403:
+                    title = Localization.ViewsResources.RES_Title_403;
+                    return;
+                case 404:
+                    title = Localization.ViewsResources.RES_Title_404;
+                    return;
+                case 405:
+                    title = Localization.ViewsResources.RES_Title_405;
+                    return;
+                case 500:
+                    title = Localization.ViewsResources.RES_Title_500;
+                    return;
+                default:
+                    title = Localization.ViewsResources.RES_Title_StatusCode.Format(model.ErrorStatusCode);
+                    return;
+            }
+        }
+
+        title = Localization.ViewsResources.RES_Title_Error.Format(model.ErrorId);
+<#+
+
+}
+
+// *** WriteGetDescriptionHtml
+
+public void WriteGetDescriptionHtml(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel serviceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        if (model == null)
+        {
+            description = Localization.ViewsResources.RES_Description_Unexpected;
+            additionalInformation = null;
+            return;
+        }
+
+        if (model.IsStatusCodeError)
+        {
+            switch (model.ErrorStatusCode)
+            {
+                case 0:
+                    description = Localization.ViewsResources.RES_Description_Unexpected;
+                    additionalInformation = null;
+                    return;
+                case 400:
+                    description = Localization.ViewsResources.RES_Description_400;
+                    additionalInformation = null;
+                    return;
+<#+
+
+    if (serviceModel.Settings.GenerateOidcSupport)
+    {
+
+#>
+                case 401:
+                    description = Localization.ViewsResources.RES_Description_401;
+                    additionalInformation = null;
+                    return;
+                case 403:
+                    description = Localization.ViewsResources.RES_Description_403;
+                    additionalInformation = GetAdditionalInformationSignedInUser(model);
+                    return;
+<#+
+
+    }
+#>
+                case 404:
+                    description = Localization.ViewsResources.RES_Description_404;
+                    additionalInformation = null;
+                    return;
+                case 405:
+                    description = Localization.ViewsResources.RES_Description_405;
+                    additionalInformation = null;
+                    return;
+                case 500:
+                    description = Localization.ViewsResources.RES_Description_500;
+                    additionalInformation = null;
+                    return;
+                default:
+                    description = Localization.ViewsResources.RES_Description_StatusCode.Format(model.ErrorStatusCode);
+                    additionalInformation = null;
+                    return;
+            }
+        }
+
+        if (model.Message == null)
+        {
+            description = Localization.ViewsResources.RES_Description_Unexpected;
+        }
+
+        string? error = null;
+
+        switch (model.ErrorId)
+        {
+            default:
+                if (model.Message?.IsExpected ?? false)
+                {
+                    error = "<p><b>{0}</b></p>{1}"
+                        .Format(
+                            model.Message.Error,
+                            model.Message.ErrorDescription == null ? string.Empty : "<p>" + model.Message.ErrorDescription + "</p>");
+                }
+                else
+                {
+                    error = Localization.ViewsResources.RES_Description_Unexpected_ErrorId
+                        .Format(
+                            model.Message?.Error,
+                            model.Message?.ErrorDescription == null ? string.Empty : "<p>" + model.Message.ErrorDescription + "</p>");
+                }
+
+                break;
+        }
+
+        description = error;
+        additionalInformation = null;
+<#+
+
+}
+
+// *** WriteGetAdditionalInformationSignedInUser
+
+public void WriteGetAdditionalInformationSignedInUser(ModelWriter modelWriter, MethodBodyModel model)
+{
+#>
+        if (model == null)
+        {
+            return null;
+        }
+
+        if (!model.UserSignedIn)
+        {
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(model.UserEmail))
+        {
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(model.ErrorOriginalPath))
+        {
+            return null;
+        }
+
+        return Localization.ViewsResources.RES_SignedInAs
+            .Format(
+                model.UserEmail,
+                Common.Constants.Controllers.Home.Routes.Signout + model.ErrorOriginalQueryString);
+<#+
+
+}
+
+#>

@@ -1,0 +1,854 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Lithium.ChatGPT.Server.Common</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase">
+            <summary>
+            Defines the base class for the configuration settings used by the service host.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase.ServiceCatalogServiceBaseUri">
+            <summary>
+            Gets or sets the Service Catalog base URI.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase.Information">
+            <summary>
+            Gets or sets information about the host.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase.Cors">
+            <summary>
+            Gets or sets the CORS configuration options.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase.Validate">
+            <summary>
+            Validates the host configuration.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfigurationBase.SetDefaultValues">
+            <summary>
+            Sets the default values.
+            </summary>
+            <remarks>
+            This method should be overridden to set the default values of properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase">
+            <summary>
+            Defines the base class for the type that provides information about the host.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.ProductName">
+            <summary>
+            Gets the product name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.HostTitle">
+            <summary>
+            Gets the host title.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.Company">
+            <summary>
+            Gets the company.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.Copyright">
+            <summary>
+            Gets the copyright.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.Version">
+            <summary>
+            Gets the version.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.InformationalVersion">
+            <summary>
+            Gets the informational version.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptionsBase.SetDefaultValues">
+            <summary>
+            Sets the default values.
+            </summary>
+            <remarks>
+            This method should be overridden to set the default values of properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase">
+            <summary>
+            Defines the base class for the type that provides configuration options used for CORS.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the CORS middleware should be enabled.
+            </summary>
+            <remarks>
+            If false, the middleware will not be configured and all other options will be ignored.
+            If true, the middleware will be configured and allowed origins, headers, etc. will be added according to the other configuration options.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase.AllowedOrigins">
+            <summary>
+            Gets or sets the allowed origins.
+            </summary>
+            <remarks>
+            You may specify multiple origins, separated by ;.
+            If the value is null or whitespace, no origins will be added.
+            It is not possible to allow all origins.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase.AllowedMethods">
+            <summary>
+            Gets or sets the allowed methods.
+            </summary>
+            <remarks>
+            You may specify multiple methods, separated by ;.
+            If the value is null or whitespace ALL methods will be allowed.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase.AllowedHeaders">
+            <summary>
+            Gets or sets the allowed headers.
+            </summary>
+            <remarks>
+            You may specify multiple headers, separated by ;.
+            If the value is null or whitespace ALL headers will be allowed.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptionsBase.SetDefaultValues">
+            <summary>
+            Sets the default values.
+            </summary>
+            <remarks>
+            This method should be overridden to set the default values of properties.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration">
+            <summary>
+            Defines the configuration settings used by the service host.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptions">
+            <summary>
+            Provides information about the host.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.InformationOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptions">
+            <summary>
+            Provides configuration options used for CORS.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Configuration.CorsOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants">
+            <summary>
+            Defines constants used by various types.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Policies">
+            <summary>
+            Defines constants used to identify authentication policies.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Policies.DefaultScope">
+            <summary>
+            Defines the name of the policy that applies the default scope.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers">
+            <summary>
+            Defines constants used by MVC controllers.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home">
+            <summary>
+            Defines constants used by the home MVC controller.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home.Routes">
+            <summary>
+            Defines constants that specify the routes used in the home MVC controller.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home.Routes.Index">
+            <summary>
+            Defines the route of the index action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home.Routes.Error">
+            <summary>
+            Defines the route of the error action.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home.Actions">
+            <summary>
+            Defines constants that specify the action names used in the home MVC controller.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home.Actions.Index">
+            <summary>
+            Defines the name of the index action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home.Actions.Error">
+            <summary>
+            Defines the name of the error action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Home.Name">
+            <summary>
+            Defines the name of the controller.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.ClientLibDocumentation">
+            <summary>
+            Defines constants used by the client library documentation MVC controller.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.ClientLibDocumentation.Routes">
+            <summary>
+            Defines constants that specify the routes used in the client library documentation MVC controller.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.ClientLibDocumentation.Routes.Documentation">
+            <summary>
+            Defines the route of the documentation action.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.ClientLibDocumentation.Actions">
+            <summary>
+            Defines constants that specify the action names used in the client library documentation MVC controller.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.ClientLibDocumentation.Actions.Documentation">
+            <summary>
+            Defines the name of the documentation action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.ClientLibDocumentation.Name">
+            <summary>
+            Defines the name of the controller.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring">
+            <summary>
+            Defines constants used by the monitoring MVC controller.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Routes">
+            <summary>
+            Defines constants that specify the routes used in the monitoring MVC controller.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Routes.Probe">
+            <summary>
+            Defines the route of the probe action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Routes.Diagnostics">
+            <summary>
+            Defines the route of the diagnostics action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Routes.Endpoints">
+            <summary>
+            Defines the route of the endpoints action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Routes.Configuration">
+            <summary>
+            Defines the route of the configuration action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Routes.Information">
+            <summary>
+            Defines the route of the information action.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Actions">
+            <summary>
+            Defines constants that specify the action names used in the monitoring MVC controller.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Actions.Probe">
+            <summary>
+            Defines the name of the probe action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Actions.Diagnostics">
+            <summary>
+            Defines the name of the diagnostics action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Actions.Endpoints">
+            <summary>
+            Defines the name of the endpoints action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Actions.Configuration">
+            <summary>
+            Defines the name of the configuration action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Actions.Information">
+            <summary>
+            Defines the name of the information action.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Controllers.Monitoring.Name">
+            <summary>
+            Defines the name of the controller.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Documentation">
+            <summary>
+            Defines constants used in the documentation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Documentation.RestApiBaseRoute">
+            <summary>
+            Defines the base route of the REST API documentation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Documentation.RestApiBaseRouteLegacy">
+            <summary>
+            Defines the legacy base route of the REST API documentation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Documentation.RestApiDocumentsRoute">
+            <summary>
+            Defines the route of the REST API documentation documents.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Documentation.RestApiStyleSheetPath">
+            <summary>
+            Defines the path of the custom style sheet used to customize the UI.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Constants.Views">
+            <summary>
+            Defines constants used to identify views.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Views.Home">
+            <summary>
+            Defines the path of the home view.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Views.Error">
+            <summary>
+            Defines the path of the error view.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Views.CopyrightPartial">
+            <summary>
+            Defines the path of the copyright partial view.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.Views.ClientLibDocumentation">
+            <summary>
+            Defines the path of the client library documentation view.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Constants.DefaultApiVersion">
+            <summary>
+            Defines the default API version.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported">
+            <summary>
+            Defines the cultures supported by the service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.PortugueseBaseCulture">
+            <summary>
+            The Portuguese base culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.PortugueseDefaultCulture">
+            <summary>
+            The Portuguese culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.PortugueseFromAngolaCulture">
+            <summary>
+            The Portuguese (Angola) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.PortugueseFromCapeVerdeCulture">
+            <summary>
+            The Portuguese (Cape Verde) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.PortugueseFromMozambiqueCulture">
+            <summary>
+            The Portuguese (Mozambique) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.PortugueseFromPortugalCulture">
+            <summary>
+            The Portuguese (Portugal) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.EnglishBaseCulture">
+            <summary>
+            The English base culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.EnglishDefaultCulture">
+            <summary>
+            The English default culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.EnglishFromIrelandCulture">
+            <summary>
+            The English (Ireland) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.EnglishFromGreatBritainCulture">
+            <summary>
+            The English (G.B.) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.EnglishFromUnitedStatesCulture">
+            <summary>
+            The English (U.S.) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.EnglishFromCanadaCulture">
+            <summary>
+            The English (Canada) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.SpanishBaseCulture">
+            <summary>
+            The Spanish base culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.SpanishDefaultCulture">
+            <summary>
+            The Spanish default culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.SpanishFromArgentinaCulture">
+            <summary>
+            The Spanish (Argentina) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.SpanishFromChileCulture">
+            <summary>
+            The Spanish (Chile) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.SpanishFromMexicoCulture">
+            <summary>
+            The Spanish (Mexico) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.SpanishFromSpainCulture">
+            <summary>
+            The Spanish (Spain) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.CatalanBaseCulture">
+            <summary>
+            The Catalan base culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.CatalanDefaultCulture">
+            <summary>
+            The Catalan default culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.CatalanFromSpainCulture">
+            <summary>
+            The Catalan (Spain) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.ItalianBaseCulture">
+            <summary>
+            The Italian base culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.ItalianDefaultCulture">
+            <summary>
+            The Italian default culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.ItalianFromItalyCulture">
+            <summary>
+            The Italian (Italy) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.ItalianFromSwitzerlandCulture">
+            <summary>
+            The Italian (Switzerland) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.RomanianBaseCulture">
+            <summary>
+            The Romanian base culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.RomanianDefaultCulture">
+            <summary>
+            The Romanian default culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.RomanianFromRomaniaCulture">
+            <summary>
+            The Romanian (Romania) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.FrenchBaseCulture">
+            <summary>
+            The French base culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.FrenchDefaultCulture">
+            <summary>
+            The French default culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.FrenchFromFranceCulture">
+            <summary>
+            The French (France) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.FrenchFromBelgiumCulture">
+            <summary>
+            The French (Belgium) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.FrenchFromCanadaCulture">
+            <summary>
+            The French (Canada) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.FrenchFromLuxembourgCulture">
+            <summary>
+            The French (Switzerland) culture.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.FrenchFromSwitzerlandCulture">
+            <summary>
+            The French (Luxembourg) culture.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.DefaultCulture">
+            <summary>
+            Gets the default culture.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.Instance">
+            <summary>
+            Gets the instance
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.Get(System.Boolean,System.Boolean)">
+            <summary>
+            Gets the supported cultures.
+            </summary>
+            <param name="includeBaseCultures">A value indicating whether the base cultures should be included in the result.</param>
+            <param name="includeInstanceCultures">A value indicating whether the instance cultures should be included in the result.</param>
+            <returns>
+            The supported cultures.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.ToBaseCulture(System.String)">
+            <summary>
+            Get the base culture for the specified culture.
+            </summary>
+            <param name="culture">The culture.</param>
+            <returns>
+            The base culture.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.ToDefaultCulture(System.String)">
+            <summary>
+            Get the default culture for the specified culture.
+            </summary>
+            <param name="culture">The culture.</param>
+            <returns>
+            The default culture.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported.ToSupportedCulture(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Converts the specified culture to one of the supported cultures.
+            </summary>
+            <param name="culture">The culture.</param>
+            <param name="includeBaseCultures">A value indicating whether the base cultures should be considered.</param>
+            <param name="includeInstanceCultures">A value indicating whether the instance cultures should be considered.</param>
+            <returns>
+            The supported culture.
+            </returns>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.ExtendedCultureInfo">
+            <summary>
+            Provides extended information about a culture.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Localization.ExtendedCultureInfo.BaseCulture">
+            <summary>
+            Gets the base culture (e.g. 'pt').
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Localization.ExtendedCultureInfo.DefaultInstance">
+            <summary>
+            Gets the default culture instance (e.g. 'pt-PT').
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Localization.ExtendedCultureInfo.Instances">
+            <summary>
+            Gets the culture instances (e.g. 'pt-PT', 'pt-AO', etc.).
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstanceBase">
+            <summary>
+            Defines the base class of the instance class that allows overriding the behavior of <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstanceBase.SupportedCultures">
+            <summary>
+            Gets the list of the supported cultures.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstanceBase.DefaultCulture">
+            <summary>
+            Gets the default culture.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstanceBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstanceBase"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstance">
+            <summary>
+            Defines the instance class that allows overriding the behavior of <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesSupported"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstance.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Localization.CulturesInstance"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.ErrorCodes">
+            <summary>
+            Defines constants that specify application error codes.
+            </summary>
+        </member>
+        <member name="F:Primavera.Lithium.ChatGPT.Server.Common.ErrorCodes.RequestArgsInvalid">
+            <summary>
+            The request arguments are invalid.
+            </summary>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods">
+            <summary>
+            Provides extension methods for various types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetId(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Gets the identifier associated with the principal.
+            </summary>
+            <param name="principal">The claims principal.</param>
+            <returns>The identifier associated with the principal.</returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetEmail(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Gets the email associated with the principal.
+            </summary>
+            <param name="principal">The claims principal.</param>
+            <returns>The email associated with the principal.</returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetClientId(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Gets the client identifier associated with the principal.
+            </summary>
+            <param name="principal">The claims principal.</param>
+            <returns>The client identifier associated with the principal.</returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetDisplayName(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Gets the display name associated with the principal.
+            </summary>
+            <param name="principal">The claims principal.</param>
+            <returns>The display name associated with the principal.</returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsApi(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines whether the request path maps to a route that is part of the REST API.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            A value indicating whether the request path maps to route that is part of the REST API.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsMonitoring(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines whether the request path maps to a route that is part of the monitoring routes.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            A value indicating whether the request path maps to route that is part of the monitoring routes.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsDocumentation(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines whether the request path maps to a route that is part of the documentation routes.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            A value indicating whether the request path maps to route that is part of the documentation routes.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentation(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines whether the request path maps to a route that is part of the REST API documentation.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            A value indicating whether the request path maps to a route that is part of the REST API documentation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsRestApiDocumentationCustomization(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines whether the request path maps to a route that is part of the REST API documentation.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            A value indicating whether the request path maps to a route that is part of the REST API documentation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.PathIsContent(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines whether the request path maps to a route that is a content file.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            A value indicating whether the request path maps to route that is a content file.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetBaseUri(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Determines the request base URI.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            The request base URI.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.GetRestProblemDetailsType(Microsoft.AspNetCore.Http.HttpRequest,System.String)">
+            <summary>
+            Determines the type that should be used for a <see cref="T:Primavera.Hydrogen.Rest.RestProblemDetails"/> instance with the specified error code.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="errorCode">The error code.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Rest.RestProblemDetails"/> type.
+            </returns>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ExtensionMethods.CombineResolvers(System.Text.Json.JsonSerializerOptions,System.Text.Json.Serialization.Metadata.IJsonTypeInfoResolver[])">
+            <summary>
+            Combines the provided <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> instances as the
+            contract resolver for the specified <see cref="T:System.Text.Json.JsonSerializerOptions"/>.
+            </summary>
+            <param name="options">The <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.</param>
+            <param name="resolvers">The <see cref="T:System.Text.Json.Serialization.Metadata.IJsonTypeInfoResolver"/> instances.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.ServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the IServiceCollection type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.ServiceCollectionExtensions.AddCommonPart(Microsoft.Extensions.DependencyInjection.IServiceCollection,Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration)">
+            <summary>
+            Configures the common part.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="hostConfiguration">The host configuration.</param>
+            <returns>
+            The service collection instance.
+            </returns>
+            <remarks>
+            This method is called from the host startup.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.StartupBase">
+            <summary>
+            Defines the base class for <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Startup" /> to allow customization.
+            </summary>
+        </member>
+        <member name="P:Primavera.Lithium.ChatGPT.Server.Common.StartupBase.HostConfiguration">
+            <summary>
+            Gets the host configuration.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.StartupBase.#ctor(Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.StartupBase" /> class.
+            </summary>
+            <param name="hostConfiguration">The host configuration.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.StartupBase.AddServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services.
+            </summary>
+            <param name="services">The service collection.</param>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.StartupBase.AddMapper(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the mapper.
+            </summary>
+            <param name="services">The service collection.</param>
+        </member>
+        <member name="T:Primavera.Lithium.ChatGPT.Server.Common.Startup">
+            <summary>
+            Provides methods to startup the common part.
+            </summary>
+        </member>
+        <member name="M:Primavera.Lithium.ChatGPT.Server.Common.Startup.#ctor(Primavera.Lithium.ChatGPT.Server.Common.Configuration.HostConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Lithium.ChatGPT.Server.Common.Startup" /> class.
+            </summary>
+            <param name="hostConfiguration">The host configuration.</param>
+        </member>
+    </members>
+</doc>

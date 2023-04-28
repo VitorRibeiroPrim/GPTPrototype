@@ -1,0 +1,449 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel serviceModel = sourceElement as ServiceModel;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    string serviceVersionString = VersioningHelper.GetApiVersionString(serviceModel);
+
+    targetModel.Namespace = new NamespaceModel(serviceModel.Namespace + ".Server.Common");
+
+    // Constants class
+
+    ClassModel constantsClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("Constants")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants used by various types.")
+            })
+            .WithConstant(
+                new ConstantModel("DefaultApiVersion", "string", $"\"{serviceVersionString}\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the default API version.")
+                });
+
+    // Policies class
+
+    ClassModel policiesClassModel = constantsClassModel
+        .AddClass(
+            new ClassModel("Policies")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants used to identify authentication policies.")
+            })
+            .WithConstant(
+                new ConstantModel("DefaultScope", "string", "\"" + serviceModel.Name.ToLowerInvariant() + "\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the policy that applies the default scope.")
+                });
+
+    if (serviceModel.AuthorizationMode.IsOn())
+    {
+        if (serviceModel.Webhooks.Count > 0)
+        {
+            policiesClassModel    
+                .WithConstant(
+                    new ConstantModel("Webhooks", "string", "\"webhooks\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the policy that applies the scope for webhooks.")
+                    });
+        }
+    }
+
+    // Controllers class
+
+     ClassModel controllersClassModel = constantsClassModel
+        .AddClass(
+            new ClassModel("Controllers")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants used by MVC controllers.")
+            });
+
+    // Home controller class
+
+    if (serviceModel.Settings.GenerateHomeController)
+    {
+        ClassModel homeControllerClassModel = controllersClassModel
+            .AddClass(
+                new ClassModel("Home")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                    Documentation = new DocumentationModel("Defines constants used by the home MVC controller.")
+                })
+                .WithConstant(
+                    new ConstantModel("Name", "string", "\"Home\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the controller.")
+                    });
+
+        ClassModel homeControllerRoutesClassModel = homeControllerClassModel
+            .AddClass(
+                new ClassModel("Routes")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                    Documentation = new DocumentationModel("Defines constants that specify the routes used in the home MVC controller.")
+                })
+                .WithConstant(
+                    new ConstantModel("Index", "string", "\"\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the route of the index action.")
+                    })
+                .WithConstant(
+                    new ConstantModel("Error", "string", "\"/error\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the route of the error action.")
+                    });
+
+        if (serviceModel.Settings.GenerateOidcSupport)
+        {
+            homeControllerRoutesClassModel
+                .WithConstant(
+                    new ConstantModel("AccessDenied", "string", "\"/accessdenied\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the route of the access denied action.")
+                    })
+                .WithConstant(
+                    new ConstantModel("Signout", "string", "\"/signout\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the route of the sign-out action.")
+                    });
+        }
+
+        ClassModel homeControllerActionsClassModel = homeControllerClassModel
+            .AddClass(
+                new ClassModel("Actions")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                    Documentation = new DocumentationModel("Defines constants that specify the action names used in the home MVC controller.")
+                })
+                .WithConstant(
+                    new ConstantModel("Index", "string", "\"Home.Index\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the index action.")
+                    })
+                .WithConstant(
+                    new ConstantModel("Error", "string", "\"Home.Error\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the error action.")
+                    });
+
+        if (serviceModel.Settings.GenerateOidcSupport)
+        {
+            homeControllerActionsClassModel
+                .WithConstant(
+                    new ConstantModel("AccessDenied", "string", "\"Home.AccessDenied\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the access denied action.")
+                    })
+                .WithConstant(
+                    new ConstantModel("Signout", "string", "\"Home.Signout\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the sign-out action.")
+                    });
+        }
+    }
+
+    // Client Library Documentation controller class
+
+    ClassModel clientLibDocControllerClassModel = controllersClassModel
+        .AddClass(
+            new ClassModel("ClientLibDocumentation")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants used by the client library documentation MVC controller.")
+            })
+            .WithConstant(
+                new ConstantModel("Name", "string", "\"ClientLibDocumentation\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the controller.")
+                });
+
+    ClassModel clientLibDocControllerRoutesClassModel = clientLibDocControllerClassModel
+        .AddClass(
+            new ClassModel("Routes")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants that specify the routes used in the client library documentation MVC controller.")
+            })
+            .WithConstant(
+                new ConstantModel("Documentation", "string", "\"/.doc/clientlib\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the route of the documentation action.")
+                });
+
+    ClassModel clientLibDocControllerActionsClassModel = clientLibDocControllerClassModel
+        .AddClass(
+            new ClassModel("Actions")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants that specify the action names used in the client library documentation MVC controller.")
+            })
+            .WithConstant(
+                new ConstantModel("Documentation", "string", "\"ClientLibDocumentation.Documentation\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the documentation action.")
+                });
+
+    // Webhooks Documentation controller class
+
+    if (serviceModel.Webhooks.Count > 0)
+    {
+        ClassModel webhooksDocControllerClassModel = controllersClassModel
+            .AddClass(
+                new ClassModel("WebhooksDocumentation")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                    Documentation = new DocumentationModel("Defines constants used by the webhooks documentation MVC controller.")
+                })
+                .WithConstant(
+                    new ConstantModel("Name", "string", "\"WebhooksDocumentation\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the controller.")
+                    });
+
+        ClassModel webhooksDocControllerRoutesClassModel = webhooksDocControllerClassModel
+            .AddClass(
+                new ClassModel("Routes")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                    Documentation = new DocumentationModel("Defines constants that specify the routes used in the webhooks documentation MVC controller.")
+                })
+                .WithConstant(
+                    new ConstantModel("Documentation", "string", "\"/.doc/webhooks\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the route of the documentation action.")
+                    });
+
+        ClassModel webhooksDocControllerActionsClassModel = webhooksDocControllerClassModel
+            .AddClass(
+                new ClassModel("Actions")
+                {
+                    Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                    Documentation = new DocumentationModel("Defines constants that specify the action names used in the webhooks documentation MVC controller.")
+                })
+                .WithConstant(
+                    new ConstantModel("Documentation", "string", "\"WebhooksDocumentation.Documentation\"")
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("Defines the name of the documentation action.")
+                    });
+    }
+
+    // Monitoring controller class
+
+    ClassModel monitoringControllerClassModel = controllersClassModel
+        .AddClass(
+            new ClassModel("Monitoring")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants used by the monitoring MVC controller.")
+            })
+            .WithConstant(
+                new ConstantModel("Name", "string", "\"Monitoring\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the controller.")
+                });
+
+    ClassModel monitoringControllerRoutesClassModel = monitoringControllerClassModel
+        .AddClass(
+            new ClassModel("Routes")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants that specify the routes used in the monitoring MVC controller.")
+            })
+            .WithConstant(
+                new ConstantModel("Probe", "string", "\"/.monitoring/probe\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the route of the probe action.")
+                })
+            .WithConstant(
+                new ConstantModel("Diagnostics", "string", "\"/.monitoring/diagnostics\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the route of the diagnostics action.")
+                })
+            .WithConstant(
+                new ConstantModel("Endpoints", "string", "\"/.monitoring/endpoints\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the route of the endpoints action.")
+                })
+            .WithConstant(
+                new ConstantModel("Configuration", "string", "\"/.monitoring/configuration\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the route of the configuration action.")
+                })
+            .WithConstant(
+                new ConstantModel("Information", "string", "\"/.monitoring/info\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the route of the information action.")
+                });
+
+    ClassModel monitoringControllerActionsClassModel = monitoringControllerClassModel
+        .AddClass(
+            new ClassModel("Actions")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants that specify the action names used in the monitoring MVC controller.")
+            })
+            .WithConstant(
+                new ConstantModel("Probe", "string", "\"Monitoring.Probe\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the probe action.")
+                })
+            .WithConstant(
+                new ConstantModel("Diagnostics", "string", "\"Monitoring.Diagnostics\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the diagnostics action.")
+                })
+            .WithConstant(
+                new ConstantModel("Endpoints", "string", "\"Monitoring.Endpoints\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the endpoints action.")
+                })
+            .WithConstant(
+                new ConstantModel("Configuration", "string", "\"Monitoring.Configuration\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the configuration action.")
+                })
+            .WithConstant(
+                new ConstantModel("Information", "string", "\"Monitoring.Information\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the name of the information action.")
+                });
+
+    // Documentation class
+
+     ClassModel documentationClassModel = constantsClassModel
+        .AddClass(
+            new ClassModel("Documentation")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants used in the documentation.")
+            })
+            .WithConstant(
+                new ConstantModel("RestApiBaseRoute", "string", "\"/.doc/restapi\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the base route of the REST API documentation.")
+                })
+            .WithConstant(
+                new ConstantModel("RestApiBaseRouteLegacy", "string", "\"/.doc/webapi\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the legacy base route of the REST API documentation.")
+                })
+            .WithConstant(
+                new ConstantModel("RestApiDocumentsRoute", "string", "\"/.doc/restapi/{documentName}/openapi.json\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the route of the REST API documentation documents.")
+                })
+            .WithConstant(
+                new ConstantModel("RestApiStyleSheetPath", "string", "\"openapi.custom.css\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the path of the custom style sheet used to customize the UI.")
+                });
+
+    // Views class
+
+     ClassModel viewsClassModel = constantsClassModel
+        .AddClass(
+            new ClassModel("Views")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Static,
+                Documentation = new DocumentationModel("Defines constants used to identify views.")
+            })
+            .WithConstant(
+                new ConstantModel("Home", "string", "\"~/GeneratedCode/HomeView.gen.cshtml\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the path of the home view.")
+                })
+            .WithConstant(
+                new ConstantModel("Error", "string", "\"~/GeneratedCode/ErrorView.gen.cshtml\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the path of the error view.")
+                })
+            .WithConstant(
+                new ConstantModel("CopyrightPartial", "string", "\"~/GeneratedCode/CopyrightPartialView.gen.cshtml\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the path of the copyright partial view.")
+                })
+            .WithConstant(
+                new ConstantModel("ClientLibDocumentation", "string", "\"~/GeneratedCode/ClientLibDocView.gen.cshtml\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the path of the client library documentation view.")
+                });
+
+    if (serviceModel.Webhooks.Count > 0)
+    {
+        viewsClassModel
+            .WithConstant(
+                new ConstantModel("WebhooksDocumentation", "string", "\"~/GeneratedCode/WebhooksDocView.gen.cshtml\"")
+                {
+                    Modifiers = ConstantModifiers.Public,
+                    Documentation = new DocumentationModel("Defines the path of the webhooks documentation view.")
+                });
+    }
+}
+
+// *** TransformAuthorizationPolicy
+
+public void TransformAuthorizationPolicy(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    AuthorizationPolicy serviceModel = sourceElement as AuthorizationPolicy;
+    if (serviceModel == null)
+    {
+        return;
+    }
+
+    ClassModel classModel = targetModel.Namespace.Classes[0].Classes.FirstOrDefault(c => c.Name.EqualsNoCase("Policies"));
+
+    classModel    
+        .WithConstant(new ConstantModel(serviceModel.Name, "string", "\"" + serviceModel.Name.ToLowerInvariant() + "\"")
+        {
+            Modifiers = ConstantModifiers.Public,
+            Documentation = new DocumentationModel("Defines the name of the policy that applies the {0} authorization policy.".Format(serviceModel.Name))
+        });
+}
+
+#>

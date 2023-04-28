@@ -1,0 +1,214 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.HealthMonitoring</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.DefaultHealthMonitoringService">
+            <summary>
+            Provides a default implementation of <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService" />
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.DefaultHealthMonitoringService.#ctor(System.IServiceProvider,Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.HealthMonitoring.DefaultHealthMonitoringService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.DefaultHealthMonitoringService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="scopeFactory">The service scope factory.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.DefaultHealthMonitoringService.ProbeAsync(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.DefaultHealthProbeContext">
+            <summary>
+            Provides a default implementation of <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeContext"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeContext" />
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.DefaultHealthProbeContext.#ctor(System.IServiceProvider,Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.DefaultHealthProbeContext"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="registration">The registration.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type that allow
+            configuring health monitoring services.
+            </summary>
+            <remarks>
+            Health monitoring services allow monitoring the health of an application by executing
+            multiple health probes configured with a builder.
+            </remarks>
+            <example>
+            <code>
+            <![CDATA[
+            ServiceCollection services = new ServiceCollection();
+            services.AddHealthMonitoring();
+            
+            IHealthProbesBuilder builder = HealthProbesBuilder
+                .Create()
+                .AddProbe(...)
+                .AddProbe(...);
+                
+            IServiceProvider provider = services.BuildServiceProvider();
+            
+            IHealthMonitoringService service = provider.GetRequiredService<IHealthMonitoringService>();
+            
+            HealthResult result = await service.ProbeAsync(builder).ConfigureAwait(false);
+            ]]>
+            </code>
+            </example>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthServiceCollectionExtensions.AddHealthMonitoring(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the health monitoring services to the service collection.
+            </summary>
+            <param name="services">The services.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.DistributedCacheHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.DistributedCacheHealthExtensions.AddDistributedCacheProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a probe for a distributed cache.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The health probe name.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This probe executes an operation on <see cref="T:Microsoft.Extensions.Caching.Distributed.IDistributedCache"/> to
+            retrieve a non-existent cache entry.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HttpHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HttpHealthExtensions.AddHttpEndpointDiagnostic(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.Uri,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a diagnostic for a HTTP endpoint.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="address">The address of the endpoint that should be diagnosed.</param>
+            <param name="name">The health probe name.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This diagnostic invokes the specified endpoint (with <see cref="P:System.Net.Http.HttpMethod.Get"/>).
+            If the response status code indicates failure, the diagnostic will report an unhealthy status.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope">
+            <summary>
+            Defines a log scope used by <see cref="T:Primavera.Hydrogen.HealthMonitoring.DefaultHealthMonitoringService"/> to relate all log entries for a given probe.
+            </summary>
+            <seealso cref="T:System.Collections.Generic.IReadOnlyList`1" />
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope.Name">
+            <summary>
+            Gets the name of the health probe being executed.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope"/> class.
+            </summary>
+            <param name="name">The name of the health probe being executed.</param>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope.System#Collections#Generic#IReadOnlyCollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope.System#Collections#Generic#IReadOnlyList{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Item(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbeLogScope.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.HealthProbesBuilder">
+            <summary>
+            Provides methods to build health monitoring probes that can be executed
+            by <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthMonitoringService"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder" />
+            <example>
+            <code>
+            <![CDATA[
+            ServiceCollection services = new ServiceCollection();
+            services.AddHealthMonitoring();
+            
+            IHealthProbesBuilder builder = HealthProbesBuilder
+                .Create()
+                .AddProbe(...)
+                .AddProbe(...);
+                
+            IServiceProvider provider = services.BuildServiceProvider();
+            
+            IHealthMonitoringService service = provider.GetRequiredService<IHealthMonitoringService>();
+            
+            HealthResult result = await service.ProbeAsync(builder).ConfigureAwait(false);
+            ]]>
+            </code>
+            </example>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.HealthProbesBuilder.Registrations">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbesBuilder.Create">
+            <summary>
+            Creates a new instance of the builder.
+            </summary>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.HealthMonitoring.HealthProbesBuilder.Add(Primavera.Hydrogen.HealthMonitoring.HealthProbeRegistration)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.HealthMonitoring.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.Properties.Resources.RES_Exception_DuplicateHealthProbes">
+            <summary>
+              Looks up a localized string similar to Duplicate health probes were registered with the name(s): .
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.HealthMonitoring.Properties.Resources.RES_HttpEndpoint_Failure">
+            <summary>
+              Looks up a localized string similar to Request to HTTP endpoint &apos;{0}&apos; failed with status code {1} (reason: &apos;{2}&apos;)..
+            </summary>
+        </member>
+    </members>
+</doc>

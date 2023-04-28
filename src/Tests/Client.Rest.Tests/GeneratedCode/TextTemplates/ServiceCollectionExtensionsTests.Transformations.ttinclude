@@ -1,0 +1,142 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Rest.Tests");
+
+    ClassModel testBaseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("ServiceCollectionExtensionsTestsBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the base class for <see cref=\"ServiceCollectionExtensionsTests\"/>.")
+            })
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ServiceCollectionExtensionsTestsBase\"/> class.")
+                })
+            .AddMethod(
+                new MethodModel($"TestAdd{sourceModel.Name}Default")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "TestAddDefault" }
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"TestAdd{sourceModel.Name}DefaultWithOptionsFactory")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions}}, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "TestAddDefaultWithOptionsFactory" }
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"TestAdd{sourceModel.Name}Named")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, string, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "TestAddNamed" }
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"TestAdd{sourceModel.Name}NamedWithOptionsFactory")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, string, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions}}, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "TestAddNamedWithOptionsFactory" }
+                    }
+                })
+                .ParentModelAs<ClassModel>();
+
+    ClassModel testClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("ServiceCollectionExtensionsTests")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Sealed | ClassModifiers.Partial,
+                Inheritance = "ServiceCollectionExtensionsTestsBase",
+                Documentation = new DocumentationModel($"Provides tests for the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions\"/> class.")
+                {
+                    SeeAlso = new List<string> { "ServiceCollectionExtensionsTestsBase" }
+                }
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Naming\", \"CA1707:IdentifiersShouldNotContainUnderscores\")"))
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ServiceCollectionExtensionsTests\"/> class.")
+                })
+            .AddMethod(
+                new MethodModel($"ServiceCollectionExtensions_Add{sourceModel.Name}Client_Default")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "AddDefault" }
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"ServiceCollectionExtensions_Add{sourceModel.Name}Client_Default_WithOptionsFactory")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions}}, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "AddDefaultWithOptionsFactory" }
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"ServiceCollectionExtensions_Add{sourceModel.Name}Client_Named")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, string, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "AddNamed" }
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel($"ServiceCollectionExtensions_Add{sourceModel.Name}Client_Named_WithOptionsFactory")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel($"Tests the <see cref=\"Client.Rest.{sourceModel.Name}ServiceCollectionExtensions.Add{sourceModel.Name}Client(IServiceCollection, string, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions}}, Func{{IServiceProvider, Client.Rest.{sourceModel.Name}ClientOptions, Client.Rest.{sourceModel.Name}Client}})\"/> method."),
+                    Facets = new Dictionary<string, object>()
+                    {
+                        { "Method", "AddNamedWithOptionsFactory" }
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>();
+}
+
+#>

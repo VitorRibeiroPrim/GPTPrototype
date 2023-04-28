@@ -1,0 +1,16 @@
+﻿<#+
+
+// *** WriteWebhooks
+
+public void WriteWebhooks(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model.Webhooks.Count == 0)
+    {
+        modelWriter.CancelTransformation();
+        return;
+    }
+
+    this.WriteWebhooksDocumentation(modelWriter, model);
+}
+
+#>

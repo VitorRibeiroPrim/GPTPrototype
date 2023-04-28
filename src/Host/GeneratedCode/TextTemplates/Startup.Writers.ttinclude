@@ -1,0 +1,2601 @@
+﻿<#+
+
+// *** WriteConstructor
+
+public void WriteConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.CurrentEnvironment = env;
+        this.Configuration = configuration;
+<#+
+
+}
+
+// *** WriteConfigureServices
+
+public void WriteConfigureServices(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Configuration
+
+        Common.Configuration.HostConfiguration hostConfiguration = this.AddConfiguration(services);
+
+        this.ValidateConfiguration(hostConfiguration);
+
+        // Dependencies
+
+        this.AddDependencies(services, hostConfiguration);
+
+        // Service dependencies
+
+        this.AddServiceDependencies(services, hostConfiguration);
+
+        // Cookie policy
+
+        this.AddCookiePolicy(services, hostConfiguration);
+
+        // HTTP telemetry
+
+        this.AddHttpTelemetry(services, hostConfiguration);
+
+        // MVC
+
+        Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder = this.AddMvc(services, hostConfiguration);
+
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        // Show PII
+
+        this.ShowPII();
+
+        // Authorization
+
+        this.AddAuthorization(services, hostConfiguration);
+
+        // Authentication
+
+        this.AddAuthentication(services, hostConfiguration);
+
+<#+
+
+    }
+
+#>
+        // Telemetry
+
+        this.AddTelemetry(services, hostConfiguration);
+
+        // Background services
+
+        this.AddBackgroundServices(services, hostConfiguration);
+
+        // OpenAPI documentation
+
+        this.AddOpenApiDocumentation(services, hostConfiguration);
+
+        // Markdown documentation
+
+        this.AddMarkdownDocumentation(services, hostConfiguration);
+
+<#+
+    
+    if (sourceModel.Webhooks.Any())
+    {
+
+#>
+        // Webhooks
+
+        this.AddWebhooks(services, hostConfiguration);
+
+<#+
+    
+    }
+
+#>
+        // Azure Managed Configuration
+
+        this.AddAzureManagedConfiguration(services, hostConfiguration);
+
+        // Health Monitoring
+
+        this.AddHealthMonitoring(services, hostConfiguration);
+
+        // Service catalog
+
+        this.AddServiceCatalog(services, hostConfiguration);
+
+        // Application parts
+
+        this.AddApplicationParts(mvcBuilder, hostConfiguration);
+
+        // Additional (custom) services
+
+        this.AddAdditionalServices(services, hostConfiguration);
+<#+
+
+}
+
+// *** WriteConfigure
+
+public void WriteConfigure(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.Logger = logger;
+
+        LogConfigureStep(this.Logger!, "Application configuration starting...");
+
+        // Configuration
+
+        this.ValidateConfiguration(app, hostConfiguration);
+
+        // Error handling
+
+        this.UseErrorHandling(app, hostConfiguration);
+
+        // HTTPS
+
+        this.UseHttps(app, hostConfiguration);
+
+        // Cookie policy
+
+        this.UseCookiePolicy(app, hostConfiguration);
+
+        // HTTP Telemetry
+
+        this.UseHttpTelemetry(app, hostConfiguration);
+
+        // Static files
+
+        this.UseStaticFiles(app, hostConfiguration);
+
+        // Routing
+
+        this.UseRouting(app, hostConfiguration);
+
+        // CORS
+
+        this.UseCors(app, hostConfiguration);
+
+<#+
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        // Authentication
+
+        this.UseAuthentication(app, hostConfiguration);
+
+        // Authorization
+
+        this.UseAuthorization(app, hostConfiguration);
+
+<#+
+
+    }
+
+#>
+        // Request localization
+
+        // NOTES:
+        // Request localization is added after authentication/authorization to ensure that the user
+        // claims are available
+
+        this.UseRequestLocalization(app, hostConfiguration);
+
+        // Azure Managed Configuration
+
+        this.UseAzureManagedConfiguration(app, hostConfiguration);
+
+        // OpenAPI documentation
+
+        // NOTES:
+        // OpenAPI middleware is added before endpoints to work event if the endpoint routing is customized
+        // (for example, to add a fall-back for routes that were not matched, which happens with BLAZOR)
+
+        this.UseOpenApiDocumentation(app, hostConfiguration);
+
+        // Markdown documentation
+
+        this.UseMarkdownDocumentation(app, hostConfiguration);
+
+        // Endpoints
+
+        this.UseEndpoints(app, hostConfiguration);
+
+        // Additional (custom) configurations
+
+        this.AdditionalAppConfigurations(app, hostConfiguration);
+
+        LogConfigureStep(this.Logger!, "Application configuration ended.");
+<#+
+
+}
+
+// *** WriteAddDistributedCache
+
+public void WriteAddDistributedCache(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // REDIS cache (resilient)
+
+        services
+            .AddRedisCache();
+            
+        services
+            .AddResilientDistributedCache();
+<#+
+
+}
+
+// *** WriteAddDataProtection
+
+public void WriteAddDataProtection(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddDataProtectionWithBlobStorage();
+<#+
+
+}
+
+// *** WriteAddSecretsStorage
+
+public void WriteAddSecretsStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddAzureSecretsStorage();
+<#+
+
+}
+
+// *** WriteAddAzureTableStorage
+
+public void WriteAddAzureTableStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddAzureTableStorage();
+<#+
+
+}
+
+// *** WriteAddAzureBlobStorage
+
+public void WriteAddAzureBlobStorage(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddAzureBlobStorage();
+<#+
+
+}
+
+// *** WriteAddAzureSearch
+
+public void WriteAddAzureSearch(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddAzureSearch();
+<#+
+
+}
+
+// *** WriteAddConfiguration
+
+public void WriteAddConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        services
+            .AddOptions();
+
+        // Host configuration
+
+        services
+            .Configure<Common.Configuration.HostConfiguration>(
+                this.Configuration.GetSection(nameof(Common.Configuration.HostConfiguration)))
+            .Configure<Common.Configuration.HostConfiguration>(
+                (options) => this.ConfigureHostConfiguration(options));
+
+        // Telemetry
+
+        services
+            .Configure<Primavera.Hydrogen.AspNetCore.Http.Telemetry.HttpTelemetryOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.AspNetCore.Http.Telemetry.HttpTelemetryOptions)))
+            .Configure<Primavera.Hydrogen.Telemetry.Azure.AzureInsightsTelemetryOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Telemetry.Azure.AzureInsightsTelemetryOptions)));
+<#+
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.DistributedCache))
+    {
+
+#>
+
+        // REDIS cache options
+
+        services
+            .Configure<Primavera.Hydrogen.Caching.Distributed.Redis.RedisCacheOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Caching.Distributed.Redis.RedisCacheOptions)))
+            .Configure<Primavera.Hydrogen.Caching.Distributed.Redis.RedisCacheOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Caching.Distributed.Resilience.ResilientCacheOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.TableStorage))
+    {
+
+#>
+
+        // Table storage options
+
+        services
+            .Configure<Primavera.Hydrogen.Storage.Azure.Tables.AzureTableStorageOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Storage.Azure.Tables.AzureTableStorageOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.BlobStorage))
+    {
+
+#>
+
+        // Blob storage options
+
+        services
+            .Configure<Primavera.Hydrogen.Storage.Azure.Blobs.AzureBlobStorageOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Storage.Azure.Blobs.AzureBlobStorageOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.Search))
+    {
+
+#>
+
+        // Search options
+
+        services
+            .Configure<Primavera.Hydrogen.Search.Azure.AzureSearchOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Search.Azure.AzureSearchOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.DataProtection))
+    {
+
+#>
+
+        // Data protection options
+
+        services
+            .Configure<Primavera.Hydrogen.Storage.Azure.Blobs.DataProtection.AzureBlobStorageDataProtectionOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Storage.Azure.Blobs.DataProtection.AzureBlobStorageDataProtectionOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.SecretsStorage))
+    {
+
+#>
+
+        // Secrets storage options
+
+        services
+            .Configure<Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Security.Azure.Secrets.AzureKeyVaultSecretsStorageOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.MessageBus))
+    {
+
+#>
+
+        // Message bus options
+
+        services
+            .Configure<Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Messaging.Azure.AzureServiceBusMessageBusOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.MultiModelDatabase))
+    {
+
+#>
+
+        // Multi-model database options
+
+        services
+            .Configure<Primavera.Hydrogen.Storage.Azure.MultiModel.CosmosDbMultiModelDatabaseOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Storage.Azure.MultiModel.CosmosDbMultiModelDatabaseOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.Taskbox))
+    {
+
+#>
+
+        // Taskbox
+
+        services
+            .Configure<Primavera.Hydrogen.Taskbox.TaskboxOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.Taskbox.TaskboxOptions)));
+<#+
+
+    }
+
+    if (sourceModel.Webhooks.Any())
+    {
+
+#>
+
+        // Webhooks options
+
+        services
+            .Configure<Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions>(
+                this.Configuration.GetSection(nameof(Primavera.Hydrogen.AspNetCore.Webhooks.WebhooksOptions)));
+<#+
+
+    }
+
+#>
+
+        // Host configuration snapshot
+
+        services
+            .AddOptionsSnapshot<Common.Configuration.HostConfiguration>();
+
+        // Resolve the host configuration instance
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+        return provider.GetRequiredService<Common.Configuration.HostConfiguration>();
+<#+
+
+}
+
+// *** WriteAddDependencies
+
+public void WriteAddDependencies(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // Dependencies...
+<#+
+
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.DistributedCache))
+    {
+
+#>
+
+        // Distributed cache
+
+        this.AddDistributedCache(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.TableStorage))
+    {
+
+#>
+
+        // Table storage
+
+        this.AddAzureTableStorage(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.BlobStorage))
+    {
+
+#>
+
+        // Blob storage
+
+        this.AddAzureBlobStorage(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.Search))
+    {
+
+#>
+
+        // Search
+
+        this.AddAzureSearch(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.Pipelines))
+    {
+
+#>
+
+        // Pipelines
+
+        this.AddPipelines(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.DataProtection))
+    {
+
+#>
+
+        // Data protection
+        // NOTES: Must be after blob storage
+
+        this.AddDataProtection(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.SecretsStorage))
+    {
+
+#>
+
+        // Secrets storage
+
+        this.AddSecretsStorage(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.MessageBus))
+    {
+
+#>
+
+        // Message bus
+
+        this.AddAzureServiceBusMessageBus(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.MultiModelDatabase))
+    {
+
+#>
+
+        // Multi-model database
+
+        this.AddCosmosDbMultiModelDatabase(services, hostConfiguration);
+<#+
+
+    }
+
+    if (sourceModel.Dependencies.Any(d => d.Kind == DependencyKind.Taskbox))
+    {
+
+#>
+
+        // Taskbox
+
+        this.AddTaskbox(services, hostConfiguration);
+<#+
+
+    }
+}
+
+// *** WriteAddServiceDependencies
+
+public void WriteAddServiceDependencies(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Service dependencies
+
+        // NOTES:
+        // REST service clients for service dependencies should be registered here
+        // to allow those service clients to be resolved via dependency injection
+        // The service's client libraries provide extension methods to achieve that
+<#+
+
+    foreach (ServiceDependency serviceDependency in sourceModel.ServiceDependencies.OrderBy(i => i.NameProvider))
+    {
+        ServiceDescriptionData info = ServiceCatalogServiceProxy.GetServiceByName(serviceDependency.NameProvider);
+        if (info != null && info.ClientLibraryDocumentation != null)
+        {
+
+#>
+
+        // <#= serviceDependency.NameProvider #>
+
+        this.Add<#= serviceDependency.NameProvider #>ServiceClient(services, hostConfiguration);
+<#+
+        }
+    }
+
+}
+
+// *** WriteAddApplicationParts
+
+public void WriteAddApplicationParts(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        builder.AddApplicationPart(
+            typeof(Westwind.AspNetCore.Markdown.MarkdownPageProcessorMiddleware).Assembly);
+
+        builder
+            .AddRestApiPart(hostConfiguration);
+
+        builder.Services
+<#+
+
+    if (serviceModel.Extensions().HasDomainLayer)
+    {
+
+#>
+            .AddDomainPart(hostConfiguration)
+<#+
+
+    }
+
+    if (serviceModel.Extensions().HasApplicationLayer)
+    {
+
+#>
+            .AddApplicationPart(hostConfiguration)
+<#+
+
+    }
+
+    if (serviceModel.Extensions().HasStorageLayer)
+    {
+
+#>
+            .AddStoragePart(hostConfiguration)
+<#+
+
+    }
+
+    if (serviceModel.Extensions().HasDependenciesLayer)
+    {
+
+#>
+            .AddDependenciesPart(hostConfiguration)
+<#+
+
+    }
+
+#>
+            .AddCommonPart(hostConfiguration);
+<#+
+
+}
+
+// *** WriteAddAdditionalServices
+
+public void WriteAddAdditionalServices(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // HttpClient
+
+        this
+            .AddHttpClient(services, hostConfiguration);
+
+        // Endpoint analyzer
+
+        services
+            .AddEndpointAnalyzer();
+
+        // Configuration analyzer
+
+        services
+            .AddConfigurationAnalyzer();
+<#+
+
+}
+
+// *** WriteAddHttpClient
+
+public void WriteAddHttpClient(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // For more information on the HTTP Client factory:
+        // https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests
+        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests
+
+        services
+            .AddHttpClient();
+<#+
+
+}
+
+// *** WriteOpenApiDocumentationSecurity
+
+public void WriteOpenApiDocumentationSecurity(ServiceModel sourceModel)
+{
+    if (sourceModel.AuthorizationMode == OnOff.Off)
+    {
+        return;
+    }
+
+#>
+                if (this.CurrentEnvironment.IsDevelopment() || this.CurrentEnvironment.IsStaging())
+                {
+                    options.AddSecurity(
+                        "Bearer",
+                        new NSwag.OpenApiSecurityScheme()
+                        {
+                            Description = "OAuth2 Bearer Authentication",
+                            Flow = NSwag.OpenApiOAuth2Flow.Application,
+                            Type = NSwag.OpenApiSecuritySchemeType.OAuth2,
+                            TokenUrl = this.GetIdentityServerTokenEndpoint(hostConfiguration),
+                            Scheme = "Bearer",
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { RestApi.Metadata.Scopes.DefaultScope, "The default scope." },
+<#+
+
+    foreach (AuthorizationPolicy policy in sourceModel.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Name))
+    {
+
+#>
+                                { RestApi.Metadata.Scopes.<#= policy.Name #>, "<#= policy.Summary #>" },
+<#+
+    }
+
+#>
+                            }
+                        });
+
+                    options.OperationProcessors.Add(
+                        new NSwag.Generation.Processors.Security.AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+                }
+
+<#+
+
+}
+
+// *** WriteGetIdentityServerTokenEndpoint
+
+public void WriteGetIdentityServerTokenEndpoint(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return $"{hostConfiguration.IdentityServerBaseUri?.Trim()}/connect/token";
+<#+
+
+}
+
+// *** WriteOpenApiProcessors
+
+public void WriteOpenApiProcessors(ServiceModel sourceModel)
+{
+    if (sourceModel.Extensions().HasODataServerSide)
+    {
+#>
+                options.OperationProcessors.Add(
+                    new Primavera.Hydrogen.AspNetCore.OpenApi.Processors.ODataOperationProcessor());
+
+<#+
+
+    }
+}
+
+// *** WriteAddOpenApiDocumentation
+
+public void WriteAddOpenApiDocumentation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Default version
+
+        services.AddOpenApiDocument(
+            (options, provider) =>
+            {
+                options.DocumentName = "<#= sourceModel.Version #>";
+                options.Title = "<#= sourceModel.Product #> <#= sourceModel.DisplayName #> (<#= sourceModel.GUID #>) REST API";
+                options.Description = "<#= sourceModel.Summary #>";
+                options.Version = "<#= sourceModel.Version #>";
+                    
+                options.ApiGroupNames = new string[] { "<#= sourceModel.Version #>" };
+
+<#+
+
+    WriteOpenApiDocumentationSecurity(sourceModel);
+    WriteOpenApiProcessors(sourceModel);
+
+#>
+                options.FlattenInheritanceHierarchy = true;
+                options.IgnoreObsoleteProperties = true;
+
+                if (options.SchemaGenerator.Settings is NSwag.Generation.OpenApiDocumentGeneratorSettings settings)
+                {
+                    options.SchemaGenerator = new Primavera.Hydrogen.AspNetCore.OpenApi.Schema.NoTitleFromDisplayNameOpenApiSchemaGenerator(
+                        settings);
+                }
+
+                this.ConfigureOpenApiDocument(options, hostConfiguration);
+            });
+<#+
+
+    foreach (ApiVersion apiVersion in sourceModel.ApiVersions.OrderBy(a => a.Version))
+    {
+
+#>
+
+        // Version <#= apiVersion.Version #>
+
+        services.AddOpenApiDocument(
+            (options, provider) =>
+            {
+                options.DocumentName = "<#= apiVersion.Version #>";
+                options.Title = "<#= sourceModel.Product #> <#= sourceModel.DisplayName #> (<#= sourceModel.GUID #>) REST API";
+                options.Description = "<#= sourceModel.Summary #>";
+                options.Version = "<#= apiVersion.Version #>";
+                    
+                options.ApiGroupNames = new string[] { "<#= apiVersion.Version #>" };
+
+<#+
+
+    WriteOpenApiDocumentationSecurity(sourceModel);
+    WriteOpenApiProcessors(sourceModel);
+
+#>
+                options.FlattenInheritanceHierarchy = true;
+                options.IgnoreObsoleteProperties = true;
+
+                if (options.SchemaGenerator.Settings is NSwag.Generation.OpenApiDocumentGeneratorSettings settings)
+                {
+                    options.SchemaGenerator = new Primavera.Hydrogen.AspNetCore.OpenApi.Schema.NoTitleFromDisplayNameOpenApiSchemaGenerator(
+                        settings);
+                }
+
+                this.ConfigureOpenApiDocument(options, hostConfiguration);
+            });
+<#+
+
+    }
+
+}
+
+// *** WriteAddTelemetry
+
+public void WriteAddTelemetry(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddAzureInsightsTelemetryClient()
+            .AddAzureInsightsTelemetry();
+<#+
+
+}
+
+// *** WriteAddMvc
+
+public void WriteAddMvc(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    Version serviceVersion = VersioningHelper.GetApiVersion(sourceModel);
+
+#>
+        // MVC services
+
+        Microsoft.Extensions.DependencyInjection.IMvcBuilder builder = services
+            .AddApiControllersWithViews(
+                (options) =>
+                {
+                    // API versioning
+
+                    options.UseVersioning = true;
+                    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(<#= serviceVersion.Major #>, <#= serviceVersion.Minor #>);
+                    options.ConfigureApiVersioningOptions = this.ConfigureApiVersioningOptions;
+
+                    // JSON serialization
+
+                    options.ConfigureJsonOptions = jsonOptions =>
+                    {
+                        // NOTES:
+                        // This combines the known serializer contexts so that MVC
+                        // knows the types for generated controllers (monitoring, etc.)
+                        // DefaultJsonTypeInfoResolver enables reflection serialization,
+                        // which is needed because there is a scenario (status code 415)
+                        // where MVC will return ProblemDetails and that type cannot be
+                        // added to serializer contexts
+
+<#+
+
+    if (sourceModel.Webhooks.Any())
+    {
+
+#>
+                        jsonOptions.JsonSerializerOptions.CombineResolvers(
+                            new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver(),
+                            Primavera.Hydrogen.Rest.RestSerializerContext.Default,
+                            Primavera.Hydrogen.Rest.Webhooks.WebhooksSerializerContext.Default,
+                            Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.Default);
+<#+
+
+    }
+    else
+    {
+
+#>
+                        jsonOptions.JsonSerializerOptions.CombineResolvers(
+                            new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver(),
+                            Primavera.Hydrogen.Rest.RestSerializerContext.Default,
+                            Primavera.Hydrogen.HealthMonitoring.HealthMonitoringSerializerContext.Default);
+<#+
+
+    }
+
+#>
+
+                        this.ConfigureJsonOptions(jsonOptions);
+                    };
+                });
+
+        // Extension point
+
+        this.ConfigureMvc(builder, hostConfiguration);
+
+        // Result
+
+        return builder;
+<#+
+
+}
+
+// *** WriteShowPII
+
+public void WriteShowPII(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // By default, MS Identity Model hides PII, including server addresses
+        // used in OIDC which makes it harder than it should be to diagnose
+        // problems
+        // In case you need that behavior (PII hidden), either:
+        // - override this method
+        // - set an environment variable called HidePII to true
+
+        string? value = this.Configuration["HidePII"];
+
+        if (string.IsNullOrEmpty(value))
+        {
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+        }
+<#+
+
+}
+
+// *** WriteAddAuthorization
+
+public void WriteAddAuthorization(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOn())
+    {
+
+#>
+        services
+            .AddAuthorization(
+                (options) =>
+                {
+                    this.AddAuthorizationPolicies(options, hostConfiguration);
+                });
+<#+
+
+    }
+}
+
+// *** WriteAddAuthorizationPolicies
+
+public void WriteAddAuthorizationPolicies(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+#>
+        // Authorization policy for default scope
+
+        options.AddPolicy(
+            Common.Constants.Policies.DefaultScope,
+            (policy) =>
+            {
+                policy.AuthenticationSchemes = new System.Collections.Generic.List<string> 
+                { 
+                    Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Bearer 
+                };
+
+                policy.RequireClaim(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Scope, RestApi.Metadata.Scopes.DefaultScope);
+            });
+<#+
+
+    if (sourceModel.Webhooks.Count > 0)
+    {
+
+#>
+
+        // Authorization policy for webhooks
+
+        options.AddPolicy(
+            Common.Constants.Policies.Webhooks,
+            (policy) =>
+            {
+                policy.AuthenticationSchemes = new System.Collections.Generic.List<string> 
+                { 
+                    Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Bearer 
+                };
+
+                policy.RequireClaim(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Scope, RestApi.Metadata.Scopes.Webhooks);
+            });
+<#+
+
+    }
+
+    if (sourceModel.AuthorizationPolicies.Count > 0)
+    {
+
+#>
+
+        // Other authorization policies
+
+<#+
+        foreach (AuthorizationPolicy policy in sourceModel.AuthorizationPolicies.OrderBy(n => n.Name))
+        {
+            if (policy.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope)
+            {
+
+#>
+        options.AddPolicy(
+            Common.Constants.Policies.<#= policy.Name #>,
+            (policy) =>
+            {
+                policy.AuthenticationSchemes = new System.Collections.Generic.List<string> 
+                { 
+                    Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Bearer 
+                };
+                    
+                policy.RequireClaim(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Scope, RestApi.Metadata.Scopes.<#= policy.Name #>);
+            });
+<#+
+
+            }
+            else if (policy.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Custom)
+            {
+
+#>
+        options.AddPolicy(
+            Common.Constants.Policies.<#= policy.Name #>,
+            this.Configure<#= policy.Name #>Policy);
+<#+
+
+            }
+            else
+            {
+                throw new System.InvalidOperationException($"Unsupported authorization policy kind {policy.Kind}");
+            }
+        }
+    }
+}
+
+// *** WriteAddAuthentication
+
+public void WriteAddAuthentication(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (sourceModel.Settings.GenerateOidcSupport)
+    {
+        this.WriteAddAuthenticationBearerAndOidc(modelWriter, model);
+    }
+    else
+    {
+        this.WriteAddAuthenticationBearer(modelWriter, model);
+    }
+}
+
+// *** WriteAddAuthenticationBearer
+
+public void WriteAddAuthenticationBearer(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Authentication.AuthenticationBuilder builder = services
+            .AddAuthentication(
+                Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Bearer);
+
+        this.AddJwtBearer(services, builder, hostConfiguration);
+
+        return builder;
+<#+
+
+}
+
+// *** WriteAddAuthenticationBearerAndOidc
+
+public void WriteAddAuthenticationBearerAndOidc(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        Microsoft.AspNetCore.Authentication.AuthenticationBuilder builder = services
+            .AddAuthentication(
+                (options) =>
+                {
+                    options.DefaultScheme = Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Cookies;
+                    options.DefaultChallengeScheme = Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Oidc;
+                });
+
+        this.AddCookie(services, builder, hostConfiguration);
+
+        this.AddOidc(services, builder, hostConfiguration);
+
+        this.AddJwtBearer(services, builder, hostConfiguration);
+
+        return builder;
+<#+
+
+}
+
+// *** WriteAddJwtBearer
+
+public void WriteAddJwtBearer(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        builder
+            .AddJwtBearer(
+                (options) =>
+                {
+                    options.Authority = hostConfiguration.IdentityServerBaseUri?.Trim();
+                    options.Audience = RestApi.Metadata.Scopes.DefaultScope;
+                    options.RequireHttpsMetadata = false;
+                    options.IncludeErrorDetails = true;
+                    options.RefreshOnIssuerKeyNotFound = true;
+                    options.SaveToken = true;
+
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        NameClaimType = "name",
+                        RoleClaimType = "role"
+                    };
+
+                    options.Events = new Primavera.Hydrogen.AspNetCore.Authentication.JwtBearer.HttpBearerChallengeEvents(RestApi.Metadata.Scopes.DefaultScope)
+                    {
+                        OnAuthenticationFailed = this.OnJwtBearerAuthenticationFailed,
+                        OnForbidden = this.OnJwtBearerForbidden,
+                        OnMessageReceived = this.OnJwtBearerMessageReceived,
+                        OnTokenValidated = this.OnJwtBearerTokenValidated,
+                        OnChallenge = this.OnJwtBearerChallenge
+                    };
+
+                    this.ConfigureJwtBearerOptions(services, builder, options, hostConfiguration);
+                });
+<#+
+
+}
+
+// *** WriteAddCookie
+
+public void WriteAddCookie(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        builder
+            .AddCookie(
+                (options) =>
+                {
+                    // Standard configuration
+
+                    options.AccessDeniedPath = this.AccessDeniedRoute;
+                    options.ReturnUrlParameter = options.ReturnUrlParameter.Transform().ToLowerCase();
+
+                    options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents()
+                    {
+                        OnRedirectToLogin = this.OnCookieRedirectToLogin,
+                        OnRedirectToLogout = this.OnCookieRedirectToLogout,
+                        OnSignedIn = this.OnCookieSignedIn,
+                        OnSigningIn = this.OnCookieSigningIn,
+                        OnSigningOut = this.OnCookieSigningOut,
+                        OnValidatePrincipal = this.OnCookieValidatePrincipal,
+                    };
+
+                    // Custom configuration
+
+                    this.ConfigureCookieOptions(services, builder, options, hostConfiguration);
+                });
+<#+
+
+}
+
+// *** WriteAddOidc
+
+public void WriteAddOidc(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        builder
+            .AddOpenIdConnect(
+                Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Oidc,
+                (options) =>
+                {
+                    // Standard configuration
+
+                    options.SignInScheme = Primavera.Hydrogen.IdentityModel.OidcConstants.AuthenticationSchemes.Cookies;
+                    options.Authority = hostConfiguration.IdentityServerBaseUri?.Trim();
+                    options.RequireHttpsMetadata = false;
+<#+
+
+    if (sourceModel.Settings.OidcGrantType == OAuthGrantType.Hybrid)
+    {
+
+#>
+                    options.ClientId = hostConfiguration.Authorization?.Credentials?.Hybrid?.ClientId;
+                    options.ClientSecret = hostConfiguration.Authorization?.Credentials?.Hybrid?.ClientSecret;
+                    options.ResponseType = OpenIdConnectResponseType.CodeIdTokenToken;
+<#+
+
+    }
+    else if (sourceModel.Settings.OidcGrantType == OAuthGrantType.AuthorizationCode)
+    {
+
+#>
+                    options.ClientId = hostConfiguration.Authorization?.Credentials?.AuthorizationCode?.ClientId;
+                    options.ClientSecret = hostConfiguration.Authorization?.Credentials?.AuthorizationCode?.ClientSecret;
+                    options.ResponseType = OpenIdConnectResponseType.Code;
+<#+
+
+    }
+    else if (sourceModel.Settings.OidcGrantType == OAuthGrantType.AuthorizationCodeWithPkce)
+    {
+
+#>
+                    options.ClientId = hostConfiguration.Authorization?.Credentials?.AuthorizationCodeWithPkce?.ClientId;
+                    options.ClientSecret = hostConfiguration.Authorization?.Credentials?.AuthorizationCodeWithPkce?.ClientSecret;
+                    options.ResponseType = OpenIdConnectResponseType.Code;
+                    options.UsePkce = true;
+<#+
+
+    }
+    else
+    {
+        throw new InvalidOperationException($"Unsupported service model OIDC grant type '{sourceModel.Settings.OidcGrantType}'");
+    }
+
+#>
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.Scope.Add(RestApi.Metadata.Scopes.DefaultScope);
+<#+
+
+    foreach (AuthorizationPolicy policy in sourceModel.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Name))
+    {
+
+#>
+                    options.Scope.Add(RestApi.Metadata.Scopes.<#= policy.Name #>);
+<#+
+
+    }
+
+#>
+                    options.Scope.Add(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Email);
+                    options.Scope.Add(Primavera.Hydrogen.IdentityModel.JwtClaimTypes.Profile);
+
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        NameClaimType = "name",
+                        RoleClaimType = "role"
+                    };
+
+                    options.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents()
+                    {
+                        OnAuthenticationFailed = this.OnOidcAuthenticationFailed,
+                        OnAuthorizationCodeReceived = this.OnOidcAuthorizationCodeReceived,
+                        OnMessageReceived = this.OnOidcMessageReceived,
+                        OnRedirectToIdentityProvider = this.OnOidcRedirectToIdentityProvider,
+                        OnRedirectToIdentityProviderForSignOut = this.OnOidcRedirectToIdentityProviderForSignOut,
+                        OnRemoteFailure = this.OnOidcRemoteFailure,
+                        OnRemoteSignOut = this.OnOidcRemoteSignOut,
+                        OnTicketReceived = this.OnOidcTicketReceived,
+                        OnTokenResponseReceived = this.OnOidcTokenResponseReceived,
+                        OnTokenValidated = this.OnOidcTokenValidated,
+                        OnUserInformationReceived = this.OnOidcUserInformationReceived,
+                    };
+
+                    // Custom configuration
+
+                    this.ConfigureOidcOptions(services, builder, options, hostConfiguration);
+                });
+<#+
+
+}
+
+// *** WriteAddBackgroundServices
+
+public void WriteAddBackgroundServices(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+    if (!sourceModel.BackgroundServices.Any())
+    {
+        return;
+    }
+
+#>
+        Primavera.Hydrogen.AspNetCore.Hosting.IBackgroundServicesBuilder builder = services.AddBackgroundServices();
+
+<#+
+
+    foreach (BackgroundService backgroundService in sourceModel.BackgroundServices.OrderBy(i => i.Name))
+    {
+        TimedBackgroundService timedBackgroundService = backgroundService as TimedBackgroundService;
+        if (timedBackgroundService != null)
+        {
+
+#>
+        builder.AddBackgroundService<BackgroundServices.<#= backgroundService.Name #>Service>();
+<#+
+
+            continue;
+        }
+
+        QueueBackgroundService queueBackgroundService = backgroundService as QueueBackgroundService;
+        if (queueBackgroundService != null)
+        {
+
+#>
+        builder.AddBackgroundService<BackgroundServices.<#= backgroundService.Name #>Service>();
+<#+
+
+            continue;
+        }
+
+#>
+        builder.AddBackgroundService<BackgroundServices.<#= backgroundService.Name #>Service>();
+<#+
+
+    }
+
+}
+
+// *** WriteUseErrorHandling
+
+public void WriteUseErrorHandling(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating error handling...");
+
+        // NOTES:
+        // When in development all exceptions' details will be sent to the client: 
+        // ... In the browser when on MVC routes.
+        // ... In the response body when on API routes.
+        // Exceptions on MVC routes will be processed by the exception handler bellow
+        // to "redirect" the user to the error route to show him a friendly error view.
+        // Content routes and API routes are not handled at all here.
+        // The Telemetry middleware (added elsewhere) ensures that all unhandled
+        // exceptions are collected.
+        // UseInteractiveErrorHandling() can be overridden to consider additional endpoints.
+
+        bool useDevelopmentSettings = this.UseDevelopmentSettings || this.CurrentEnvironment.IsDevelopment();
+
+        if (useDevelopmentSettings)
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseWhen(
+                context =>
+                {
+                    return this.UseInteractiveErrorHandling(context);
+                },
+                builder =>
+                {
+                    builder.UseExceptionHandler(this.ErrorRoute);
+                });
+        }
+
+        // NOTES:
+        // All other status code errors (e.g 404) (not 500) are handled by this middleware to
+        // "redirect" the user to the same friendly error view.
+        // Content routes and API routes are not handled at all here because we do not want
+        // to return HTML when these errors occur.
+        // UseInteractiveErrorHandling() can be overridden to consider additional endpoints.
+
+        app.UseWhen(
+            (context) =>
+            {
+                return this.UseInteractiveErrorHandling(context);
+            },
+            builder =>
+            {
+                builder.UseStatusCodePagesWithReExecute(this.ErrorRoute, "?statusCode={0}");
+            });
+<#+
+
+}
+
+// *** WriteUseInteractiveErrorHandling
+
+public void WriteUseInteractiveErrorHandling(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        return !httpContext.Request.PathIsApi() && 
+            !httpContext.Request.PathIsMonitoring() && 
+            !httpContext.Request.PathIsContent();
+<#+
+
+}
+
+// *** WriteUseHttps
+
+public void WriteUseHttps(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating HTTPS...");
+
+        bool useDevelopmentSettings = this.UseDevelopmentSettings || this.CurrentEnvironment.IsDevelopment();
+
+        if (!useDevelopmentSettings)
+        {
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+<#+
+
+}
+
+// *** WriteUseAuthentication
+
+public void WriteUseAuthentication(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating authentication...");
+
+        app.UseAuthentication();
+<#+
+
+}
+
+// *** WriteUseAuthorization
+
+public void WriteUseAuthorization(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating authorization...");
+
+        app.UseAuthorization();
+<#+
+
+}
+
+// *** WriteAddHttpTelemetry
+
+public void WriteAddHttpTelemetry(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services.AddHttpTelemetry();
+<#+
+
+}
+
+// *** WriteUseHttpTelemetry
+
+public void WriteUseHttpTelemetry(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating HTTP telemetry...");
+
+        app.UseHttpTelemetry();
+<#+
+
+}
+
+// *** WriteUseRouting
+
+public void WriteUseRouting(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating routing...");
+
+        app.UseRouting();
+<#+
+
+}
+
+// *** WriteUseCors
+
+public void WriteUseCors(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        if (hostConfiguration.Cors == null || !hostConfiguration.Cors.Enabled)
+        {
+            return;
+        }
+
+        LogConfigureStep(this.Logger!, "Activating CORS...");
+
+        app.UseCors(
+            options =>
+            {
+                // Allowed origins
+
+                if (!string.IsNullOrWhiteSpace(hostConfiguration.Cors.AllowedOrigins))
+                {
+                    string[] allowedOrigins = hostConfiguration.Cors.AllowedOrigins.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToArray();
+
+                    if (allowedOrigins.Length > 0)
+                    {
+                        options.WithOrigins(
+                            allowedOrigins);
+                    }
+                }
+
+                // Allowed methods
+
+                if (string.IsNullOrWhiteSpace(hostConfiguration.Cors.AllowedMethods))
+                {
+                    options.AllowAnyMethod();
+                }
+                else
+                {
+                    string[] allowedMethods = hostConfiguration.Cors.AllowedMethods.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToArray();
+
+                    if (allowedMethods.Length > 0)
+                    {
+                        options.WithMethods(
+                            allowedMethods);
+                    }
+                }
+
+                // Allowed headers
+
+                if (string.IsNullOrWhiteSpace(hostConfiguration.Cors.AllowedHeaders))
+                {
+                    options.AllowAnyHeader();
+                }
+                else
+                {
+                    string[] allowedHeaders = hostConfiguration.Cors.AllowedHeaders.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim()).ToArray();
+
+                    if (allowedHeaders.Length > 0)
+                    {
+                        options.WithHeaders(
+                            allowedHeaders);
+                    }
+                }
+            });
+<#+
+
+}
+
+// *** WriteUseAzureManagedConfiguration
+
+public void WriteUseAzureManagedConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // This adds Azure App Configuration, depending on the services'
+        // environment variables
+
+        LogConfigureStep(this.Logger!, "Activating Azure Managed Configuration...");
+
+        app.UseAzureManagedConfiguration();
+<#+
+
+}
+
+// *** WriteUseEndpoints
+
+public void WriteUseEndpoints(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating endpoint routing...");
+
+        app.UseEndpoints(
+            builder =>
+            {
+                builder.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+
+                this.ConfigureEndpoints(builder, hostConfiguration);
+            });
+<#+
+
+}
+
+// *** WriteUseOpenApiDocumentation
+
+public void WriteUseOpenApiDocumentation(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Ignore Spelling: favicon
+        // Ignore Spelling: img
+
+        LogConfigureStep(this.Logger!, "Activating OpenAPI documentation...");
+
+        // Middleware to generate the schema
+
+        app.UseOpenApi(
+            (options) =>
+            {
+                options.Path = Common.Constants.Documentation.RestApiDocumentsRoute;
+            });
+
+        // Middleware to customize the UI
+
+        app.UseWhen(
+            context =>
+            {
+                return context.Request.PathIsRestApiDocumentationCustomization();
+            },
+            builder =>
+            {
+                builder.UseFileServer(
+                    new FileServerOptions()
+                    {
+                        FileProvider = new Microsoft.Extensions.FileProviders.EmbeddedFileProvider(typeof(StartupBase).Assembly, "<#= sourceModel.Namespace #>.Server.Host.GeneratedCode.assets")
+                    });
+            });
+
+        app.UseWhen(
+            context =>
+            {
+                return context.Request.PathIsRestApiDocumentation();
+            },
+            builder =>
+            {
+                builder.Use(
+                    async (context, next) =>
+                    {
+                        if (context.Request.Path.StartsWithSegments(Common.Constants.Documentation.RestApiBaseRoute + "/favicon-32x32.png") || context.Request.Path.StartsWithSegments(Common.Constants.Documentation.RestApiBaseRoute + "/favicon-16x16.png"))
+                        {
+                            context.Response.Redirect("/favicon.png");
+                            return;
+                        }
+
+                        await next.Invoke().ConfigureAwait(false);
+                    });
+            });
+
+        // Middleware to build the UI
+
+        app.UseSwaggerUi3(
+            (options) =>
+            {
+                options.Path = Common.Constants.Documentation.RestApiBaseRoute;
+                options.DocumentPath = Common.Constants.Documentation.RestApiDocumentsRoute;
+                options.DocExpansion = "list";
+
+                if (this.CurrentEnvironment.IsDevelopment() || this.CurrentEnvironment.IsStaging())
+                {
+                    options.EnableTryItOut = true;
+<#+
+
+    if (sourceModel.AuthorizationMode == OnOff.On)
+    {
+
+#>
+
+                    options.OAuth2Client = new NSwag.AspNetCore.OAuth2ClientSettings()
+                    {
+                        ClientId = hostConfiguration.Authorization!.Credentials!.ClientCredentials!.ClientId,
+                        ClientSecret = hostConfiguration.Authorization!.Credentials.ClientCredentials!.ClientSecret
+                    };
+
+                    options.OAuth2Client.Scopes.Add(RestApi.Metadata.Scopes.DefaultScope);
+<#+
+
+        foreach (AuthorizationPolicy policy in sourceModel.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).OrderBy(i => i.Name))
+        {
+
+#>
+                    options.OAuth2Client.Scopes.Add(RestApi.Metadata.Scopes.<#= policy.Name #>);
+<#+
+
+        }
+    }
+
+#>
+                }
+                else
+                {
+                    options.EnableTryItOut = false;
+                }
+
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                sb.AppendLine("<script>");
+                sb.AppendLine("document.title = \"<#= sourceModel.Product #> <#= sourceModel.DisplayName #> - REST API\";");
+                sb.AppendLine("</script>");
+
+                options.CustomHeadContent = sb.ToString();
+
+                options.CustomStylesheetPath = Common.Constants.Documentation.RestApiStyleSheetPath;
+            });
+
+        // Redirect for old route
+
+        app.Map(
+            Common.Constants.Documentation.RestApiBaseRouteLegacy,
+            app =>
+            {
+                app.Run(
+                    context =>
+                    {
+                        context.Response.Redirect(Common.Constants.Documentation.RestApiBaseRoute, true);
+                        return System.Threading.Tasks.Task.CompletedTask;
+                    });
+            });
+<#+
+
+}
+
+// *** WriteUseStaticFiles
+
+public void WriteUseStaticFiles(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        LogConfigureStep(this.Logger!, "Activating static files...");
+
+        app.UseWhen(
+            context =>
+            {
+                return context.Request.Path.StartsWithSegments("/favicon.png", System.StringComparison.OrdinalIgnoreCase);
+            },
+            builder =>
+            {
+                builder.UseFileServer(
+                    new FileServerOptions()
+                    {
+                        FileProvider = new Microsoft.Extensions.FileProviders.EmbeddedFileProvider(typeof(StartupBase).Assembly, "<#= sourceModel.Namespace #>.Server.Host.GeneratedCode.assets")
+                    });
+            });
+
+        app.UseStaticFiles();
+<#+
+
+}
+
+// *** WriteUseRequestLocalization
+
+public void WriteUseRequestLocalization(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        LogConfigureStep(this.Logger!, "Activating request localization...");
+
+        System.Collections.Generic.List<System.Globalization.CultureInfo> cultures = Common.Localization.CulturesSupported
+            .Get()
+            .Select(i => new System.Globalization.CultureInfo(i))
+            .ToList();
+
+        Microsoft.AspNetCore.Builder.RequestLocalizationOptions options = new Microsoft.AspNetCore.Builder.RequestLocalizationOptions()
+        {
+            DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(Common.Localization.CulturesSupported.DefaultCulture),
+            SupportedCultures = cultures,
+            SupportedUICultures = cultures
+        };
+
+<#+
+
+    if (sourceModel.Settings.GenerateOidcSupport)
+    {
+
+#>
+        this.AddRequestCultureProviders(app, options);
+
+<#+
+
+    }
+
+#>
+        this.ConfigureRequestLocalization(app, options, cultures, hostConfiguration);
+
+        app.UseRequestLocalization(options);
+<#+
+
+}
+
+// *** WriteOnJwtBearerAuthenticationFailed
+
+public void WriteOnJwtBearerAuthenticationFailed(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        string? accessToken = context.Request?.Headers?["Authorization"];
+
+        LogBearerAuthenticationFailed(this.Logger!, accessToken);
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnJwtBearerForbidden
+
+public void WriteOnJwtBearerForbidden(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "JWT: forbidden.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnJwtBearerMessageReceived
+
+public void WriteOnJwtBearerMessageReceived(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "JWT: message received.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnJwtBearerTokenValidated
+
+public void WriteOnJwtBearerTokenValidated(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        string? accessToken = context.Request?.Headers?["Authorization"];
+
+        LogBearerAuthenticationSucceeded(this.Logger!, accessToken);
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnJwtBearerChallenge
+
+public void WriteOnJwtBearerChallenge(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "JWT: challenge.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteAddMarkdownDocumentation
+
+public void WriteAddMarkdownDocumentation(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddMarkdown();
+<#+
+
+}
+
+// *** WriteUseMarkdownDocumentation
+
+public void WriteUseMarkdownDocumentation(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        app.UseWhen(
+            (context) =>
+            {
+                return context.Request.PathIsDocumentation();
+            },
+            builder =>
+            {
+                builder.UseMarkdown();
+            });
+<#+
+
+}
+
+// *** WriteAddCookiePolicy
+
+public void WriteAddCookiePolicy(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .Configure<Microsoft.AspNetCore.Builder.CookiePolicyOptions>(
+                (options) =>
+                {
+                    options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Unspecified;
+
+                    options.OnAppendCookie = 
+                        cookieContext => this.CheckCookiesSameSite(cookieContext.Context, cookieContext.CookieOptions, true);
+                    options.OnDeleteCookie =
+                        cookieContext => this.CheckCookiesSameSite(cookieContext.Context, cookieContext.CookieOptions, false);
+                });
+<#+
+
+}
+
+// *** WriteUseCookiePolicy
+
+public void WriteUseCookiePolicy(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Activating cookie policy...");
+
+        app.UseCookiePolicy();
+<#+
+
+}
+
+// *** WriteCheckCookiesSameSite
+
+public void WriteCheckCookiesSameSite(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        string? domain = options.Domain;
+        string? path = options.Path;
+        Microsoft.AspNetCore.Http.SameSiteMode sameSiteMode = options.SameSite;
+        bool secure = options.Secure;
+
+        LogCheckingCookiesSameSite(
+            this.Logger!,
+            domain,
+            path,
+            sameSiteMode,
+            secure,
+            appending);
+
+        if (sameSiteMode == Microsoft.AspNetCore.Http.SameSiteMode.None)
+        {
+            string? userAgent = httpContext.Request?.Headers["User-Agent"].ToString();
+
+            if (this.DisallowsCookiesSameSiteNone(userAgent))
+            {
+                LogDisallowsCookiesSameSiteNone(this.Logger!);
+
+                options.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Unspecified;
+            }
+        }
+<#+
+
+}
+
+// *** WriteDisallowsCookiesSameSiteNone
+
+public void WriteDisallowsCookiesSameSiteNone(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // User agent defined?
+
+        if (string.IsNullOrEmpty(userAgent))
+        {
+            return false;
+        }
+
+        // All iOS based browsers
+
+        if (userAgent.Contains("CPU iPhone OS 12") || userAgent.Contains("iPad; CPU OS 12"))
+        {
+            return true;
+        }
+
+        // Mac OS X based browsers that use the Mac OS networking stack
+
+        if (userAgent.Contains("Safari") && userAgent.Contains("Macintosh; Intel Mac OS X 10_14") && userAgent.Contains("Version/"))
+        {
+            return true;
+        }
+
+        // Chrome 50-69
+
+        if (userAgent.Contains("Chrome/5") || userAgent.Contains("Chrome/6"))
+        {
+            return true;
+        }
+
+        // All others
+
+        return false;
+<#+
+
+}
+
+// *** WriteOnCookieRedirectToLogin
+
+public void WriteOnCookieRedirectToLogin(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Cookie: redirect to login.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnCookieRedirectToLogout
+
+public void WriteOnCookieRedirectToLogout(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Cookie: redirect to logout.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnCookieSignedIn
+
+public void WriteOnCookieSignedIn(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Cookie: signed-in.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnCookieSigningIn
+
+public void WriteOnCookieSigningIn(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Cookie: signing in.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnCookieSigningOut
+
+public void WriteOnCookieSigningOut(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Cookie: signing out.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnCookieValidatePrincipal
+
+public void WriteOnCookieValidatePrincipal(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "Cookie: validate principal.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcAuthenticationFailed
+
+public void WriteOnOidcAuthenticationFailed(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Exception? exception = context.Exception;
+
+        LogOidcAuthenticationFailed(this.Logger!, exception?.ToString());
+        
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcAuthorizationCodeReceived
+
+public void WriteOnOidcAuthorizationCodeReceived(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: authorization code received.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcMessageReceived
+
+public void WriteOnOidcMessageReceived(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: message received.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcRedirectToIdentityProvider
+
+public void WriteOnOidcRedirectToIdentityProvider(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: redirect to identity provider.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcRedirectToIdentityProviderForSignOut
+
+public void WriteOnOidcRedirectToIdentityProviderForSignOut(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: redirect to identity provider for sign-out.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcRemoteFailure
+
+public void WriteOnOidcRemoteFailure(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        System.Exception? exception = context.Failure;
+
+        LogOidcRemoteFailure(this.Logger!, exception?.ToString());
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcRemoteSignOut
+
+public void WriteOnOidcRemoteSignOut(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: remote sign-out.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcTicketReceived
+
+public void WriteOnOidcTicketReceived(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: ticket received.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcTokenResponseReceived
+
+public void WriteOnOidcTokenResponseReceived(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: token response received.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcTokenValidated
+
+public void WriteOnOidcTokenValidated(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        LogConfigureStep(this.Logger!, "OIDC: token validated.");
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteOnOidcUserInformationReceived
+
+public void WriteOnOidcUserInformationReceived(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        string? user = context.User?.ToString();
+
+        LogOidcUserInfoReceived(this.Logger!, user);
+
+        return System.Threading.Tasks.Task.CompletedTask;
+<#+
+
+}
+
+// *** WriteAddAzureServiceBusMessageBus
+
+public void WriteAddAzureServiceBusMessageBus(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddAzureServiceBusMessageBus();
+<#+
+
+}
+
+// *** WriteAddWebhooks
+
+public void WriteAddWebhooks(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        services
+            .AddWebhooks()
+            .AddBackgroundQueuePublisher()
+            .AddTimedRetry()
+            .AddAzureTableStorage();
+<#+
+
+}
+
+// *** WriteAddAzureManagedConfiguration
+
+public void WriteAddAzureManagedConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        // NOTES:
+        // This adds Azure App Configuration, depending on the services'
+        // environment variables
+
+        services
+            .AddAzureManagedConfiguration();
+<#+
+
+}
+
+// *** WriteAddHealthMonitoring
+
+public void WriteAddHealthMonitoring(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddHealthMonitoring();
+<#+
+
+}
+
+// *** WriteAddServiceCatalog
+
+public void WriteAddServiceCatalog(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+#>
+        services
+            .AddServiceCatalog(
+                options =>
+                {
+                    options.Address = new System.Uri(hostConfiguration.ServiceCatalogServiceBaseUri!);
+
+                    options.ServiceDescription = new Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceDescriptionOptions()
+                    {
+                        Id = "<#= sourceModel.GUID #>",
+                        Name = "<#= sourceModel.Name #>",
+                        Version = "<#= sourceModel.Version #>",
+                        Properties = new System.Collections.Generic.Dictionary<string, string>()
+                        {
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.FrameworkVersion] = "<#= SdkConstants.FrameworkVersion #>",
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.BinariesVersion] = typeof(StartupBase).Assembly.Reflector().AssemblyFileVersion.ToString(),
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.InformationalVersion] = typeof(StartupBase).Assembly.Reflector().AssemblyInformationalVersion,
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.Copyright] = typeof(StartupBase).Assembly.Reflector().AssemblyCopyright,
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.ApiVersions] = "<#= GetApiVersions(sourceModel) #>",
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.ApiScopes] = "<#= GetApiScopes(sourceModel) #>",
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.AuthorizationPolicies] = "<#= GetAuthorizationPolicies(sourceModel) #>",
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.Webhooks] = "<#= GetWebhooks(sourceModel) #>",
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.Dependencies] = "<#= GetDependencies(sourceModel) #>",
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.ServiceDependencies] = "<#= GetServiceDependencies(sourceModel) #>",
+                            [Primavera.Hydrogen.Services.Extensions.ServiceCatalog.ServiceCatalogConstants.Registration.WellKnownProperties.BackgroundServices] = "<#= GetBackgroundServices(sourceModel) #>"
+                        }
+                    };
+                });
+<#+
+
+}
+
+private static string GetApiVersions(ServiceModel model)
+{
+    List<string> result = new List<string>()
+    {
+        model.Version
+    };
+
+    model.ApiVersions.ForEach(i => result.Add(i.Version));
+
+    return string.Join(";", result.OrderByDescending(i => i));
+}
+
+private static string GetApiScopes(ServiceModel model)
+{
+    if (model.AuthorizationMode.IsOff())
+    {
+        return string.Empty;
+    }
+
+    List<string> result = new List<string>()
+    {
+        model.DefaultScope
+    };
+
+    model.AuthorizationPolicies.Where(i => i.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope).ForEach(i => result.Add(i.Scope));
+
+    if (model.Webhooks.Count > 0)
+    {
+        result.Add($"{model.DefaultScope}-wh");
+    }
+
+    return string.Join(";", result.OrderBy(i => i));
+}
+
+private static string GetAuthorizationPolicies(ServiceModel model)
+{
+    if (model.AuthorizationPolicies.Count == 0)
+    {
+        return string.Empty;
+    }
+
+    List<string> result = new List<string>();
+
+    foreach (AuthorizationPolicy authorizationPolicy in model.AuthorizationPolicies)
+    {
+        string scope = authorizationPolicy.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope ? authorizationPolicy.Scope : "";
+        result.Add($"{authorizationPolicy.Name}:{authorizationPolicy.Kind}:{scope}");
+    }
+
+    return string.Join(";", result.OrderBy(i => i));
+}
+
+private static string GetWebhooks(ServiceModel model)
+{
+    if (model.Webhooks.Count == 0)
+    {
+        return string.Empty;
+    }
+
+    List<string> result = new List<string>();
+
+    model.Webhooks.ForEach(i => result.Add(i.Name));
+
+    return string.Join(";", result.OrderBy(i => i));
+}
+
+private static string GetDependencies(ServiceModel model)
+{
+    if (model.Dependencies.Count == 0)
+    {
+        return string.Empty;
+    }
+
+    List<string> result = new List<string>();
+
+    model.Dependencies.ForEach(i => result.Add(i.Kind.ToString()));
+
+    return string.Join(";", result.OrderBy(i => i));
+}
+
+private static string GetServiceDependencies(ServiceModel model)
+{
+    if (model.ServiceDependencies.Count == 0)
+    {
+        return string.Empty;
+    }
+
+    List<string> result = new List<string>();
+
+    model.ServiceDependencies.ForEach(i => result.Add(i.Service));
+
+    return string.Join(";", result.OrderBy(i => i));
+}
+
+private static string GetBackgroundServices(ServiceModel model)
+{
+    if (model.BackgroundServices.Count == 0)
+    {
+        return string.Empty;
+    }
+
+    List<string> result = new List<string>();
+
+    model.BackgroundServices.ForEach(
+        i =>
+        {
+            if (i is TimedBackgroundService)
+            {
+                result.Add($"{i.Name}:Timed");
+            }
+            else if (i is QueueBackgroundService)
+            {
+                result.Add($"{i.Name}:Queued");
+            }
+            else
+            {
+                result.Add($"{i.Name}:Normal");
+            }
+        });
+
+    return string.Join(";", result.OrderBy(i => i));
+}
+
+// *** WriteAddCosmosDbMultiModelDatabase
+
+public void WriteAddCosmosDbMultiModelDatabase(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddCosmosDbMultiModelDatabase();
+<#+
+
+}
+
+// *** WriteAddTaskbox
+
+public void WriteAddTaskbox(ModelWriter modelWriter, MethodBodyModel model)
+{
+
+#>
+        services
+            .AddTaskbox();
+<#+
+
+}
+
+// *** WriteValidateConfiguration
+
+public void WriteValidateConfiguration(ModelWriter modelWriter, MethodBodyModel model)
+{
+    ServiceModel sourceModel = model.RootModelAs<CSharpFileModel>().SourceModel as ServiceModel;
+
+    // NOTES:
+    // See https://github.com/primaverabss/lithium-product-core.sdk/issues/105 for reference
+    // on how the host configuration is validated
+
+#>
+        hostConfiguration.Validate();
+<#+
+
+}
+
+// *** WriteAddRequestCultureProviders
+
+public void WriteAddRequestCultureProviders(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel sourceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        // Request culture provider to apply the current user culture
+
+        System.Collections.Generic.List<System.Globalization.CultureInfo> cultures = Common.Localization.CulturesSupported
+            .Get()
+            .Select(i => new System.Globalization.CultureInfo(i))
+            .ToList();
+
+        options.RequestCultureProviders.Insert(
+            0, 
+            new Primavera.Hydrogen.AspNetCore.Localization.CurrentUserRequestCultureProvider(
+                app.ApplicationServices,
+                cultures));
+<#+
+
+}
+
+#>

@@ -1,0 +1,1196 @@
+﻿<#+
+
+// ### Library
+
+public void TransformClientLibDoc()
+{
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Add writers
+
+    controller.AddModelWriter<ServiceModel>((w, m) => this.WriteClientLibrary(w, m));
+
+    // Generate code
+
+    controller.Write(this.ServiceModel);
+}
+
+// *** WriteClientLibrary
+
+public void WriteClientLibrary(ModelWriter modelWriter, ServiceModel model)
+{
+    if (model == null)
+    {
+        return;
+    }
+
+    this.WriteClientLibraryDocumentation(modelWriter, model);
+}
+
+// *** WriteClientLibraryDocumentation
+
+public void WriteClientLibraryDocumentation(ModelWriter w, ServiceModel m)
+{
+    this.WriteClientLibraryTitle(w, m);
+    this.WriteClientLibraryDescription(w, m);
+    this.WriteRestServiceClient(w, m);
+    this.WriteClientControllers(w, m);
+    this.WriteModels(w, m);
+    this.WriteEnumerations(w, m);
+    this.WriteAuthorizationPolicies(w, m);
+    this.WriteReference(w, m);
+}
+
+// *** WriteClientLibraryTitle
+
+public void WriteClientLibraryTitle(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("# <a name=\"root\"></a>{0} {1} ({2}) Client Library", m.Product, m.DisplayName, m.GUID);
+    w.AppendLine();
+}
+
+// *** WriteClientLibraryDescription
+
+public void WriteClientLibraryDescription(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine(m.Summary);
+    w.AppendLine();
+}
+
+// *** WriteRestServiceClient
+
+public void WriteRestServiceClient(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("## REST Service Client");
+    w.AppendLine();
+    w.AppendLine("| Class | Description |");
+    w.AppendLine("| - | - |");
+    w.AppendLine("| [`{0}Client`](#{0}Client) | The entry point of the {1} client library. |", m.Name, m.DisplayName);
+    w.AppendLine();
+}
+
+// *** WriteClientControllers
+
+public void WriteClientControllers(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("## Client Controllers");
+    w.AppendLine();
+
+    IList<ControllerType> controllers = m.Controllers
+        .OrderBy(i => i.Name)
+        .Where(i => i.Visibility != ControllerTypeVisibility.ServerSide)
+        .Where(i => i.AccessModifier != ControllerTypeAccessModifier.Internal)
+        .Where(i => i.ChildActions.Any(a => a.IsApiVersionInUse(m.Version)))
+        .ToList();
+    
+    if (!m.Settings.HasCustomControllersClientSide && controllers.Count == 0)
+    {
+        w.AppendLine("The client library has no operations.");
+        w.AppendLine();
+        return;
+    }
+    
+    if (controllers.Count > 0)
+    {
+        w.AppendLine("| Class | Description |");
+        w.AppendLine("| - | - |");
+
+        foreach (ControllerType controllerType in controllers)
+        {
+            w.AppendLine("| [`{0}`](#{0}ClientController) | {1} |", controllerType.Name, controllerType.Summary);
+        }
+
+        w.AppendLine();
+    }
+
+    if (m.Settings.HasCustomControllersClientSide)
+    {
+        w.AppendLine("> The service includes custom operations not described here.");
+        w.AppendLine();
+    }
+}
+
+// *** WriteModels
+
+public void WriteModels(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("## Models");
+    w.AppendLine();
+
+    IList<ModelType> models = m.Models
+        .Where(i => i.Extensions().IsVisibleClientSide)
+        .OrderBy(i => i.Name)
+        .ToList();
+    
+    if (!m.Settings.HasCustomModelsClientSide && models.Count == 0)
+    {
+        w.AppendLine("The client library has no models.");
+        w.AppendLine();
+        return;
+    }
+    
+    if (models.Count > 0)
+    {
+        w.AppendLine("| Class | Description |");
+        w.AppendLine("| - | - |");
+    
+        foreach (ModelType modelType in models.OrderBy(c => c.Name))
+        {
+            w.AppendLine("| [`{0}`](#{0}) | {1} |", modelType.Name, modelType.Summary);
+        }
+
+        w.AppendLine();
+    }
+
+    if (m.Settings.HasCustomModelsClientSide)
+    {
+        w.AppendLine("> The service includes custom models not described here.");
+        w.AppendLine();
+    }
+}
+
+// *** WriteEnumerations
+
+public void WriteEnumerations(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("## Enumerations");
+    w.AppendLine();
+
+    IList<EnumType> enums = m.Enumerations.OrderBy(i => i.Name).ToList();
+    
+    if (!m.Settings.HasCustomEnumerationsClientSide && enums.Count == 0)
+    {
+        w.AppendLine("The client library has no enumerations.");
+        w.AppendLine();
+        return;
+    }
+    
+    if (enums.Count > 0)
+    {
+        w.AppendLine("| Class | Description |");
+        w.AppendLine("| - | - | - |");
+
+        foreach (EnumType enumType in enums)
+        {
+            w.AppendLine("| [`{0}`](#{0}) | {1} |", enumType.Name, enumType.Summary);
+        }
+
+        w.AppendLine();
+    }
+
+    if (m.Settings.HasCustomEnumerationsClientSide)
+    {
+        w.AppendLine("> The service includes custom enumerations not described here.");
+        w.AppendLine();
+    }
+}
+
+// *** WriteAuthorizationPolicies
+
+public void WriteAuthorizationPolicies(ModelWriter w, ServiceModel m)
+{
+    if (m.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+    w.AppendLine("## Authorization Policies");
+    w.AppendLine();
+    w.AppendLine("| Policy | Description | Scope |");
+    w.AppendLine("| - | - | - |");
+
+    w.AppendLine("| `DefaultScope` | Defines an authorization policy that requires the default scope. | `{0}` |", m.DefaultScope);
+    
+    foreach (AuthorizationPolicy policy in m.AuthorizationPolicies.OrderBy(i => i.Name))
+    {
+        if (policy.Kind == Primavera.Lithium.Sdk.Modeling.ServiceDesigner.AuthorizationPolicyKind.Scope)
+        {
+            w.AppendLine("| `{0}` | {1} | `{2}` |", policy.Name, policy.Summary, policy.Scope);
+        }
+        else
+        {
+            w.AppendLine("| `{0}` | {1} | N/A |", policy.Name, policy.Summary);
+        }
+    }
+
+    w.AppendLine();
+}
+
+// *** WriteReference
+
+public void WriteReference(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("## Reference");
+    w.AppendLine();
+    this.WriteReferenceServiceClient(w, m);
+    this.WriteReferenceControllers(w, m);
+    this.WriteReferenceModels(w, m);
+    this.WriteReferenceEnumerations(w, m);
+}
+
+// *** WriteReferenceServiceClient
+
+public void WriteReferenceServiceClient(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("### REST Service Client Classes");
+    w.AppendLine();
+    w.AppendLine("#### <a name=\"{0}Client\"></a>`{0}Client`", m.Name);
+    w.AppendLine();
+    w.AppendLine("- Namespace: `{0}.Client.Rest`", m.Namespace);
+    w.AppendLine("- Inheritance: `{0}ClientBase` (`RestServiceClient`)", m.Name);
+    w.AppendLine();
+    w.AppendLine("##### Constructors");
+    w.AppendLine();
+    w.AppendLine("###### `{0}Client(Uri, BearerTokenCredential)`", m.Name);
+    w.AppendLine();
+    w.AppendLine("| Parameter | Type | Description |");
+    w.AppendLine("| - | - | - |");
+    w.AppendLine("| `serviceUri` | `Uri` | The service URI. |");
+    w.AppendLine("| `credential` | `BearerTokenCredential` | The credential that should be used to access the service. |");
+    w.AppendLine();
+    w.AppendLine("###### `{0}Client(Uri, BearerTokenCredential, {0}ClientOptions)`", m.Name);
+    w.AppendLine();
+    w.AppendLine("| Parameter | Type | Description |");
+    w.AppendLine("| - | - | - |");
+    w.AppendLine("| `serviceUri` | `Uri` | The service URI. |");
+    w.AppendLine("| `credential` | `BearerTokenCredential` | The credential that should be used to access the service. |");
+    w.AppendLine("| `clientOptions` | `{0}ClientOptions` | The client options. |", m.Name);
+    w.AppendLine();
+    w.AppendLine("##### Example");
+    w.AppendLine();
+
+    if (m.AuthorizationMode.IsOn())
+    {
+        this.WriteReferenceServiceClientWithAuth(w, m);
+    }
+    else
+    {
+        this.WriteReferenceServiceClientWithoutAuth(w, m);
+    }
+
+    w.AppendLine("[^ Back to top](#root)");
+    w.AppendLine();
+}
+
+// *** WriteReferenceServiceClientWithAuth
+
+public void WriteReferenceServiceClientWithAuth(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("```csharp");
+    w.AppendLine("Uri address = new Uri(\"[service-address]\");");
+    w.AppendLine("string clientId = \"[client-id]\"");
+    w.AppendLine("string clientSecret = \"[client-secret]\"");
+    w.AppendLine();
+    w.AppendLine("{0}Client client = new {0}Client(", m.Name);
+    w.AppendLine("    new Uri(address),");
+    w.AppendLine("    new ChallengeCredential(");
+    w.AppendLine("        async (args, cancellationToken) =>");
+    w.AppendLine("        {");
+    w.AppendLine("            ClientSecretCredential innerCredential = new ClientSecretCredential(");
+    w.AppendLine("                args.AuthorizationUri,");
+    w.AppendLine("                clientId,");
+    w.AppendLine("                clientSecret);");
+    w.AppendLine();
+    w.AppendLine("            return await innerCredential.GetTokenAsync(cancellationToken).ConfigureAwait(false);");
+    w.AppendLine("        }));");
+    w.AppendLine("```");
+    w.AppendLine();
+}
+
+// *** WriteReferenceServiceClientWithoutAuth
+
+public void WriteReferenceServiceClientWithoutAuth(ModelWriter w, ServiceModel m)
+{
+    w.AppendLine("```csharp");
+    w.AppendLine("Uri address = new Uri(\"[service-address]\");");
+    w.AppendLine();
+    w.AppendLine("{0}Client client = new {0}Client(", m.Name);
+    w.AppendLine("    new Uri(address),");
+    w.AppendLine("    new NoCredential());");
+    w.AppendLine("```");
+    w.AppendLine();
+}
+
+// ### Models
+
+// *** WriteReferenceModels
+
+public void WriteReferenceModels(ModelWriter w, ServiceModel m)
+{
+    IList<ModelType> models = m.Models
+        .OrderBy(i => i.Name)
+        .ToList();
+
+    if (models.Count == 0)
+    {
+        return;
+    }
+
+    w.AppendLine("### Models Classes");
+    w.AppendLine();
+
+    foreach (ModelType modelType in models)
+    {
+        this.WriteReferenceModel(w, modelType);
+    }
+}
+
+// *** WriteReferenceModel
+
+public void WriteReferenceModel(ModelWriter w, ModelType m)
+{
+    w.AppendLine("#### <a name=\"{0}\"></a>`{0}`", m.Name);
+    w.AppendLine();
+    w.AppendLine(m.Summary);
+    w.AppendLine();
+    w.AppendLine("- Namespace: `{0}.Client.Rest.Models`", m.ServiceModel.Namespace);
+
+    if (m.BaseModel == null)
+    {
+        w.AppendLine("- Inheritance: `{0}Base`", m.Name);
+    }
+    else
+    {
+        w.AppendLine("- Inheritance: `{0}Base` (`{1}`)", m.Name, m.BaseModel.Name);
+    }
+
+    w.AppendLine();
+    w.AppendLine("##### Properties");
+    w.AppendLine();
+    this.WriteReferenceModelProperties(w, m);
+    w.AppendLine("[^ Back to top](#root)");
+    w.AppendLine();
+}
+
+// ### Model Properties
+
+// *** WriteReferenceModelProperties
+
+public void WriteReferenceModelProperties(ModelWriter w, ModelType m)
+{
+    if (!m.HasCustomPropertiesClientSide && m.ChildProperties.Count == 0)
+    {
+        w.AppendLine("The model has no properties.");
+        w.AppendLine();
+        return;
+    }
+
+    if (m.ChildProperties.Count > 0)
+    {
+        w.AppendLine("| Property | Type | Description | Rules |");
+        w.AppendLine("| - | - | - | - |");
+    
+        foreach (ModelTypeProperty property in m.ChildProperties)
+        {
+            this.WriteReferenceModelProperty(w, property);
+        }
+
+        w.AppendLine();
+    }
+
+    if (m.HasCustomPropertiesClientSide)
+    {
+        w.AppendLine("> The model includes custom properties not described here.");
+        w.AppendLine();
+    }
+}
+
+// *** WriteReferenceModelProperty
+
+public void WriteReferenceModelProperty(ModelWriter w, ModelTypeProperty m)
+{
+    string propertyType = m.Extensions().AsCSharpType("Client.Rest.Models", true, true);
+
+    w.AppendLine("| `{0}` | `{1}` | {2} | {3} |", m.Name, propertyType, m.Summary, this.GetPropertyRules(m));
+}
+
+
+// *** GetPropertyRules
+
+private string GetPropertyRules(ModelTypeProperty property)
+{
+    string result = null;
+
+    result = string.Concat(result, GetPropertyRules(property as ModelTypeScalarProperty));
+
+    result = string.Concat(result, GetPropertyRules(property as ModelTypeEnumProperty));
+
+    result = string.Concat(result, GetPropertyRules(property as ModelTypeModelProperty));
+
+    return result;
+}
+
+// *** GetPropertyRules
+
+private string GetPropertyRules(ModelTypeScalarProperty property)
+{
+    if (property == null)
+    {
+        return null;
+    }
+
+    string result = string.Empty;
+
+    if (!property.IsNullableValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Required. ");
+    }
+
+    if (property.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Not empty. ");
+    }
+
+    if (property.IsEmailValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Email. ");
+    }
+
+    if (property.IsMinLengthValue != null)
+    {
+        result = string.Concat(result, $"MinLen({property.IsMinLengthValue.Value}). ");
+    }
+
+    if (property.IsMaxLengthValue != null)
+    {
+        result = string.Concat(result, $"MaxLen({property.IsMaxLengthValue.Value}). ");
+    }
+
+    if (property.IsRegularExpressionValue != null)
+    {
+        string regExpression = this.GetRegularExpression(property.ParentModel.ServiceModel, property.IsRegularExpressionValue);
+        result = string.Concat(result, $"RegEx ({regExpression}). ");
+    }
+
+    if (property.IsLessThanValue != null)
+    {
+        result = string.Concat(result, $"< {property.IsLessThanValue.Value}. ");
+    }
+
+    if (property.IsLessThanOrEqualToValue != null)
+    {
+        result = string.Concat(result, $"< {property.IsLessThanOrEqualToValue.Value}. ");
+    }
+
+    if (property.IsGreaterThanValue != null)
+    {
+        result = string.Concat(result, $"> {property.IsGreaterThanValue.Value}. ");
+    }
+
+    if (property.IsGreaterThanOrEqualToValue != null)
+    {
+        result = string.Concat(result, $"> {property.IsGreaterThanOrEqualToValue.Value}. ");
+    }
+
+    if (property.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Phone number. ");
+    }
+
+    if (property.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "E.164 number. ");
+    }
+
+    if (property.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Absolute URI. ");
+    }
+    
+    return result;
+}
+
+// *** GetPropertyRules
+
+private string GetPropertyRules(ModelTypeEnumProperty property)
+{
+    if (property == null)
+    {
+        return null;
+    }
+
+    string result = string.Empty;
+
+    if (!property.IsNullableValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Required. ");
+    }
+
+    return result;
+}
+
+// *** GetPropertyRules
+
+private string GetPropertyRules(ModelTypeModelProperty property)
+{
+    if (property == null)
+    {
+        return null;
+    }
+
+    string result = string.Empty;
+
+    if (!property.IsNullableValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Required. ");
+    }
+
+    return result;
+}
+
+// ### Enumerations
+
+// *** WriteReferenceEnumerations
+
+public void WriteReferenceEnumerations(ModelWriter w, ServiceModel m)
+{
+    IList<EnumType> enumerations = m.Enumerations.OrderBy(i => i.Name).ToList();
+
+    if (enumerations.Count == 0)
+    {
+        return;
+    }
+
+    w.AppendLine("### Enumerations Classes");
+    w.AppendLine();
+
+    foreach (EnumType enumType in enumerations)
+    {
+        this.WriteReferenceEnumeration(w, enumType);
+    }
+}
+
+// *** WriteReferenceEnumeration
+
+public void WriteReferenceEnumeration(ModelWriter w, EnumType m)
+{
+    w.AppendLine("#### <a name=\"{0}\"></a>`{0}`", m.Name);
+    w.AppendLine();
+    w.AppendLine(m.Summary);
+    w.AppendLine();
+    w.AppendLine("- Namespace: `{0}.Client.Rest.Models`", m.ServiceModel.Namespace);
+
+    w.AppendLine();
+    w.AppendLine("##### Members");
+    w.AppendLine();
+    this.WriteReferenceEnumerationMembers(w, m);
+    w.AppendLine("[^ Back to top](#root)");
+    w.AppendLine();
+}
+
+// ### Enumeration Members
+
+// *** WriteReferenceEnumerationMembers
+
+public void WriteReferenceEnumerationMembers(ModelWriter w, EnumType m)
+{
+    if (m.ChildMembers.Count == 0)
+    {
+        w.AppendLine("The enumeration has no members.");
+        w.AppendLine();
+        return;
+    }
+
+    w.AppendLine("| Member | Value | Description |");
+    w.AppendLine("| - | - | - |");
+    
+    foreach (EnumTypeMember member in m.ChildMembers)
+    {
+        this.WriteReferenceEnumerationMember(w, member);
+    }
+
+    w.AppendLine();
+}
+
+// *** WriteReferenceEnumerationMember
+
+public void WriteReferenceEnumerationMember(ModelWriter w, EnumTypeMember m)
+{
+    w.AppendLine("| `{0}` | {1} | {2} | ", m.Name, m.Value, m.Summary);
+}
+
+// ### Controllers
+
+// *** WriteReferenceControllers
+
+public void WriteReferenceControllers(ModelWriter w, ServiceModel m)
+{
+    IList<ControllerType> controllers = m.Controllers
+        .OrderBy(i => i.Name)
+        .Where(i => i.Visibility != ControllerTypeVisibility.ServerSide)
+        .Where(i => i.ChildActions.Any(a => a.IsApiVersionInUse(m.Version)))
+        .ToList();
+
+    if (controllers.Count == 0)
+    {
+        return;
+    }
+
+    w.AppendLine("### Client Controllers Classes");
+    w.AppendLine();
+
+    foreach (ControllerType controllerType in controllers)
+    {
+        this.WriteReferenceController(w, controllerType);
+    }
+}
+
+// *** WriteReferenceController
+
+public void WriteReferenceController(ModelWriter w, ControllerType m)
+{
+    if (m.AccessModifier == ControllerTypeAccessModifier.Internal)
+    {
+        return;
+    }
+
+    w.AppendLine("#### <a name=\"{0}ClientController\"></a>`{0}ClientController`", m.Name);
+    w.AppendLine();
+    w.AppendLine(m.Summary);
+    w.AppendLine();
+    w.AppendLine("- Namespace: `{0}.Client.Rest`", m.ServiceModel.Namespace);
+    w.AppendLine("- Inheritance: `{0}ClientControllerBase` (`I{0}ClientController`)", m.Name);
+    w.AppendLine();
+    w.AppendLine("##### Methods");
+    w.AppendLine();
+    this.WriteReferenceControllerActions(w, m);
+}
+
+// ### Controller Actions
+
+// *** WriteReferenceControllerActions
+
+public void WriteReferenceControllerActions(ModelWriter w, ControllerType m)
+{
+    IList<ControllerTypeAction> actions = m.ChildActions
+        .OrderBy(i => i.Name2)
+        .Where(i => i.Visibility != ControllerTypeActionVisibility.ServerSide)
+        .Where(i => i.IsApiVersionInUse(m.ServiceModel.Version))
+        .ToList();
+
+    if (!m.HasCustomActionsClientSide && actions.Count == 0)
+    {
+        w.AppendLine("The class has no methods.");
+        w.AppendLine();
+        return;
+    }
+
+    foreach (ControllerTypeAction action in actions)
+    {
+        this.WriteReferenceControllerAction(w, action);
+    }
+
+    if (m.HasCustomActionsClientSide)
+    {
+        w.AppendLine("> The class includes custom methods not described here.");
+        w.AppendLine();
+    }
+}
+
+// *** WriteReferenceControllerAction
+
+public void WriteReferenceControllerAction(ModelWriter w, ControllerTypeAction m)
+{
+    string returnType = "RestServiceResult";
+    
+    if (m.ReturnValueType != ControllerTypeActionReturnValueType.None)
+    {
+        returnType = m.Extensions().AsCSharpType("Client.Rest.Models", true);
+
+        if (m.ODataEnabled)
+        {
+            returnType = m.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            returnType = $"Primavera.Hydrogen.Rest.ODataResult<{returnType}>";
+        }
+
+        returnType = "RestServiceResult<{0}>".Format(returnType);
+    }
+
+    w.AppendLine("##### `{0}Async()`", m.Name2);
+    w.AppendLine();
+    w.AppendLine(m.Summary);
+    w.AppendLine();
+
+    string policy = AuthorizationHelper.GetPolicy(m);
+    if (!string.IsNullOrEmpty(policy))
+    {
+        w.AppendLine($"- Authorization Policy: `{policy}`");
+        w.AppendLine();
+    }
+
+    w.AppendLine("```csharp");
+    w.AppendLine("public async Task<{0}> {1}Async({2});", returnType, m.Name2, this.GetParametersString(m, true));
+
+    w.AppendLine();
+    w.AppendLine("public {0} {1}({2});", returnType, m.Name2, this.GetParametersString(m, false));
+
+    w.AppendLine("```");
+    w.AppendLine();
+
+    w.AppendLine("###### Parameters");
+    w.AppendLine();
+    this.WriteReferenceControllerActionParameters(w, m);
+    w.AppendLine();
+    w.AppendLine("###### Returns");
+    w.AppendLine();
+    this.WriteReferenceControllerActionResult(w, m);
+    w.AppendLine();
+    w.AppendLine("###### Status Codes");
+    w.AppendLine();
+    this.WriteReferenceControllerActionStatusCodes(w, m);
+    w.AppendLine();
+    w.AppendLine("[^ Back to top](#root)");
+    w.AppendLine();
+}
+
+// *** WriteReferenceControllerActionResult
+
+public void WriteReferenceControllerActionResult(ModelWriter w, ControllerTypeAction m)
+{
+    w.AppendLine("| Return Type | Description |");
+    w.AppendLine("| - | - | - | - |");
+
+    if (m.ReturnValueType == ControllerTypeActionReturnValueType.None)
+    {
+        w.AppendLine("| None | The operation has no return value. |");
+    }
+    else
+    {
+        string returnType = m.Extensions().AsCSharpType("Client.Rest.Models", true);
+
+        if (m.ODataEnabled)
+        {
+            returnType = m.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            returnType = $"Primavera.Hydrogen.Rest.ODataResult<{returnType}>";
+        }
+
+        w.AppendLine("| `{0}` | {1} |", returnType, m.Returns);
+    }
+
+    w.AppendLine();
+}
+
+// *** WriteReferenceControllerActionStatusCodes
+
+public void WriteReferenceControllerActionStatusCodes(ModelWriter w, ControllerTypeAction m)
+{
+    w.AppendLine("| Status Code | Description |");
+    w.AppendLine("| - | - | - | - |");
+    w.AppendLine("| `HttpStatusCode.{0}` | Success. |", m.SuccessStatusCode);
+    w.AppendLine("| `HttpStatusCode.BadRequest` | Failure: the request is invalid.|");
+
+    if (m.ProducesNotFound.IsTrue())
+    {
+        w.AppendLine("| `HttpStatusCode.NotFound` | Failure: not found.|");
+    }
+
+    if (m.ProducesConflict.IsTrue())
+    {
+        w.AppendLine("| `HttpStatusCode.Conflict` | Failure: conflict.|");
+    }
+
+    w.AppendLine();
+
+    w.AppendLine("> The operation will raise `RestRequestException` for any failure status code. The exception may include a body with an instance of `RestProblemDetails` depending on the status code.");
+    w.AppendLine();
+}
+
+// *** GetParametersString
+
+private string GetParametersString(ControllerTypeAction m, bool useCancellation)
+{
+    string result = GetParametersString(m);
+
+    if (m.ODataEnabled)
+    {
+        string returnType = m.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+
+        if (string.IsNullOrEmpty(result))
+        {
+            result = $"Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{returnType}> queryOptions";
+        }
+        else
+        {
+            result = string.Concat(result, $", Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{returnType}> queryOptions");
+        }
+
+        if (m.ODataRequiredQueryOptions == ODataRequiredQueryOptions.None)
+        {
+            result = string.Concat(result, "? = null");
+        }
+    }
+
+    if (useCancellation)
+    {
+        if (string.IsNullOrEmpty(result))
+        {
+            result = "CancellationToken cancellationToken = default";
+        }
+        else
+        {
+            result = string.Concat(result, ", CancellationToken cancellationToken = default");
+        }
+    }
+
+    return result;
+}
+
+// *** GetParametersString
+
+private string GetParametersString(ControllerTypeAction m)
+{
+    string controllerParametersText = string.Empty;
+
+    if (!m.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in m.ParentController.ChildParameters)
+        {
+            string parameterType = parameter.Extensions().AsCSharpType("Client.Rest.Models", true);
+            string parameterString = "{0} {1}".Format(parameterType, parameter.Name.Transform().ToCamelCase());
+
+            if (string.IsNullOrEmpty(controllerParametersText))
+            {
+                controllerParametersText = parameterString;
+            }
+            else
+            {
+                controllerParametersText = string.Join(", ", controllerParametersText, parameterString);
+            }
+        }
+    }
+
+    string actionParametersText = string.Empty;
+
+    foreach (ControllerTypeActionParameter parameter in m.ChildParameters)
+    {
+        string parameterType = parameter.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+        string parameterString = "{0} {1}".Format(parameterType, parameter.Name.Transform().ToCamelCase());
+
+        if (!string.IsNullOrEmpty(parameter.DefaultValue))
+        {
+            parameterString = string.Concat(parameterString, " = {0}".Format(parameter.DefaultValue));
+        }
+        
+        if (string.IsNullOrEmpty(actionParametersText))
+        {
+            actionParametersText = parameterString;
+        }
+        else
+        {
+            actionParametersText = string.Join(", ", actionParametersText, parameterString);
+        }
+    }
+
+    if (string.IsNullOrEmpty(controllerParametersText))
+    {
+        return actionParametersText;
+    }
+    else if (string.IsNullOrEmpty(actionParametersText))
+    {
+        return controllerParametersText;
+    }
+    else
+    {
+        return string.Join(", ", controllerParametersText, actionParametersText);
+    }
+}
+
+// ### Controller Action Parameters
+
+// *** WriteReferenceControllerActionParameters
+
+public void WriteReferenceControllerActionParameters(ModelWriter w, ControllerTypeAction m)
+{
+    if (m.RouteIgnoreControllerParameters && m.ChildParameters.Count == 0 && !m.ODataEnabled)
+    {
+        w.AppendLine("The operation has no parameters.");
+        w.AppendLine();
+        return;
+    }
+    else if (!m.RouteIgnoreControllerParameters && m.ChildParameters.Count == 0 && m.ParentController.ChildParameters.Count == 0 && !m.ODataEnabled)
+    {
+        w.AppendLine("The operation has no parameters.");
+        w.AppendLine();
+        return;
+    }
+
+    w.AppendLine("| Parameter | Type | Description | Rules |");
+    w.AppendLine("| - | - | - | - |");
+
+    if (!m.RouteIgnoreControllerParameters)
+    {
+        foreach (ControllerTypeParameter parameter in m.ParentController.ChildParameters)
+        {
+            this.WriteReferenceControllerParameter(w, parameter);
+        }
+    }
+    
+    foreach (ControllerTypeActionParameter parameter in m.ChildParameters)
+    {
+        this.WriteReferenceControllerActionParameter(w, parameter);
+    }
+
+    if (m.ODataEnabled)
+    {
+        if (m.ODataRequiredQueryOptions != ODataRequiredQueryOptions.None)
+        {
+            string parameterType = m.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            w.AppendLine("| `queryOptions` | `Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{0}>` | The OData query options. | Required. |", parameterType);
+        }
+        else
+        {
+            string parameterType = m.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+            w.AppendLine("| `queryOptions` | `Primavera.Hydrogen.Rest.Client.OData.ODataQueryOptions<{0}>` | The OData query options. | Required. |", parameterType);
+        }
+    }
+
+    w.AppendLine();
+}
+
+// *** WriteReferenceControllerParameter
+
+public void WriteReferenceControllerParameter(ModelWriter w, ControllerTypeParameter m)
+{
+    string parameterType = m.Extensions().AsCSharpType("Client.Rest.Models", true);
+    w.AppendLine("| `{0}` | `{1}` | {2} | {3} |", m.Name.Transform().ToCamelCase(), parameterType, m.Summary, this.GetParameterRules(m));
+}
+
+
+// *** WriteReferenceControllerActionParameter
+
+public void WriteReferenceControllerActionParameter(ModelWriter w, ControllerTypeActionParameter m)
+{
+    string parameterType = m.Extensions().AsCSharpType("Client.Rest.Models", true, true, true);
+    w.AppendLine("| `{0}` | `{1}` | {2} | {3} |", m.Name.Transform().ToCamelCase(), parameterType, m.Summary, this.GetParameterRules(m));
+}
+
+// *** GetParameterRules (ControllerTypeParameter)
+
+private string GetParameterRules(ControllerTypeParameter parameter)
+{
+    string result = GetParameterRules(parameter as ControllerTypeScalarParameter);
+    if (!string.IsNullOrEmpty(result))
+    {
+        return result;
+    }
+
+    return result;
+}
+
+private string GetParameterRules(ControllerTypeScalarParameter parameter)
+{
+    if (parameter == null)
+    {
+        return null;
+    }
+
+    string result = string.Empty;
+
+    if (parameter.Behavior.AllowIsNullable)
+    {
+        result = string.Concat(result, "Required. ");
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Not empty. ");
+    }
+
+    if (parameter.IsEmailValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Email. ");
+    }
+
+    if (parameter.IsMinLengthValue != null)
+    {
+        result = string.Concat(result, $"MinLen({parameter.IsMinLengthValue.Value}). ");
+    }
+
+    if (parameter.IsMaxLengthValue != null)
+    {
+        result = string.Concat(result, $"MaxLen({parameter.IsMaxLengthValue.Value}). ");
+    }
+
+    if (parameter.IsRegularExpressionValue != null)
+    {
+        string regExpression = this.GetRegularExpression(parameter.ParentController.ServiceModel, parameter.IsRegularExpressionValue);
+        result = string.Concat(result, $"RegEx ({regExpression}). ");
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        result = string.Concat(result, $"< {parameter.IsLessThanValue.Value}. ");
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        result = string.Concat(result, $"< {parameter.IsLessThanOrEqualToValue.Value}. ");
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        result = string.Concat(result, $"> {parameter.IsGreaterThanValue.Value}. ");
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        result = string.Concat(result, $"> {parameter.IsGreaterThanOrEqualToValue.Value}. ");
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Phone number. ");
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "E.164 number. ");
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Absolute URI. ");
+    }
+
+    return result;
+}
+
+// *** GetParameterRules (ControllerTypeActionParameter)
+
+private string GetParameterRules(ControllerTypeActionParameter parameter)
+{
+    string result = GetParameterRules(parameter as ControllerTypeActionScalarParameter);
+    if (!string.IsNullOrEmpty(result))
+    {
+        return result;
+    }
+
+    result = GetParameterRules(parameter as ControllerTypeActionEnumParameter);
+    if (!string.IsNullOrEmpty(result))
+    {
+        return result;
+    }
+
+    result = GetParameterRules(parameter as ControllerTypeActionModelParameter);
+    if (!string.IsNullOrEmpty(result))
+    {
+        return result;
+    }
+
+    return result;
+}
+
+// *** GetParameterRules (ControllerTypeActionScalarParameter)
+
+private string GetParameterRules(ControllerTypeActionScalarParameter parameter)
+{
+    if (parameter == null)
+    {
+        return null;
+    }
+
+    string result = string.Empty;
+
+    if (!parameter.IsNullableValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Required. ");
+    }
+
+    if (parameter.IsNotEmptyValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Not empty. ");
+    }
+
+    if (parameter.IsEmailValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Email. ");
+    }
+
+    if (parameter.IsMinLengthValue != null)
+    {
+        result = string.Concat(result, $"MinLen({parameter.IsMinLengthValue.Value}). ");
+    }
+
+    if (parameter.IsMaxLengthValue != null)
+    {
+        result = string.Concat(result, $"MaxLen({parameter.IsMaxLengthValue.Value}). ");
+    }
+
+    if (parameter.IsRegularExpressionValue != null)
+    {
+        string regExpression = this.GetRegularExpression(parameter.ParentAction.ServiceModel, parameter.IsRegularExpressionValue);
+        result = string.Concat(result, $"RegEx ({regExpression}). ");
+    }
+
+    if (parameter.IsLessThanValue != null)
+    {
+        result = string.Concat(result, $"< {parameter.IsLessThanValue.Value}. ");
+    }
+
+    if (parameter.IsLessThanOrEqualToValue != null)
+    {
+        result = string.Concat(result, $"< {parameter.IsLessThanOrEqualToValue.Value}. ");
+    }
+
+    if (parameter.IsGreaterThanValue != null)
+    {
+        result = string.Concat(result, $"> {parameter.IsGreaterThanValue.Value}. ");
+    }
+
+    if (parameter.IsGreaterThanOrEqualToValue != null)
+    {
+        result = string.Concat(result, $"> {parameter.IsGreaterThanOrEqualToValue.Value}. ");
+    }
+
+    if (parameter.IsPhoneNumberValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Phone number. ");
+    }
+
+    if (parameter.IsInternationalPhoneNumberValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "E.164 number. ");
+    }
+
+    if (parameter.IsAbsoluteUriValue.GetValueOrDefault(false))
+    {
+        result = string.Concat(result, "Absolute URI. ");
+    }
+    
+    return result;
+}
+
+// *** GetParameterRules
+
+private string GetParameterRules(ControllerTypeActionEnumParameter parameter)
+{
+    string result = "Required. ";
+
+    return result;
+}
+
+// *** GetParameterRules
+
+private string GetParameterRules(ControllerTypeActionModelParameter parameter)
+{
+    string result = "Required. ";
+
+    return result;
+}
+
+// *** GetRegularExpression
+
+private string GetRegularExpression(ServiceModel m, string name)
+{
+    RegularExpression regularExpression = m.RegularExpressions.FirstOrDefault(n => n.Name.EqualsNoCase(name));
+    if (regularExpression != null)
+    {
+        return "`" + regularExpression.Value + "`";
+    }
+
+    return "`???`";
+}
+
+#>

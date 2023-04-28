@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<solution>
+    <version>500</version>
+    <kind>ServiceRestBasic</kind>
+    <frameworkVersion>5</frameworkVersion>
+</solution>

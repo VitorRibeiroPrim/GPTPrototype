@@ -1,0 +1,57 @@
+﻿<#+
+
+// *** ServiceModelToResourcesFileTransformation
+
+internal class ServiceModelToResourcesFileTransformation : ServiceModelTransformation<ResourcesFileModel>
+{
+    // *** Overrides
+
+    public override bool CanTransform(DomainModelElement sourceElement, ResourcesFileModel targetModel)
+    {
+        return sourceElement is ServiceModel;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, ResourcesFileModel targetModel)
+    {
+        if (targetModel == null)
+        {
+            return;
+        }
+
+        ServiceModel serviceModel = sourceElement as ServiceModel;
+
+        if (serviceModel.Settings.GenerateHomeController)
+        {
+            targetModel.WithResource(new ResourceModel("RES_NoFeaturesForWebBrowsers", "This is the default home page for this application.&lt;br /&gt;Since this service provides only a REST API, no features are available for Web browsers."));
+            targetModel.WithResource(new ResourceModel("RES_ClientLibraryDocumentation", "Client Library Documentation"));
+            targetModel.WithResource(new ResourceModel("RES_RestApiDocumentation", "REST API Documentation"));
+            targetModel.WithResource(new ResourceModel("RES_WebhooksDocumentation", "Webhooks Documentation"));
+
+            targetModel.WithResource(new ResourceModel("RES_PageTitle_Error", "{0} - Error"));
+            targetModel.WithResource(new ResourceModel("RES_PageTitle_Error_StatusCode", "{0} - Error {1}."));
+            targetModel.WithResource(new ResourceModel("RES_Title_Error", "Error {0}"));
+            targetModel.WithResource(new ResourceModel("RES_Title_400", "Oops. Bad request."));
+            targetModel.WithResource(new ResourceModel("RES_Title_401", "Oops. Unauthorized."));
+            targetModel.WithResource(new ResourceModel("RES_Title_403", "Oops. Forbidden."));
+            targetModel.WithResource(new ResourceModel("RES_Title_404", "Oops. Page not found."));
+            targetModel.WithResource(new ResourceModel("RES_Title_405", "Oops. Method not allowed."));
+            targetModel.WithResource(new ResourceModel("RES_Title_500", "Oops. Internal server error."));
+            targetModel.WithResource(new ResourceModel("RES_Title_StatusCode", "Oops. Internal server error ({0})."));
+            targetModel.WithResource(new ResourceModel("RES_Description_Unexpected", "&lt;p&gt;&lt;b&gt;Unexpected error&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;The server found an error and was not able to complete the request.&lt;/p&gt;&lt;p&gt;This error has been registered and will be addressed as soon as possible.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_400", "&lt;p&gt;&lt;b&gt;HTTP 400&lt;/b&gt;. It's an error.&lt;/p&gt;&lt;p&gt;The request is invalid.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_401", "&lt;p&gt;&lt;b&gt;HTTP 401&lt;/b&gt;. It's an error.&lt;/p&gt;&lt;p&gt;You are not authorized to access this resource.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_403", "&lt;p&gt;&lt;b&gt;HTTP 403&lt;/b&gt;. It's an error.&lt;/p&gt;&lt;p&gt;You don't have permission to access this resource.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_404", "&lt;p&gt;&lt;b&gt;HTTP 404&lt;/b&gt;. It's an error.&lt;/p&gt;&lt;p&gt;We could not find the page requested.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_405", "&lt;p&gt;&lt;b&gt;HTTP 405&lt;/b&gt;. It's an error.&lt;/p&gt;&lt;p&gt;Your request used an HTTP verb that is not allowed by the server.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_500", "&lt;p&gt;&lt;b&gt;HTTP 500&lt;/b&gt;. It's an error.&lt;/p&gt;&lt;p&gt;The server found an error and was not able to complete the request.&lt;/p&gt;&lt;p&gt;This error has been registered and will be addressed as soon as possible.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_StatusCode", "&lt;p&gt;&lt;b&gt;HTTP {0}&lt;/b&gt;. It's an error.&lt;/p&gt;&lt;p&gt;The server found an error and was not able to complete the request.&lt;/p&gt;&lt;p&gt;This error has been registered and will be addressed as soon as possible.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_Description_Unexpected_ErrorId", "&lt;p&gt;&lt;b&gt;{0}&lt;/b&gt;&lt;/p&gt;{1}&lt;p&gt;This error has been registered and will be addressed as soon as possible.&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_ErrorId", "&lt;p&gt;error: {0}&lt;/p&gt;"));
+            targetModel.WithResource(new ResourceModel("RES_SignedInAs", "You are signed-in as {0}. &lt;a href=\"{1}\"&gt;Sign-out&lt;/a&gt;."));
+            targetModel.WithResource(new ResourceModel("RES_Version", "Version"));
+            targetModel.WithResource(new ResourceModel("RES_Build", "Build"));
+        }
+    }
+}
+
+#>

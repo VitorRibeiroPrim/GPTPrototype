@@ -1,0 +1,104 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName=''" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(this.ServiceModel);
+
+transformations.Add(
+    new RoutesTransformation(false));
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    (s, t) =>
+    {
+        if (s is ServiceModel source)
+        {
+            t.Namespace = new NamespaceModel(source.Namespace + ".Server.RestApi.Metadata");
+
+            ClassModel routesClass = t.Namespace
+                .AddClass(
+                    new ClassModel("Routes")
+                    {
+                        Modifiers = ClassModifiers.Internal | ClassModifiers.Static | ClassModifiers.Partial,
+                        Documentation = new DocumentationModel("Defines constants that specify the routes used by the REST API actions.")
+                    });
+
+            if (source.Webhooks.Count > 0)
+            {
+                routesClass
+                    .AddClass(
+                        new ClassModel("Webhooks")
+                        {
+                            Modifiers = ClassModifiers.Internal | ClassModifiers.Static | ClassModifiers.Partial,
+                            Documentation = new DocumentationModel("Defines constants that specify the routes used by the webhooks actions.")
+                        })
+                        .WithConstant(
+                            new ConstantModel("CreateSubscription", "string", "\"/api/webhooks\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows to create a new webhook subscription.")
+                            })
+                        .WithConstant(
+                            new ConstantModel("UpdateSubscription", "string", "\"/api/webhooks\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows to create a new webhook subscription.")
+                            })
+                        .WithConstant(
+                            new ConstantModel("DeleteSubscription", "string", "\"/api/webhooks/{clientId}/{subscriptionId}\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows to delete a webhook subscription.")
+                            })
+                        .WithConstant(
+                            new ConstantModel("DeleteSubscriptions", "string", "\"/api/webhooks/{clientId}\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows to delete all the webhook subscriptions for a client application.")
+                            })
+                        .WithConstant(
+                            new ConstantModel("GetSubscription", "string", "\"/api/webhooks/{clientId}/{subscriptionId}\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows to retrieve a webhook subscription.")
+                            })
+                        .WithConstant(
+                            new ConstantModel("GetSubscriptions", "string", "\"/api/webhooks/{clientId}\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows to retrieve all the webhook subscriptions for a client application.")
+                            })
+                        .WithConstant(
+                            new ConstantModel("PingSubscription", "string", "\"/api/webhooks/{clientId}/{subscriptionId}/ping\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows to ping a webhook subscription.")
+                            })
+                        .WithConstant(
+                            new ConstantModel("GetWebhooksMetadata", "string", "\"/api/webhooks\"")
+                            {
+                                Modifiers = ConstantModifiers.Internal,
+                                Documentation = new DocumentationModel("Defines the route for the action that allows retrieving metadata about all the webhooks available.")
+                            });
+            }
+        }
+    });
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel();
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

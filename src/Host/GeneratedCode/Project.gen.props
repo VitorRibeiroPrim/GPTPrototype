@@ -1,0 +1,103 @@
+﻿<Project>
+
+    <!-- Ignore Spelling: Grupo Primavera -->
+    <!-- Ignore Spelling: Copyright © 2018-2023 Grupo Primavera -->
+
+    <!-- Assembly name and namespace -->
+
+    <PropertyGroup>
+        <RootNamespace>Primavera.Lithium.ChatGPT.Server.Host</RootNamespace>
+        <AssemblyName>Primavera.Lithium.ChatGPT.Server.Host</AssemblyName>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <!-- Nullable reference types -->
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <!-- Global implicit using statements -->
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System" />
+        <Using Include="System.Collections" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.Globalization" />
+        <Using Include="System.Text" />
+        <Using Include="System.Text.Json" />
+        <Using Include="System.Text.Json.Serialization" />
+        <Using Include="Microsoft.AspNetCore.Authorization" />
+        <Using Include="Microsoft.AspNetCore.Mvc" />
+        <Using Include="Microsoft.Extensions.DependencyInjection" />
+        <Using Include="Microsoft.Extensions.DependencyInjection.Extensions" />
+        <Using Include="Microsoft.Extensions.Logging" />
+        <Using Include="Microsoft.Extensions.Options" />
+        <Using Include="Primavera.Hydrogen" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Azure.Configuration" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Hosting" />
+        <Using Include="Primavera.Hydrogen.AspNetCore.Webhooks" />
+        <Using Include="Primavera.Hydrogen.HealthMonitoring" />
+        <Using Include="Primavera.Hydrogen.Rest" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.Common" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.Common.Configuration" />
+        <Using Include="Primavera.Lithium.ChatGPT.Server.RestApi" />
+    </ItemGroup>
+
+    <!-- NuGet properties -->
+
+    <!-- Ignore Spelling: Copyright © 2018-2023 Grupo Primavera -->
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <Authors>Grupo Primavera</Authors>
+        <Company>Grupo Primavera</Company>
+        <Copyright>Copyright © 2018-2023 Grupo Primavera</Copyright>
+        <Description>Class library that provides the Chat Gpt Service host.</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>Primavera;Lithium</PackageTags>
+        <Product>Lithium</Product>
+    </PropertyGroup>
+
+    <!-- Embedded Resources -->
+
+    <ItemGroup>
+        <EmbeddedResource Include="GeneratedCode\OpenApiCustomScript.gen.js" Condition="Exists('GeneratedCode\OpenApiCustomScript.gen.js')" />
+        <EmbeddedResource Include="GeneratedCode\assets\openapi.custom.css" Condition="Exists('GeneratedCode\assets\openapi.custom.css')" />
+        <EmbeddedResource Include="GeneratedCode\assets\favicon.png" Condition="Exists('GeneratedCode\assets\favicon.png')" />
+    </ItemGroup>
+
+    <!-- Content -->
+
+    <ItemGroup>
+        <Content Include="GeneratedCode\ClientLibDoc.gen.md" Condition="Exists('GeneratedCode\ClientLibDoc.gen.md')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="GeneratedCode\WebhooksDoc.gen.md" Condition="Exists('GeneratedCode\WebhooksDoc.gen.md')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <!-- XML documentation for package references -->
+    
+    <!-- This is important to make the OpenAPI documentation include descriptions -->
+    <!-- about types defined in Hydrogen or other dependencies -->
+    
+    <!-- More info: -->
+    <!-- https://github.com/dotnet/sdk/issues/9498 -->
+    <!-- https://the-photographing-programmer.com/packagereferences-and-xml-documentation/ -->
+
+     <Target Name="EnsureXmlDocumentation" BeforeTargets="Build">
+        <ItemGroup>
+          <DocumentationFiles Include="%(Reference.RelativeDir)%(Reference.Filename).xml" />
+        </ItemGroup>
+        <Copy SourceFiles="@(DocumentationFiles)" DestinationFolder="$(OutputPath)" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
+    </Target>
+
+</Project>

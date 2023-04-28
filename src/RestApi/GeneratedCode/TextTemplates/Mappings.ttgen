@@ -1,0 +1,58 @@
+﻿<#@ template debug="false" hostspecific="true" inherits="Microsoft.VisualStudio.TextTemplating.VSHost.ModelingTextTransformation" #>
+<#@ output extension=".gen.cs" #>
+<#@ ServiceDesigner processor="ServiceDesignerDirectiveProcessor" requires="FileName='..'" #>
+<#
+
+// Build the transformations
+
+ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(
+    this.ServiceModel);
+
+transformations.Add(
+    (s, t) => true,
+    (s, t) => { return s is ServiceModel; },
+    this.TransformServiceModel);
+
+// Transform
+
+CSharpFileModel targetModel = new CSharpFileModel(this.ServiceModel);
+transformations.TransformTo(targetModel);
+
+// Create controller
+
+ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+// Add writers
+
+controller.AddModelWriter<ConstructorBodyModel>(
+    (w, m) =>
+    {
+        ConstructorModel parentConstructor = m.ParentModelAs<ConstructorModel>();
+        ClassModel parentClass = parentConstructor.ParentModelAs<ClassModel>();
+        return parentClass.Name.EqualsNoCase("MappingProfileBase");
+    }, 
+    this.WriteMappingProfileBaseConstructor);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        ClassModel parentClass = parentMethod.ParentModelAs<ClassModel>();
+        return parentMethod.Name.EqualsNoCase("InitializeMappings");
+    }, 
+    this.WriteInitializeMappings);
+
+controller.AddModelWriter<MethodBodyModel>(
+    (w, m) =>
+    {
+        MethodModel parentMethod = m.ParentModelAs<MethodModel>();
+        ClassModel parentClass = parentMethod.ParentModelAs<ClassModel>();
+        return parentMethod.Name.StartsWith("Map");
+    }, 
+    this.WriteMap);
+
+// Generate code
+
+controller.Write(targetModel);
+
+#>

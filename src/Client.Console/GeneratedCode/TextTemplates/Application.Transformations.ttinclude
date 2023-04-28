@@ -1,0 +1,1133 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Console");
+
+    ClassModel baseClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("ApplicationBase")
+            {
+                Modifiers = ClassModifiers.Internal | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Inheritance = "Primavera.Hydrogen.Hosting.ConsoleApplication",
+                Documentation = new DocumentationModel("Defines the base class for the type that implements the application.")
+                {
+                    SeeAlso = new List<string>(new string[] { "Primavera.Hydrogen.Hosting.ConsoleApplication"})
+                }
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1812:AvoidUninstantiatedInternalClasses\", Justification = \"Created via dependency injection.\")"))
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .WithProperty(new PropertyModel("Configuration", "Configuration.ApplicationConfiguration")
+            {
+                Modifiers = PropertyModifiers.Protected,
+                GetAccessor = new PropertyGetAccessorModel(),
+                Documentation = new DocumentationModel("Gets the configuration.")
+            })
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"ApplicationBase\"/> class.")
+            })
+                .WithParameter(new MethodParameterModel("options", "Configuration.ApplicationConfiguration")
+                {
+                    Documentation = new DocumentationModel("The application configuration options.")
+                })
+                .ParentModelAs<ClassModel>();
+
+    if (sourceModel.Settings.GenerateServiceClientConstructors)
+    {
+        baseClassModel
+            .WithField(new FieldModel("client", "Rest." + sourceModel.Name + "Client?"))
+            .WithProperty(new PropertyModel("Client", "Rest." + sourceModel.Name + "Client")
+            {
+                Modifiers = PropertyModifiers.Protected | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                Documentation = new DocumentationModel("Gets the service client.")
+            })
+            .WithMethod(new MethodModel("GetServiceClient", "Rest." + sourceModel.Name + "Client")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Creates an instance of the service client.")
+                {
+                    Returns = "The <see cref=\"Rest.{0}Client\"/> instance.".Format(sourceModel.Name)
+                }
+            })
+            .WithMethod(new MethodModel("GetServiceClientOptions", "Rest." + sourceModel.Name + "ClientOptions")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Creates an instance of the service client options.")
+                {
+                    Returns = "The <see cref=\"Rest.{0}ClientOptions\"/> instance.".Format(sourceModel.Name),
+                    Remarks = "This method is invoked from <see cref=\"GetServiceClient\"/>, before the new instance is created.\nOverride this method to customize the service client options before it is created."
+                }
+            })
+            .AddMethod(new MethodModel("InitializeServiceClient", "void")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                Documentation = new DocumentationModel("Initializes the service client instance.")
+                {
+                    Remarks = "This method is invoked from <see cref=\"GetServiceClient\"/>, after the new instance is created.\nOverride this method to customize the service client options after the service client instance is created."
+                }
+            })
+                .WithParameter(new MethodParameterModel("client", "Rest." + sourceModel.Name + "Client")
+                {
+                    Documentation = new DocumentationModel("The service client instance.")
+                });
+    }
+    else
+    {
+        baseClassModel
+            .WithField(new FieldModel("client", "Rest." + sourceModel.Name + "Client?"))
+            .WithProperty(new PropertyModel("Client", "Rest." + sourceModel.Name + "Client")
+            {
+                Modifiers = PropertyModifiers.Protected | PropertyModifiers.Virtual,
+                GetAccessor = new PropertyGetAccessorModel(),
+                Documentation = new DocumentationModel("Gets the service client.")
+            })
+            .WithMethod(new MethodModel("GetServiceClient", "Rest." + sourceModel.Name + "Client")
+            {
+                Modifiers = MethodModifiers.Protected | MethodModifiers.Abstract,
+                Documentation = new DocumentationModel("Creates an instance of the service client.")
+                {
+                    Returns = "The <see cref=\"Rest.{0}Client\"/> instance.".Format(sourceModel.Name)
+                }
+            });
+    }
+
+    baseClassModel
+        .WithMethod(new MethodModel("ResetServiceClient")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Resets the current instance of the service client.")
+            {
+                Remarks = "Invoke this method to force the service client to be created again."
+            }
+        });
+
+    MethodModel runMethodModel = baseClassModel
+            .AddMethod(new MethodModel("RunAsync", "System.Threading.Tasks.Task")
+            {
+                Modifiers = MethodModifiers.Public | MethodModifiers.Async | MethodModifiers.Override,
+                Documentation = new DocumentationModel(true)
+            })
+                .WithParameter(new MethodParameterModel("args", "string[]?")
+                {
+                    DefaultValue = "null"
+                })
+                .WithParameter(new MethodParameterModel("cancellationToken", "System.Threading.CancellationToken")
+                {
+                    DefaultValue = "default"
+                });
+
+    baseClassModel
+        .WithMethod(new MethodModel("PrintCustomMenuOptions")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Prints the custom menu options.")
+            {
+                Remarks = "This method needs to be overridden to build the application menu."
+            }
+        })
+        .AddMethod(new MethodModel("HandleCustomMenuOptionsAsync", "System.Threading.Tasks.Task<bool>")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Handles the custom menu options.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task{TResult}\"/> that represents the asynchronous operation.\nA value indicating whether the application should continue execution.",
+                Remarks = "This method needs to be overridden to handle the custom application menu options."
+            }
+        })
+            .WithParameter(new MethodParameterModel("key", "System.ConsoleKeyInfo")
+            {
+                Documentation = new DocumentationModel("The key pressed by the user.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteHealthResult")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified health result to the console.")
+        })
+            .WithParameter(new MethodParameterModel("result", "Primavera.Hydrogen.HealthMonitoring.HealthResult")
+            {
+                Documentation = new DocumentationModel("The health result.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteHealthResultResults")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified health results to the console.")
+        })
+            .WithParameter(new MethodParameterModel("spacing", "string")
+            {
+                Documentation = new DocumentationModel("spacing.")
+            })
+            .WithParameter(new MethodParameterModel("results", "System.Collections.Generic.IReadOnlyDictionary<string, Primavera.Hydrogen.HealthMonitoring.HealthResultEntry>")
+            {
+                Documentation = new DocumentationModel("The health results.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteHealthResultResult")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified health result to the console.")
+        })
+            .WithParameter(new MethodParameterModel("spacing", "string")
+            {
+                Documentation = new DocumentationModel("spacing.")
+            })
+            .WithParameter(new MethodParameterModel("result", "System.Collections.Generic.KeyValuePair<string, Primavera.Hydrogen.HealthMonitoring.HealthResultEntry>")
+            {
+                Documentation = new DocumentationModel("The health result.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteEndpoints")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified endpoints to the console.")
+        })
+            .WithParameter(new MethodParameterModel("endpoints", "System.Collections.Generic.IEnumerable<Primavera.Hydrogen.Rest.Routing.EndpointInfo>")
+            {
+                Documentation = new DocumentationModel("The endpoints.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteConfigurationLocation")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified configuration location to the console.")
+        })
+            .WithParameter(new MethodParameterModel("location", "Primavera.Hydrogen.Rest.Configuration.ConfigurationLocation")
+            {
+                Documentation = new DocumentationModel("The configuration location.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteServiceInfo")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified service information to the console.")
+        })
+            .WithParameter(new MethodParameterModel("info", "Primavera.Hydrogen.Rest.Description.ServiceInfo")
+            {
+                Documentation = new DocumentationModel("The service information.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteEndpoint")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified endpoint to the console.")
+        })
+            .WithParameter(new MethodParameterModel("spacing", "string")
+            {
+                Documentation = new DocumentationModel("The spacing.")
+            })
+            .WithParameter(new MethodParameterModel("endpoint", "Primavera.Hydrogen.Rest.Routing.EndpointInfo")
+            {
+                Documentation = new DocumentationModel("The endpoint.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteException")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified exception to the console.")
+        })
+            .WithParameter(new MethodParameterModel("ex", "System.Exception")
+            {
+                Documentation = new DocumentationModel("The exception.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteRestRequestException")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified service exception to the console.")
+        })
+            .WithParameter(new MethodParameterModel("ex", "Primavera.Hydrogen.Rest.Client.RestRequestException")
+            {
+                Documentation = new DocumentationModel("The exception.")
+            })
+            .WithParameter(new MethodParameterModel("writeTitle", "bool")
+            {
+                DefaultValue = "true",
+                Documentation = new DocumentationModel("A value indicating whether the title should be written.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteRestRequestExceptionError")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified service error to the console.")
+        })
+            .WithParameter(new MethodParameterModel("spacing", "string")
+            {
+                Documentation = new DocumentationModel("The spacing.")
+            })
+            .WithParameter(new MethodParameterModel("error", "Primavera.Hydrogen.Rest.RestProblemDetails?")
+            {
+                Documentation = new DocumentationModel("The service error.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteRestServiceRequest")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified request message to the console.")
+        })
+            .WithParameter(new MethodParameterModel("request", "Primavera.Hydrogen.Rest.Client.RestServiceRequest?")
+            {
+                Documentation = new DocumentationModel("The request message.")
+            })
+            .WithParameter(new MethodParameterModel("error", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating if the headers are written in the context of an error.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteRestServiceResponse")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified response message to the console.")
+        })
+            .WithParameter(new MethodParameterModel("response", "Primavera.Hydrogen.Rest.Client.RestServiceResponse?")
+            {
+                Documentation = new DocumentationModel("The response message.")
+            })
+            .WithParameter(new MethodParameterModel("error", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating if the response message is written in the context of an error.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteBinaryData")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified binary data to the console.")
+        })
+            .WithParameter(new MethodParameterModel("data", "System.BinaryData")
+            {
+                Documentation = new DocumentationModel("The binary data.")
+            })
+            .WithParameter(new MethodParameterModel("error", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating if the data is written in the context of an error.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteRestRequestExceptionInner")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified inner exception to the console.")
+        })
+            .WithParameter(new MethodParameterModel("ex", "System.Exception?")
+            {
+                Documentation = new DocumentationModel("The exception.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteHeaders")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified headers to the console.")
+        })
+            .WithParameter(new MethodParameterModel("headers", "Primavera.Hydrogen.Rest.Client.RestServiceRequestHeaders")
+            {
+                Documentation = new DocumentationModel("The headers.")
+            })
+            .WithParameter(new MethodParameterModel("error", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating if the headers are written in the context of an error.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("WriteHeaders")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the specified headers to the console.")
+        })
+            .WithParameter(new MethodParameterModel("headers", "Primavera.Hydrogen.Rest.Client.RestServiceResponseHeaders")
+            {
+                Documentation = new DocumentationModel("The headers.")
+            })
+            .WithParameter(new MethodParameterModel("error", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating if the headers are written in the context of an error.")
+            })
+            .ParentModelAs<ClassModel>()
+        .WithMethod(new MethodModel("CheckConfiguration", "bool")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Checks the configuration.")
+        })
+        .WithMethod(new MethodModel("Initialize")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Initializes the application.")
+        })
+        .WithMethod(new MethodModel("SelectEnvironment")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Selects the active environment.")
+        })
+        .WithMethod(new MethodModel("WriteAdditionalConfiguration")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the additional configuration.")
+        })
+        .WithMethod(new MethodModel("WriteConfiguration")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Writes the configuration.")
+        });
+
+    baseClassModel
+        .WithMethod(new MethodModel("ShowMonitoringMenuAsync", "System.Threading.Tasks.Task<bool>")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel("Shows the monitoring menu.")
+            {
+                Returns = "A value indicating whether the user chose to quit the application."
+            }
+        })
+        .WithMethod(new MethodModel("ProbeAsync", "System.Threading.Tasks.Task")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel("Executes the probe endpoint.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+            }
+        })
+        .WithMethod(new MethodModel("DiagnosticsAsync", "System.Threading.Tasks.Task")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel("Executes the diagnosis endpoint.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+            }
+        })
+        .WithMethod(new MethodModel("EndpointsAsync", "System.Threading.Tasks.Task")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel("Executes the endpoints analyzer endpoint.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+            }
+        })
+        .WithMethod(new MethodModel("ConfigurationAsync", "System.Threading.Tasks.Task")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel("Executes the configuration analyzer endpoint.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+            }
+        })
+        .WithMethod(new MethodModel("InformationAsync", "System.Threading.Tasks.Task")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+            Documentation = new DocumentationModel("Executes the information endpoint.")
+            {
+                Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+            }
+        });
+
+    baseClassModel
+        .AddMethod(new MethodModel("GetValueString", "string")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required string value from user input.")
+            {
+                Returns = "The string value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "String1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "string?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueString", "string?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a string value from user input.")
+            {
+                Returns = "The string value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "String2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "string?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueBoolean", "bool")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required boolean value from user input.")
+            {
+                Returns = "The boolean value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Boolean1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "bool?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueBoolean", "bool?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a boolean value from user input.")
+            {
+                Returns = "The boolean value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Boolean2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "bool?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueInteger", "int")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required integer value from user input.")
+            {
+                Returns = "The integer value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Integer1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "int?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueInteger", "int?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets an integer value from user input.")
+            {
+                Returns = "The integer value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Integer2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "int?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueLong", "long")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required long value from user input.")
+            {
+                Returns = "The long value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Long1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "long?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueLong", "long?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a long value from user input.")
+            {
+                Returns = "The long value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Long2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "long?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueDouble", "double")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required double value from user input.")
+            {
+                Returns = "The double value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Double1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "double?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueDouble", "double?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a double value from user input.")
+            {
+                Returns = "The double value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Double2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "double?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueDecimal", "decimal")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required decimal value from user input.")
+            {
+                Returns = "The decimal value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Decimal1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "decimal?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueDecimal", "decimal?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a decimal value from user input.")
+            {
+                Returns = "The decimal value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Decimal2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "decimal?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueUri", "System.Uri")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required URI value from user input.")
+            {
+                Returns = "The URL value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Uri1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "System.Uri?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueUri", "System.Uri?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a URI value from user input.")
+            {
+                Returns = "The URL value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Uri2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "System.Uri?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueDateTime", "System.DateTime")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required date time value from user input.")
+            {
+                Returns = "The date time value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "DateTime1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "System.DateTime?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueDateTime", "System.DateTime?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a date time value from user input.")
+            {
+                Returns = "The date time value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "DateTime2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "System.DateTime?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueGuid", "System.Guid")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required unique identifier value from user input.")
+            {
+                Returns = "The unique identifier value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Guid1" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "System.Guid?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueGuid", "System.Guid?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a unique identifier value from user input.")
+            {
+                Returns = "The unique identifier value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Guid2" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "System.Guid?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueEnum", "TEnum")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a required enumeration value from user input.")
+            {
+                Returns = "The enumeration value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Enum1" }
+            }
+        })
+            .WithTypeParameter(new TypeParameterModel("TEnum")
+            {
+                Constraint = "struct",
+                Documentation = new DocumentationModel("The type of the enumeration.")
+            })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "TEnum?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValueEnum", "TEnum?")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets an enumeration value from user input.")
+            {
+                Returns = "The enumeration value specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Enum2" }
+            }
+        })
+            .WithTypeParameter(new TypeParameterModel("TEnum")
+            {
+                Constraint = "struct",
+                Documentation = new DocumentationModel("The type of the enumeration.")
+            })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "TEnum?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .WithParameter(new MethodParameterModel("blankToStop", "bool")
+            {
+                DefaultValue = "false",
+                Documentation = new DocumentationModel("A value indicating whether a blank value equals stopping.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValuesString", "System.Collections.Generic.IEnumerable<string>")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a list of string values from user input.")
+            {
+                Returns = "The list of string values specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Strings" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "string?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValuesInteger", "System.Collections.Generic.IEnumerable<int>")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a list of int values from user input.")
+            {
+                Returns = "The list of int values specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Integers" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "int?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValuesUri", "System.Collections.Generic.IEnumerable<System.Uri>")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a list of URI values from user input.")
+            {
+                Returns = "The list of URI values specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Uris" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "System.Uri?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetValuesEnum", "System.Collections.Generic.IEnumerable<TEnum>")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a list of enumeration values from user input.")
+            {
+                Returns = "The list of enumeration values specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "Enums" }
+            }
+        })
+            .WithTypeParameter(new TypeParameterModel("TEnum")
+            {
+                Constraint = "struct",
+                Documentation = new DocumentationModel("The type of the enumeration.")
+            })
+            .WithParameter(new MethodParameterModel("name", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("required", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value is required.")
+            })
+            .WithParameter(new MethodParameterModel("defaultValue", "TEnum?")
+            {
+                DefaultValue = "null",
+                Documentation = new DocumentationModel("The default value.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("GetDictionaryString", "System.Collections.Generic.IDictionary<string, string?>")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Gets a dictionary of string values from user input.")
+            {
+                Returns = "The dictionary of string values specified by the user."
+            },
+            Facets = new Dictionary<string, object>()
+            {
+                { "GetValueKind", "DictionaryString" }
+            }
+        })
+            .WithParameter(new MethodParameterModel("keyName", "string")
+            {
+                Documentation = new DocumentationModel("The key name.")
+            })
+            .WithParameter(new MethodParameterModel("valueName", "string")
+            {
+                Documentation = new DocumentationModel("The value name.")
+            })
+            .WithParameter(new MethodParameterModel("notEmpty", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the result is required to be not empty.")
+            })
+            .WithParameter(new MethodParameterModel("valueRequired", "bool")
+            {
+                Documentation = new DocumentationModel("A value indicating whether the value for each dictionary item is required.")
+            })
+            .ParentModelAs<ClassModel>();
+
+    targetModel.Namespace
+        .AddClass(new ClassModel("Application")
+        {
+            Modifiers = ClassModifiers.Internal | ClassModifiers.Sealed | ClassModifiers.Partial,
+            Inheritance = "ApplicationBase",
+            Documentation = new DocumentationModel("Defines the type that implements the application.")
+            {
+                SeeAlso = new List<string>(new string[] { "ApplicationBase"})
+            }
+        })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1812:AvoidUninstantiatedInternalClasses\", Justification = \"Created via dependency injection.\")"))
+            .AddConstructor(new ConstructorModel()
+            {
+                Modifiers = ConstructorModifiers.Public,
+                Inheritance = "base(options)",
+                Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"Application\"/> class.")
+            })
+                .WithParameter(new MethodParameterModel("options", "Configuration.ApplicationConfiguration")
+                {
+                    Documentation = new DocumentationModel("The application configuration options.")
+                });
+}
+
+#>

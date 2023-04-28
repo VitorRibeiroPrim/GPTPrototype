@@ -1,0 +1,155 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Server.Integration.Tests.Controllers");
+
+    ClassModel testBaseClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("MonitoringControllerTestsBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Documentation = new DocumentationModel("Defines the base class for <see cref=\"MonitoringControllerTests\"/>.")
+            })
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"MonitoringControllerTestsBase\"/> class.")
+                })
+            .AddMethod(
+                new MethodModel("TestProbeAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel("Tests the probe endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("TestDiagnosticsAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel("Tests the diagnostics endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("TestEndpointsAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel("Tests the endpoints endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("TestConfigurationAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel("Tests the configuration analyzer endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("TestInformationAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual | MethodModifiers.Async,
+                    Documentation = new DocumentationModel("Tests the information endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .ParentModelAs<ClassModel>();
+
+    ClassModel testClass = targetModel.Namespace
+        .AddClass(
+            new ClassModel("MonitoringControllerTests")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Sealed | ClassModifiers.Partial,
+                Inheritance = "MonitoringControllerTestsBase",
+                Documentation = new DocumentationModel("Provides integration tests for <see cref=\"Server.Host.Controllers.MonitoringController\"/>.")
+                {
+                    SeeAlso = new List<string> { "MonitoringControllerTestsBase" }
+                }
+            })
+            .WithAttribute(new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Naming\", \"CA1707:IdentifiersShouldNotContainUnderscores\")"))
+            .WithConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"MonitoringControllerTests\"/> class.")
+                })
+            .AddMethod(
+                new MethodModel("MonitoringController_ProbeAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel("Tests the probe endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("MonitoringController_DiagnosticsAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel("Tests the diagnostics endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("MonitoringController_EndpointsAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel("Tests the endpoints endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("MonitoringController_ConfigurationAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel("Tests the configuration analyzer endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("MonitoringController_InformationAsync", "System.Threading.Tasks.Task")
+                {
+                    Modifiers = MethodModifiers.Public,
+                    Documentation = new DocumentationModel("Tests the information endpoint.")
+                    {
+                        Returns = "The <see cref=\"System.Threading.Tasks.Task\"/> that represents the asynchronous operation."
+                    }
+                })
+                .WithAttribute(new AttributeModel("Xunit.Fact"))
+                .ParentModelAs<ClassModel>();
+}
+
+#>

@@ -1,0 +1,53 @@
+﻿<#+
+
+// *** TransformServiceModelIdentityServer
+
+public void TransformServiceModelIdentityServer(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    if (sourceModel.AuthorizationMode.IsOff())
+    {
+        return;
+    }
+
+    ClassModel baseFixtureClass = targetModel.Namespace.Classes.FirstOrDefault(c => c.Name.EqualsNoCase("IntegrationTestFixtureBase"));
+
+    baseFixtureClass
+        .AddMethod(new MethodModel("AddAdditionalApiScopes")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Allows adding additional API scopes to the authorization server test host configuration.")
+        })
+            .WithParameter(new MethodParameterModel("apiScopes", "System.Collections.Generic.IList<Duende.IdentityServer.Models.ApiScope>")
+            {
+                Documentation = new DocumentationModel("The list of API scopes.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("AddAdditionalApiResources")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Allows adding additional API resources to the authorization server test host configuration.")
+        })
+            .WithParameter(new MethodParameterModel("apiResources", "System.Collections.Generic.IList<Duende.IdentityServer.Models.ApiResource>")
+            {
+                Documentation = new DocumentationModel("The list of API resources.")
+            })
+            .ParentModelAs<ClassModel>()
+        .AddMethod(new MethodModel("AddAdditionalClients")
+        {
+            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+            Documentation = new DocumentationModel("Allows adding additional clients to the authorization server test host configuration.")
+        })
+            .WithParameter(new MethodParameterModel("clients", "System.Collections.Generic.IList<Duende.IdentityServer.Models.Client>")
+            {
+                Documentation = new DocumentationModel("The list of clients.")
+            })
+            .ParentModelAs<ClassModel>();
+}
+
+#>

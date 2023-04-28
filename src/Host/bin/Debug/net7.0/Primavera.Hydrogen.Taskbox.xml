@@ -1,0 +1,1645 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Taskbox</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.Discriminators">
+            <summary>
+            Defines constants that identify discriminators on entities stored by the cluster.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.Cluster.Discriminators.Instance">
+            <summary>
+            The partition key used to store taskbox instances.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.Cluster.Discriminators.Worker">
+            <summary>
+            The partition key used to store taskbox workers.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.Cluster.Discriminators.Task">
+            <summary>
+            The partition key used to store taskbox tasks.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.Cluster.Discriminators.Lock">
+            <summary>
+            The partition key used to store locks.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.InstanceEntity">
+            <summary>
+            Defines the entity used to store <see cref="T:Primavera.Hydrogen.Taskbox.InstanceInfo"/> in the store.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.InstanceInfo" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.Entities.InstanceEntity.Kind">
+            <summary>
+            Gets or sets the entity kind.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.Entities.InstanceEntity.FromInstanceInfo(Primavera.Hydrogen.Taskbox.InstanceInfo)">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.InstanceEntity"/> instance from the specified <see cref="T:Primavera.Hydrogen.Taskbox.InstanceInfo"/> instance.
+            </summary>
+            <param name="instance">The <see cref="T:Primavera.Hydrogen.Taskbox.InstanceInfo"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.InstanceEntity"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.LockEntity">
+            <summary>
+            Defines the entity used to store <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.LockInfo"/> in the store.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.Cluster.LockInfo" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.Entities.LockEntity.Kind">
+            <summary>
+            Gets or sets the entity kind.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.Entities.LockEntity.FromLockInfo(Primavera.Hydrogen.Taskbox.Cluster.LockInfo)">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.LockEntity"/> instance from the specified <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.LockInfo"/> instance.
+            </summary>
+            <param name="info">The <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.LockInfo"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.LockEntity"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.TaskEntity">
+            <summary>
+            Defines the entity used to store <see cref="T:Primavera.Hydrogen.Taskbox.TaskInfo"/> in the store.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.TaskInfo" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.Entities.TaskEntity.Kind">
+            <summary>
+            Gets or sets the entity kind.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.Entities.TaskEntity.FromTaskInfo(Primavera.Hydrogen.Taskbox.TaskInfo)">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.TaskEntity"/> instance from the specified <see cref="T:Primavera.Hydrogen.Taskbox.TaskInfo"/> instance.
+            </summary>
+            <param name="task">The <see cref="T:Primavera.Hydrogen.Taskbox.TaskInfo"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.TaskEntity"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.WorkerEntity">
+            <summary>
+            Defines the entity used to store <see cref="T:Primavera.Hydrogen.Taskbox.WorkerInfo"/> in the store.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.WorkerInfo" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.Entities.WorkerEntity.Kind">
+            <summary>
+            Gets or sets the entity kind.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.Entities.WorkerEntity.FromWorkerInfo(Primavera.Hydrogen.Taskbox.WorkerInfo)">
+            <summary>
+            Creates a <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.WorkerEntity"/> instance from the specified <see cref="T:Primavera.Hydrogen.Taskbox.WorkerInfo"/> instance.
+            </summary>
+            <param name="worker">The <see cref="T:Primavera.Hydrogen.Taskbox.WorkerInfo"/> instance.</param>
+            <returns>The <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.Entities.WorkerEntity"/> instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore">
+            <summary>
+            Defines the interface of a taskbox cluster store.
+            The store manages the database that orchestrates instances, workers, and tasks
+            in a taskbox cluster.
+            </summary>
+            <remarks>
+            Be ware that this service uses a scope EF Core DbContext, which means that is service
+            should be resolved within a service scope also.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.EnsureCreatedAsync(System.Threading.CancellationToken)">
+            <summary>
+            Ensures that the taskbox cluster store exists.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.SetInstanceStateAsync(System.String,Primavera.Hydrogen.Taskbox.InstanceState,System.String,System.Action{Primavera.Hydrogen.Taskbox.InstanceInfo},System.Threading.CancellationToken)">
+            <summary>
+            Sets the specified taskbox instance state.
+            </summary>
+            <param name="id">The taskbox instance identifier.</param>
+            <param name="state">The taskbox instance state.</param>
+            <param name="stateReason">The taskbox instance state reason (if any).</param>
+            <param name="configureDelegate">An optional delegate to set additional properties on the instance.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The taskbox instance information.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetInstanceAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified instance.
+            </summary>
+            <param name="id">The taskbox instance identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The instance information.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task does not exist (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.InstanceNotFound"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.DeleteInstanceAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified instance.
+            </summary>
+            <param name="id">The taskbox instance identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task does not exist (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.InstanceNotFound"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetInstances">
+            <summary>
+            Retrieves all the instances.
+            </summary>
+            <returns>
+            An <see cref="T:System.Linq.IQueryable`1"/> for all the instances.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetInstancesNotStartedAsync(System.Threading.CancellationToken)">
+            <summary>
+            Retrieves all the instances that are not started.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A list containing all the instances that are not started.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetInstancesMissedHeartBeatAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves all the instances that are started and missed the heart beat.
+            </summary>
+            <param name="heartBeatSecs">The maximum time (in seconds) that an instance should set its hear beat.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A list containing all the instances that are started and missed the heart beat.
+            </returns>
+            <remarks>
+            Returns any instance whose and state is started and whose last heart beat was more than <paramref name="heartBeatSecs"/> seconds ago.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.SetWorkerStateAsync(System.String,System.String,Primavera.Hydrogen.Taskbox.WorkerState,System.String,System.Action{Primavera.Hydrogen.Taskbox.WorkerInfo},System.Threading.CancellationToken)">
+            <summary>
+            Sets the specified taskbox worker state.
+            </summary>
+            <param name="id">The taskbox worker identifier.</param>
+            <param name="instanceId">The parent taskbox instance identifier.</param>
+            <param name="state">The taskbox worker state.</param>
+            <param name="stateReason">The taskbox worker state reason (if any).</param>
+            <param name="configureDelegate">An optional delegate to set additional properties on the worker.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The taskbox worker information.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetWorkerAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified worker.
+            </summary>
+            <param name="id">The taskbox worker identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The worker information.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task does not exist (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.WorkerNotFound"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.DeleteWorkerAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified worker.
+            </summary>
+            <param name="id">The taskbox worker identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task does not exist (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.WorkerNotFound"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetWorkers">
+            <summary>
+            Retrieves all the workers.
+            </summary>
+            <returns>
+            An <see cref="T:System.Linq.IQueryable`1"/> for all the workers.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetRunningWorkersForInstancesAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Retrieves all the workers whose state indicates the it is running and belong to the specified instances.
+            </summary>
+            <param name="instances">A list containing the instances identifiers.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A list containing all the workers whose state indicates the it is running and belong to the specified instances.
+            </returns>
+            <remarks>
+            Workers are running if in one of these states: <see cref="F:Primavera.Hydrogen.Taskbox.WorkerState.Started"/>, <see cref="F:Primavera.Hydrogen.Taskbox.WorkerState.Waiting"/> or
+            <see cref="F:Primavera.Hydrogen.Taskbox.WorkerState.Executing"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.SetTaskStateAsync(Primavera.Hydrogen.Taskbox.TaskInfo,Primavera.Hydrogen.Taskbox.TaskState,System.String,System.Action{Primavera.Hydrogen.Taskbox.TaskInfo},System.Threading.CancellationToken)">
+            <summary>
+            Sets the specified task state.
+            </summary>
+            <param name="task">The task that should be updated.</param>
+            <param name="state">The task state.</param>
+            <param name="stateReason">The task state reason (if any).</param>
+            <param name="configureDelegate">An optional delegate to set additional properties on the task.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            The task information. Null if the task does not exist.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.AddTaskAsync(Primavera.Hydrogen.Taskbox.TaskInfo,System.Threading.CancellationToken)">
+            <summary>
+            Adds the specified task.
+            </summary>
+            <param name="task">The task that should be added.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The task information.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if a task with the same identifier already exists (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.TaskAlreadyExists"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.CancelTaskAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Cancels the specified task.
+            </summary>
+            <param name="id">The identifier of the task that should be canceled.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The task information.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task cannot be canceled (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.TaskNotFound"/>,
+            <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.TaskAlreadyExecuted"/>, <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.TaskCanceled"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetTaskAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified task.
+            </summary>
+            <param name="id">The task identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The task information.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task does not exist (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.TaskNotFound"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.DeleteTaskAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified task.
+            </summary>
+            <param name="id">The task identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task does not exist (<see cref="F:Primavera.Hydrogen.Taskbox.TaskboxError.TaskNotFound"/>).</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetTasks">
+            <summary>
+            Retrieves all the tasks.
+            </summary>
+            <returns>
+            An <see cref="T:System.Linq.IQueryable`1"/> for all the tasks.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetTasksExecutableAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the tasks that should be executed by the current taskbox instance.
+            </summary>
+            <param name="maxCount">The maximum number of tasks that should be retrieved.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            A list containing the tasks that should be executed by the current taskbox instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetTasksDelayedAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the tasks that were delayed and should be executed by the current taskbox instance.
+            </summary>
+            <param name="maxCount">The maximum number of tasks that should be retrieved.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            A list containing the tasks that were delayed and should be executed by the current taskbox instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.GetRunningTasksForInstancesAsync(System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the tasks whose state indicates the it is running and belong to the specified instances.
+            </summary>
+            <param name="instances">A list containing the instances identifiers.</param>
+            <param name="maxCount">The maximum number of tasks that should be retrieved.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            A list containing the tasks whose state indicates the it is running and belong to the specified instances.
+            </returns>
+            <remarks>
+            The <see cref="T:System.Threading.Tasks.Task`1" /> that represents the asynchronous operation.
+            Tasks are running if in one of these states: <see cref="F:Primavera.Hydrogen.Taskbox.TaskState.Queued"/> or <see cref="F:Primavera.Hydrogen.Taskbox.TaskState.Executing"/>.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.TryInsertLockAsync(Primavera.Hydrogen.Taskbox.Cluster.LockInfo,System.Threading.CancellationToken)">
+            <summary>
+            Tries to insert the specified lock.
+            </summary>
+            <param name="lockInfo">The lock information.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the lock could be inserted.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.TryGetLockAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Tries to get the specified lock.
+            </summary>
+            <param name="id">The lock identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The lock information. Null if not found.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore.TryDeleteLockAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Tries to delete the specified lock.
+            </summary>
+            <param name="id">The lock identifier.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the lock could be deleted.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.LockInfo">
+            <summary>
+            Describes the lock used by taskbox instances to prevent more than one instance
+            running at the same time.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.LockInfo.Id">
+            <summary>
+            Gets or sets the lock identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.LockInfo.Hash">
+            <summary>
+            Gets or sets the lock hash.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.LockInfo.Timestamp">
+            <summary>
+            Gets or sets the timestamp.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Cluster.LockInfo.TimeToLive">
+            <summary>
+            Gets or sets the time to live of the lock (in seconds).
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.LockInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.LockInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.LockInfo.CanIgnore(System.String,System.TimeSpan)">
+            <summary>
+            Determines whether this lock can be ignored.
+            </summary>
+            <param name="hash">The hash.</param>
+            <param name="expiration">The expiration.</param>
+            <returns>
+            A lock can be ignored if the hash matches or it has expired.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore">
+            <summary>
+            Provides the default implementation of <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.EnsureCreatedAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.SetInstanceStateAsync(System.String,Primavera.Hydrogen.Taskbox.InstanceState,System.String,System.Action{Primavera.Hydrogen.Taskbox.InstanceInfo},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetInstanceAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.DeleteInstanceAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetInstances">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetInstancesNotStartedAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetInstancesMissedHeartBeatAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.SetWorkerStateAsync(System.String,System.String,Primavera.Hydrogen.Taskbox.WorkerState,System.String,System.Action{Primavera.Hydrogen.Taskbox.WorkerInfo},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetWorkerAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.DeleteWorkerAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetWorkers">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetRunningWorkersForInstancesAsync(System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.SetTaskStateAsync(Primavera.Hydrogen.Taskbox.TaskInfo,Primavera.Hydrogen.Taskbox.TaskState,System.String,System.Action{Primavera.Hydrogen.Taskbox.TaskInfo},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.AddTaskAsync(Primavera.Hydrogen.Taskbox.TaskInfo,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.CancelTaskAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetTaskAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.DeleteTaskAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetTasks">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetTasksExecutableAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetTasksDelayedAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.GetRunningTasksForInstancesAsync(System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.TryInsertLockAsync(Primavera.Hydrogen.Taskbox.Cluster.LockInfo,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.TryGetLockAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Cluster.TaskboxClusterStore.TryDeleteLockAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxClusterOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> concerning the cluster.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxClusterOptions.TimeToLive">
+            <summary>
+            Gets or sets the configuration options used to set the instances, workers, and tasks time to live.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxClusterOptions.Store">
+            <summary>
+            Gets or sets the configuration options used by the cluster store.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxClusterOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxClusterOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> concerning the cluster store.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.DefaultDatabaseName">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.DatabaseName"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.DefaultContainerName">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.ContainerName"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.DatabaseName">
+            <summary>
+            Gets or sets the name of the database.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.DefaultDatabaseName"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.ContainerName">
+            <summary>
+            Gets or sets the name of the container.
+            </summary>
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.DefaultContainerName"/>.
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxClusterStoreOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> concerning instances.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultAutoStart">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.AutoStart"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultIdleTimeSecs">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.IdleTimeSecs"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultHeartBeatSecs">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.IdleTimeSecs"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultTasksCount">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.TasksCount"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultRetryCount">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.RetryCount"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.AutoStart">
+            <summary>
+            Gets or sets a value indicating whether the taskbox instance should be started automatically
+            when the host starts or the first operation is performed on it by the host.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultAutoStart"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.IdleTimeSecs">
+            <summary>
+            Gets or sets the taskbox idle time in seconds.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultIdleTimeSecs"/> seconds.
+            Each instance will "sleep" this amount of time before checking
+            if there are tasks that should be executed, performing fail-over, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.HeartBeatSecs">
+            <summary>
+            Gets or sets the time, in seconds, after which a taskbox instance will be considered
+            as failed because it did not report its status (heart beat).
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultHeartBeatSecs"/> seconds.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.TasksCount">
+            <summary>
+            Gets or sets the maximum number of tasks that should be processed in a single
+            execution cycle of the taskbox instance.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultTasksCount"/>. It can be set to a value from 1 to 100.
+            </summary>
+            <remarks>
+            After the taskbox instance "sleeps" for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.IdleTimeSecs"/> seconds, it
+            will try to load up to <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.TasksCount"/> tasks and then try to execute
+            them using all the available workers.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.MaxQueueSize">
+            <summary>
+            Gets or sets the maximum size of the taskbox instance queue.
+            This determines the maximum number of tasks that may be in the queue waiting to be
+            picked by a worker.
+            If exceeded, the taskbox instance will not enqueue any more tasks, and these will
+            remain in the cluster to be picked up in the future (by the same or other taskbox
+            instance).
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultTasksCount"/> * 2.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.RetryCount">
+            <summary>
+            Gets or sets the maximum number of times a failing task will be retried.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.DefaultRetryCount"/>. It can be set to a value from 0 to 100.
+            </summary>
+            <remarks>
+            Any that which execution fails with a transient error it will be retried up to this number of times.
+            If retry count is 2, the task may be executed 3 times.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.Locking">
+            <summary>
+            Gets or sets the configuration options concerning locking.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxInstanceOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> concerning locking.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.DefaultMaxRetries">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.MaxRetries"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.DefaultWaitTimeSecs">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.WaitTimeSecs"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.DefaultAbsoluteExpirationSecs">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.AbsoluteExpirationSecs"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.MaxRetries">
+            <summary>
+            Gets or sets the number of times to retry to acquire a lock.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.DefaultMaxRetries"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.WaitTimeSecs">
+            <summary>
+            Gets or sets the time to wait in seconds before retrying to acquire a lock.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.DefaultWaitTimeSecs"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.AbsoluteExpirationSecs">
+            <summary>
+            Gets or sets the lock absolute expiration in seconds.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.DefaultAbsoluteExpirationSecs"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxLockingOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxOptions.Cluster">
+            <summary>
+            Gets or sets the configuration options used by the cluster service.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxOptions.Instance">
+            <summary>
+            Gets or sets the configuration options used by the current taskbox instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxOptions.Workers">
+            <summary>
+            Gets or sets the configuration options concerning workers.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxOptions.Tasks">
+            <summary>
+            Gets or sets the configuration options concerning tasks.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxOptions"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxOptions.Validate">
+            <summary>
+            Validates the configuration options.
+            </summary>
+            <exception cref="T:Primavera.Hydrogen.Configuration.ConfigurationOptionsException">Raised if the configuration options are invalid.</exception>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxServiceCollectionExtensions">
+            <summary>
+            Defines extension methods for the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> type to configure the taskbox services.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxServiceCollectionExtensions.AddTaskbox(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds a service that allows creating instances of <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> using
+            configuration defined by <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxOptions"/>.
+            This service allows interaction with a taskbox cluster to execute tasks.
+            </summary>
+            <param name="services">The service collection.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> is registered as scoped uses EF Core to access
+            a CosmosDb container.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxServiceCollectionExtensions.AddTaskbox(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Primavera.Hydrogen.Taskbox.TaskboxOptions})">
+            <summary>
+            Adds a service that allows creating instances of <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> using the
+            specified configuration options.
+            This service allows interaction with a taskbox cluster to execute tasks.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="configureDelegate">The configuration delegate.</param>
+            <returns>
+            The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> instance.
+            </returns>
+            <remarks>
+            <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> is registered as scoped uses EF Core to access
+            a CosmosDb container.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxTasksOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> concerning tasks.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxTasksOptions.DefaultActionsTimeoutSecs">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxTasksOptions.ActionsTimeoutSecs"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTasksOptions.ActionsTimeoutSecs">
+            <summary>
+            Gets or sets the maximum amount of time (in seconds) that all the actions of a task may take to execute.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxTasksOptions.DefaultActionsTimeoutSecs"/>.
+            </summary>
+            <remarks>
+            If this timeout is exceeded, the task action executing will be canceled and the task
+            will be set as failed.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxTasksOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxTasksOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> to set
+            the tasks time to live.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.DefaultTimeToLive">
+            <summary>
+            The default time to live.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.CompletedTasksTimeToLive">
+            <summary>
+            Gets or sets the time to live (in seconds) that should be applied to tasks in the <see cref="F:Primavera.Hydrogen.Taskbox.TaskState.Completed"/> state.
+            The default value is 7 days.
+            For tasks to never expire, this value should be set to -1.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.FailedTasksTimeToLive">
+            <summary>
+            Gets or sets the time to live (in seconds) that should be applied to tasks in the <see cref="F:Primavera.Hydrogen.Taskbox.TaskState.Failed"/> state.
+            The default value is 7 days.
+            For tasks to never expire, this value should be set to -1.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.CanceledTasksTimeToLive">
+            <summary>
+            Gets or sets the time to live (in seconds) that should be applied to tasks in the <see cref="F:Primavera.Hydrogen.Taskbox.TaskState.Canceled"/> state.
+            The default value is 7 days.
+            For tasks to never expire, this value should be set to -1.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.FailedInstancesTimeToLive">
+            <summary>
+            Gets or sets the time to live (in seconds) that should be applied to taskbox instances in the <see cref="F:Primavera.Hydrogen.Taskbox.InstanceState.Failed"/> state.
+            The default value is 7 days.
+            For instances to never expire, this value should be set to -1.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.StoppedInstancesTimeToLive">
+            <summary>
+            Gets or sets the time to live (in seconds) that should be applied to taskbox instances in the <see cref="F:Primavera.Hydrogen.Taskbox.InstanceState.Stopped"/> state.
+            The default value is 7 days.
+            For instances to never expire, this value should be set to -1.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.FailedWorkersTimeToLive">
+            <summary>
+            Gets or sets the time to live (in seconds) that should be applied to taskbox workers in the <see cref="F:Primavera.Hydrogen.Taskbox.WorkerState.Failed"/> state.
+            The default value is 7 days.
+            For instances to never expire, this value should be set to -1.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.StoppedWorkersTimeToLive">
+            <summary>
+            Gets or sets the time to live (in seconds) that should be applied to taskbox workers in the <see cref="F:Primavera.Hydrogen.Taskbox.WorkerState.Stopped"/> state.
+            The default value is 7 days.
+            For instances to never expire, this value should be set to -1.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions">
+            <summary>
+            Defines the configuration options used by the <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/> concerning workers.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions.DefaultWaitTimeSecs">
+            <summary>
+            The default value for <see cref="P:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions.WaitTimeSecs"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions.WorkersCount">
+            <summary>
+            Gets or sets the number of workers that may be executing tasks in the taskbox instance.
+            The default value is <see cref="P:System.Environment.ProcessorCount"/> * 2.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions.WaitTimeSecs">
+            <summary>
+            Gets or sets the maximum wait time that each worker should wait for new tasks to execute.
+            The default value is <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions.DefaultWaitTimeSecs"/> seconds.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxWorkersOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.InstanceInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Taskbox.InstanceInfo"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.InstanceInfoExtensions.SetTimeToLive(Primavera.Hydrogen.Taskbox.InstanceInfo,Primavera.Hydrogen.Taskbox.InstanceState,Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions)">
+            <summary>
+            Sets the value of <see cref="P:Primavera.Hydrogen.Taskbox.InstanceInfo.TimeToLive"/> depending on the specified state.
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="state">The instance state.</param>
+            <param name="options">The time to live options.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.PropertiesExtensions">
+            <summary>
+            Provides extension methods to manipulate <see cref="T:Primavera.Hydrogen.Taskbox.ExecutionPropertyInfo"/>.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.PropertiesExtensions.ToCollection(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Converts the specified dictionary to the corresponding collection.
+            </summary>
+            <param name="instance">The dictionary instance.</param>
+            <returns>The collection instance.</returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.PropertiesExtensions.ToDictionary(System.Collections.Generic.ICollection{Primavera.Hydrogen.Taskbox.ExecutionPropertyInfo})">
+            <summary>
+            Converts the specified collection to the corresponding dictionary.
+            </summary>
+            <param name="instance">The collection instance.</param>
+            <returns>The dictionary instance.</returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxExceptionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxException"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxExceptionExtensions.IsTransient(Primavera.Hydrogen.Taskbox.TaskboxException)">
+            <summary>
+            Determines whether the specified <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxException"/> may be transient and it is
+            worth retrying a task.
+            </summary>
+            <param name="exception">The exception.</param>
+            <returns>A value indicating whether the specified <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxException"/> may be transient and it is
+            worth retrying a task.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskConfigExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Taskbox.TaskConfig"/>, <see cref="T:Primavera.Hydrogen.Taskbox.TaskTriggerConfig"/>,
+            and <see cref="T:Primavera.Hydrogen.Taskbox.TaskActionConfig"/> types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskConfigExtensions.ToTaskInfo(Primavera.Hydrogen.Taskbox.TaskConfig,System.Action{Primavera.Hydrogen.Taskbox.TaskInfo})">
+            <summary>
+            Converts to specified <see cref="T:Primavera.Hydrogen.Taskbox.TaskConfig" /> to the corresponding
+            <see cref="T:Primavera.Hydrogen.Taskbox.TaskInfo" /> instance.
+            </summary>
+            <param name="task">The <see cref="T:Primavera.Hydrogen.Taskbox.TaskConfig" /> instance.</param>
+            <param name="configureDelegate">A delegate used to configure the resulting <see cref="T:Primavera.Hydrogen.Taskbox.TaskInfo"/> after it is initialized.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Taskbox.TaskInfo" /> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Taskbox.TaskInfo"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskInfoExtensions.SetTimeToLive(Primavera.Hydrogen.Taskbox.TaskInfo,Primavera.Hydrogen.Taskbox.TaskState,Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions)">
+            <summary>
+            Sets the value of <see cref="P:Primavera.Hydrogen.Taskbox.TaskInfo.TimeToLive"/> depending on the specified state.
+            </summary>
+            <param name="task">The task.</param>
+            <param name="taskState">The task state.</param>
+            <param name="options">The time to live options.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.WorkerInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Primavera.Hydrogen.Taskbox.WorkerInfo"/> type.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.WorkerInfoExtensions.SetTimeToLive(Primavera.Hydrogen.Taskbox.WorkerInfo,Primavera.Hydrogen.Taskbox.WorkerState,Primavera.Hydrogen.Taskbox.TaskboxTimeToLiveOptions)">
+            <summary>
+            Sets the value of <see cref="P:Primavera.Hydrogen.Taskbox.WorkerInfo.TimeToLive"/> depending on the specified state.
+            </summary>
+            <param name="worker">The worker.</param>
+            <param name="state">The worker state.</param>
+            <param name="options">The time to live options.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxHealthExtensions">
+            <summary>
+            Provides extension methods to configure health monitoring probes
+            and diagnostics.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Taskbox.TaskboxHealthExtensions.DefaultProbeName">
+            <summary>
+            The default name used for probes.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxHealthExtensions.AddTaskboxProbe(Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder,System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Adds a probe for the taskbox service.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="name">The health probe name. If not specified <see cref="F:Primavera.Hydrogen.Taskbox.TaskboxHealthExtensions.DefaultProbeName"/> will be used.</param>
+            <param name="timeout">The health probe timeout.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.HealthMonitoring.IHealthProbesBuilder"/> instance.
+            </returns>
+            <remarks>
+            This probe executes an operation on <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxService"/> to
+            verify that the current taskbox instance is started.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Instances.CustomLockingService">
+            <summary>
+            Provides a custom implementation of <see cref="T:Primavera.Hydrogen.AspNetCore.Hosting.ILockingService"/> that ensures
+            that all taskbox instances in the same cluster will use the same lock name and
+            uses the cluster store to store the lock.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Hosting.ILockingService" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.CustomLockingService.#ctor(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.Instances.CustomLockingService" /> class.
+            </summary>
+            <param name="context">The background service execution context.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.CustomLockingService.TryAcquireLockAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Instances.InstanceIdGenerator">
+            <summary>
+            Allows generating unique taskbox instance identifiers.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.InstanceIdGenerator.Generate">
+            <summary>
+            Generates the taskbox instance identifier.
+            </summary>
+            <returns>
+            The taskbox instance identifier.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Instances.ITaskboxInstance">
+            <summary>
+            Defines the interface of a taskbox instance.
+            The instance is responsible for retrieving tasks from the cluster (store)
+            and enqueuing them to workers.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.ITaskboxInstance.State">
+            <summary>
+            Gets the taskbox instance state.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.ITaskboxInstance.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Triggered when the service is ready to start the instance.
+            </summary>
+            <param name="cancellationToken">The cancellation token. Indicates that the start process has been aborted.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.ITaskboxInstance.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Triggered when the service is performing a graceful shutdown.
+            </summary>
+            <param name="cancellationToken">The cancellation token. Indicates that the shutdown process should no longer be graceful.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance">
+            <summary>
+            Provides the default implementation of <see cref="T:Primavera.Hydrogen.Taskbox.Instances.ITaskboxInstance"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Hosting.TimedBackgroundService" />
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.Instances.ITaskboxInstance" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.State">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.WaitPeriod">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.UseLocking">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.Enabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.HandleExceptions">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.ApplicationInitializationAutoComplete">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.#ctor(System.IServiceProvider,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="name">The taskbox instance name.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.StopAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.Initialize(System.IServiceProvider)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.InitializeApplicationAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.ExecuteWorkAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.GetLocker(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxInstance.HandleExceptionAsync(System.Exception,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService">
+            <summary>
+            Provides a background service that automatically starts the current taskbox instance
+            depending on configuration.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Hosting.SimpleBackgroundService" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService.UseLocking">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService.Enabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService.HandleExceptions">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService.#ctor(System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService.InitializeApplicationAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxStartupService.ExecuteWorkAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Instances.TaskboxWorkersQueue">
+            <summary>
+            Manages the queue used to distribute task between the taskbox workers.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxWorkersQueue.DequeueAsync(System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the next task available in the queue.
+            </summary>
+            <param name="timeout">The maximum amount of time to wait.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.ValueTask`1"/> that represents the asynchronous operation.
+            The task information. Null if no message could be read.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Instances.TaskboxWorkersQueue.EnqueueAsync(Primavera.Hydrogen.Taskbox.TaskInfo,System.Threading.CancellationToken)">
+            <summary>
+            Enqueues the specified task.
+            </summary>
+            <param name="task">The task that should be enqueued.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.ValueTask`1"/> that represents the asynchronous operation.
+            The number of tasks currently available in the queue.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.MappingHelper">
+            <summary>
+            Provides helper methods to perform mapping of types.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.MappingHelper.GetMapper">
+            <summary>
+            Gets the mapper.
+            </summary>
+            <returns>
+            The <see cref="T:AutoMapper.Mapper"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Activator_Exception_InitializingTaskActionType">
+            <summary>
+              Looks up a localized string similar to Error initializing the task action of type &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Activator_Exception_InitializingTaskTriggerType">
+            <summary>
+              Looks up a localized string similar to Error initializing the task trigger of type &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Activator_Exception_TaskActionTypeInvalid">
+            <summary>
+              Looks up a localized string similar to Task action type &apos;{0}&apos; is invalid (it does not implement &apos;{1}&apos;)..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Activator_Exception_TaskActionTypeNotFound">
+            <summary>
+              Looks up a localized string similar to Task action type &apos;{0}&apos; was not found..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Activator_Exception_TaskTriggerTypeInvalid">
+            <summary>
+              Looks up a localized string similar to Task trigger type &apos;{0}&apos; is invalid (it does not implement &apos;{1}&apos;)..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Activator_Exception_TaskTriggerTypeNotFound">
+            <summary>
+              Looks up a localized string similar to Task trigger type &apos;{0}&apos; was not found..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_ExecutionContext_Exception_TaskActionsTimedOut">
+            <summary>
+              Looks up a localized string similar to The task actions execution exceed the configured timeout ({0} secs.)..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_ExecutionContext_TaskActionFailed">
+            <summary>
+              Looks up a localized string similar to Task action &apos;{0}&apos; failed..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Health_Instance_NotStarted">
+            <summary>
+              Looks up a localized string similar to Taskbox instance is not started..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Instance_FailedHeartBeat">
+            <summary>
+              Looks up a localized string similar to Instance was in state &apos;{0}&apos; but it didn&apos;t report status for more than &apos;{1}&apos; secs..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Instance_RaisedUnexpectedException">
+            <summary>
+              Looks up a localized string similar to Instance raised unexpected exception..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Instance_TaskFailed">
+            <summary>
+              Looks up a localized string similar to Task was in state &apos;{0}&apos; but it belongs to a taskbox instance that failed..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Instance_TaskRecovered">
+            <summary>
+              Looks up a localized string similar to Task set as &apos;{0}&apos; to be executed again..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Instance_WorkerFailed">
+            <summary>
+              Looks up a localized string similar to Worker was in state &apos;{0}&apos; but it belongs to a taskbox instance that failed..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_InstanceAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Instance &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_InstanceNotFound">
+            <summary>
+              Looks up a localized string similar to Instance &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_TaskAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Task &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_TaskCanceled">
+            <summary>
+              Looks up a localized string similar to Task &apos;{0}&apos; is canceled..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_TaskExecuted">
+            <summary>
+              Looks up a localized string similar to Task &apos;{0}&apos; is already executed..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_TaskExecuting">
+            <summary>
+              Looks up a localized string similar to Task &apos;{0}&apos; is executing..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_TaskNotFound">
+            <summary>
+              Looks up a localized string similar to Task &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_WorkerAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Worker &apos;{0}&apos; already exists..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Store_Error_WorkerNotFound">
+            <summary>
+              Looks up a localized string similar to Worker &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_TaskboxOptions_Exception_InvalidConfiguration">
+            <summary>
+              Looks up a localized string similar to Invalid taskbox configuration options..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Worker_RaisedUnexpectedException">
+            <summary>
+              Looks up a localized string similar to Worker raised unexpected exception..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Worker_TriggerCanceledTask">
+            <summary>
+              Looks up a localized string similar to Trigger canceled the task execution..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Worker_TriggerDelayedTask">
+            <summary>
+              Looks up a localized string similar to Trigger delayed the task execution..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Worker_TriggerFailed">
+            <summary>
+              Looks up a localized string similar to Task execution failed..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Worker_TriggerRaisedException">
+            <summary>
+              Looks up a localized string similar to Task execution raised an exception..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Worker_TriggerRetriesReached">
+            <summary>
+              Looks up a localized string similar to Task execution will not be retried because the maximum retries were exceeded..
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Properties.Resources.RES_Worker_UnexpectedTaskTriggerResult">
+            <summary>
+              Looks up a localized string similar to Unexpected task trigger result &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService">
+            <summary>
+            Provides a service that manages the lifetime of a taskbox instance.
+            </summary>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService.InstanceStarted">
+            <summary>
+            Gets a value indicating whether the taskbox instance is started.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService.#ctor(System.IServiceProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService" /> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService.StartInstanceAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts the taskbox instance (if not already started).
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService.StopInstanceAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops the taskbox instance (if not already stopped).
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService.AutoStartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Auto starts the taskbox instance (if required).
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskboxService">
+            <summary>
+            Provides the default implementation of <see cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.ITaskboxService" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.#ctor(Primavera.Hydrogen.Taskbox.TaskboxLifetimeService,Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore,Primavera.Hydrogen.Taskbox.TaskboxOptions,Microsoft.Extensions.Logging.ILogger{Primavera.Hydrogen.Taskbox.TaskboxService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxService" /> class.
+            </summary>
+            <param name="lifetimeService">The <see cref="T:Primavera.Hydrogen.Taskbox.TaskboxLifetimeService" /> instance.</param>
+            <param name="store">The <see cref="T:Primavera.Hydrogen.Taskbox.Cluster.ITaskboxClusterStore" /> instance.</param>
+            <param name="options">The taskbox options.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.GetInstanceAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.GetInstancesAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskboxService.InstanceStarted">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.StartInstanceAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.StopInstanceAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.ExecuteTaskAsync(Primavera.Hydrogen.Taskbox.TaskConfig,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.CancelTaskAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.GetTaskAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.GetTasksAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.GetWorkerAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskboxService.GetWorkersAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Workers.ITaskboxWorker">
+            <summary>
+            Defines the interface of a taskbox worker.
+            A worker is responsible for executing a single task, retrieved from a queue
+            managed by the taskbox instance.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.ITaskboxWorker.State">
+            <summary>
+            Gets the taskbox worker state.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.ITaskboxWorker.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Triggered when the instance is ready to start the worker.
+            </summary>
+            <param name="cancellationToken">The cancellation token. Indicates that the start process has been aborted.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.ITaskboxWorker.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Triggered when the instance is performing a graceful shutdown.
+            </summary>
+            <param name="cancellationToken">The cancellation token. Indicates that the shutdown process should no longer be graceful.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Workers.TaskActivator">
+            <summary>
+            Provides methods to create instances of task triggers and task actions.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.TaskActionInstance">
+            <summary>
+            Defines a task action instance, including the associated configuration string.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.TaskActionInstance.Name">
+            <summary>
+            Gets the action name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.TaskActionInstance.Instance">
+            <summary>
+            Gets the action.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.TaskActionInstance.ConfigStr">
+            <summary>
+            Gets the configuration string.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.TaskActionInstance.#ctor(System.String,Primavera.Hydrogen.Taskbox.Actions.ITaskAction,Primavera.Hydrogen.Configuration.ConfigString)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.TaskActionInstance"/> class.
+            </summary>
+            <param name="name">The action name.</param>
+            <param name="instance">The action instance.</param>
+            <param name="configStr">The configuration string.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.GetTrigger(System.IServiceProvider,Primavera.Hydrogen.Taskbox.TaskTriggerConfig)">
+            <summary>
+            Gets the trigger instance for the specified configuration.
+            </summary>
+            <param name="provider">The provider.</param>
+            <param name="trigger">The task trigger configuration.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Taskbox.Triggers.ITaskTrigger"/> instance.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if the task trigger cannot be instantiated.</exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.GetActions(System.IServiceProvider,System.Collections.Generic.IList{Primavera.Hydrogen.Taskbox.TaskActionConfig})">
+            <summary>
+            Gets the actions instances for the specified configuration.
+            </summary>
+            <param name="provider">The provider.</param>
+            <param name="actions">The task actions configuration.</param>
+            <returns>
+            A list of <see cref="T:Primavera.Hydrogen.Taskbox.Workers.TaskActivator.TaskActionInstance"/> instances.
+            </returns>
+            <exception cref="T:Primavera.Hydrogen.Taskbox.TaskboxException">Raised if any task action cannot be instantiated.</exception>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker">
+            <summary>
+            Provides the default implementation of <see cref="T:Primavera.Hydrogen.Taskbox.Workers.ITaskboxWorker"/>.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.AspNetCore.Hosting.SimpleBackgroundService" />
+            <seealso cref="T:Primavera.Hydrogen.Taskbox.Workers.ITaskboxWorker" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.State">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.UseLocking">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.Enabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.HandleExceptions">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.ApplicationInitializationAutoComplete">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.#ctor(System.IServiceProvider,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="instanceName">The taskbox instance name.</param>
+            <param name="name">The taskbox worker name.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.StopAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.InitializeApplicationAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.ExecuteWorkAsync(Primavera.Hydrogen.AspNetCore.Hosting.BackgroundServiceExecutionContext,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.Workers.TaskboxWorker.HandleExceptionAsync(System.Exception,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Taskbox.TaskExecutionContext">
+            <summary>
+            Provides the default implementation of <see cref="T:Primavera.Hydrogen.Taskbox.ITaskExecutionContext"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskExecutionContext.ApplicationServices">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskExecutionContext.Taskbox">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskExecutionContext.Options">
+            <summary>
+            Gets the taskbox configuration options.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskExecutionContext.Task">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskExecutionContext.Properties">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Taskbox.TaskExecutionContext.ConfigStr">
+            <summary>
+            Gets or sets the configuration string of the task component being executed.
+            </summary>
+            <remarks>
+            The trigger and actions should use this value to access its configuration string
+            as set originally by the caller when creating the task.
+            This means that the value will be either <see cref="P:Primavera.Hydrogen.Taskbox.TaskTriggerConfig.ConfigStr" /> or
+            <see cref="P:Primavera.Hydrogen.Taskbox.TaskActionConfig.ConfigStr" /> depending on the task component being invoked.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskExecutionContext.#ctor(System.IServiceProvider,Primavera.Hydrogen.Taskbox.TaskInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Taskbox.TaskExecutionContext"/> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="task">The task being executed.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Taskbox.TaskExecutionContext.ExecuteActionsAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

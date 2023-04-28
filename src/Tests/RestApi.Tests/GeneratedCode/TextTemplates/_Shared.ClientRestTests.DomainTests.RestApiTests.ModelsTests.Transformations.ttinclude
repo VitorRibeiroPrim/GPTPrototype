@@ -1,0 +1,186 @@
+﻿<#+
+
+internal class SerializerContextTransformation : ServiceModelTransformation<CSharpFileModel>
+{
+    #region Public Properties
+
+    // NOTES:
+    // This property indicates the service project that is being transformed
+
+    public string Project
+    {
+        get;
+    }
+
+    // NOTES:
+    // This property indicates that the transformation is being used to generate client-side code
+    // Otherwise it is server-side
+
+    public bool ClientSide
+    {
+        get;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public SerializerContextTransformation(string project)
+    {
+        this.Project = project;
+        this.ClientSide = project == "Client.Rest";
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (sourceElement is ServiceModel serviceModel)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (targetModel == null)
+        {
+            return;
+        }
+
+        ServiceModel serviceModel = sourceElement as ServiceModel;
+
+        // Empty?
+
+        switch (this.Project)
+        {
+            case "Client.Rest":
+                if (!serviceModel.Models.Any(i => i.Extensions().IsVisibleClientSide))
+                {
+                    targetModel.WithEmptyComment("This file is empty because the service model does not include\nany models visible client-side.");
+                    return;
+                }
+
+                break;
+            case "Domain":
+            case "RestApi":
+                if (!serviceModel.Models.Any(i => i.Extensions().IsVisibleServerSide))
+                {
+                    targetModel.WithEmptyComment("This file is empty because the service model does not include\nany models visible server-side.");
+                    return;
+                }
+
+                break;
+            default:
+                throw new InvalidOperationException($"Invalid project name '{this.Project}'");
+        }
+
+        // Namespace
+
+        string namespacePart;
+
+        switch (this.Project)
+        {
+            case "Client.Rest":
+                namespacePart = ".Client.Rest.Tests.Models";
+                break;
+            case "RestApi":
+                namespacePart = ".Server.RestApi.Tests.Models";
+                break;
+            case "Domain":
+                namespacePart = ".Server.Domain.Tests";
+                break;
+            default:
+                throw new InvalidOperationException($"Invalid project name '{this.Project}'");
+        }
+
+        string modelsNamespace = serviceModel.Namespace + namespacePart.Remove(".Tests", StringComparison.OrdinalIgnoreCase);
+
+        targetModel.Namespace = new NamespaceModel(serviceModel.Namespace + namespacePart);
+
+        targetModel.Facets["ClientSide"] = this.ClientSide;
+        targetModel.Facets["Project"] = this.Project;
+        targetModel.Facets["NamespacePart"] = namespacePart;
+        targetModel.Facets["ModelsNamespace"] = modelsNamespace;
+
+        ClassModel baseClassModel = targetModel.Namespace.AddClass(
+            new ClassModel("SerializerContextTestsBase")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial | ClassModifiers.Abstract,
+                Documentation = new DocumentationModel("Defines the base class for tests on SerializerContext.")
+            });
+
+        bool addedOne = false;
+
+        foreach (ModelType modelType in serviceModel.Models)
+        {
+            bool include = false;
+
+            if (modelType.InheritanceModifier != ModelTypeInheritanceModifier.Abstract)
+            {
+                if (this.ClientSide)
+                {
+                    include = modelType.Extensions().IsVisibleClientSide;
+                }
+                else
+                {
+                    include = modelType.Extensions().IsVisibleServerSide;
+                }
+            }
+
+            if (include)
+            {
+                addedOne = true;
+
+                MethodModel testMethod = baseClassModel
+                    .AddMethod(
+                        new MethodModel("SerializerContext_{0}_Serialization".Format(modelType.Name))
+                        {
+                            Modifiers = MethodModifiers.Public | MethodModifiers.Virtual,
+                            Documentation = new DocumentationModel("Tests the serialization of <see cref=\"{0}.{1}\"/>.".Format(modelsNamespace, modelType.Name))
+                        })
+                        .WithAttribute(
+                            new AttributeModel("Xunit.Fact"));
+
+                testMethod.Facets["ModelType"] = modelType;
+
+                MethodModel createMethod = baseClassModel
+                    .AddMethod(
+                        new MethodModel("CreateDefault{0}".Format(modelType.Name), "{0}.{1}".Format(modelsNamespace, modelType.Name))
+                        {
+                            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                            Documentation = new DocumentationModel("Initializes a default instance of <see cref=\"{0}.{1}\"/>.".Format(modelsNamespace, modelType.Name))
+                        });
+
+                createMethod.Facets["ModelType"] = modelType;
+            }
+        }
+
+        if (addedOne)
+        {
+            baseClassModel
+                .WithMethod(
+                    new MethodModel("GetJsonSerializerOptions", "System.Text.Json.JsonSerializerOptions")
+                        {
+                            Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                            Documentation = new DocumentationModel("Retrieves a default instance of System.Text.Json.JsonSerializerOptions.")
+                        });
+        }
+
+        ClassModel classModel = targetModel.Namespace.AddClass(
+            new ClassModel("SerializerContextTests")
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "SerializerContextTestsBase",
+                Documentation = new DocumentationModel("Provides tests for the SerializerContext type.")
+            });
+    }
+
+    #endregion
+}
+
+#>

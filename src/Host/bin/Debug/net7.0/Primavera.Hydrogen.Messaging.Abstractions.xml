@@ -1,0 +1,1917 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Primavera.Hydrogen.Messaging.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Primavera.Hydrogen.Messaging.IMessage">
+            <summary>
+            Defines a message received from the message bus, including the message
+            body and a set of properties a associated with the message.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessage.Message">
+            <summary>
+            Gets the message body.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessage.Properties">
+            <summary>
+            Gets the properties associated with the message,
+            including custom properties defined by the application
+            that sent it to the message bus.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService">
+            <summary>
+            Defines the message bus management service, which allows managing (creating, deleting,
+            etc.) the entities (queues, topics, subscriptions, and subscription rules) used
+            by the message bus (<see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/>).
+            </summary>
+            <remarks>
+            Depending on the concrete implementation of <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> in
+            use, it may require these entities to be created before being used.
+            </remarks>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageBusManagementService.Name">
+            <summary>
+            Gets the name of the service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateTopicAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified topic.
+            </summary>
+            <param name="topicName">The name of the topic that should be created.</param>
+            <param name="configureOptions">An optional delegate to configure the topic options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateTopicIfNotExistsAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified topic if it does not exist.
+            </summary>
+            <param name="topicName">The name of the topic that should be created.</param>
+            <param name="configureOptions">An optional delegate to configure the topic options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the topic was created.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateSubscriptionAsync(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified topic subscription.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription that should be created.</param>
+            <param name="configureOptions">An optional delegate to configure the topic subscription options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateSubscriptionIfNotExistsAsync(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified topic subscription if it does not exist.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription that should be created.</param>
+            <param name="configureOptions">An optional delegate to configure the topic subscription options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the topic subscription was created.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateSubscriptionRuleAsync(System.String,System.String,System.String,Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified topic subscription rule.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="ruleName">The name of the subscription rule that should be created.</param>
+            <param name="ruleFilter">The subscription rule correlation filter.</param>
+            <param name="configureOptions">An optional delegate to configure the topic subscription rule options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateSubscriptionRuleIfNotExistsAsync(System.String,System.String,System.String,Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter,System.Action{Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified topic subscription rule if it does not exist.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="ruleName">The name of the subscription rule that should be created.</param>
+            <param name="ruleFilter">The subscription rule correlation filter.</param>
+            <param name="configureOptions">An optional delegate to configure the topic subscription rule options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the topic subscription rule was created.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetTopicAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified topic.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The topic options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetTopicsPageAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Retrieves a page of the topics available.
+            </summary>
+            <param name="continuationToken">The continuation token.</param>
+            <param name="maxCount">
+            The maximum number of topic options that should be returned in the page.
+            If null, the default value will be used.
+            </param>   
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The page containing the topics' options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified topic subscription.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The subscription options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetSubscriptionsPageAsync(System.String,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Retrieves a page of the topic subscriptions available.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="continuationToken">The continuation token.</param>
+            <param name="maxCount">
+            The maximum number of topic subscription options that should be returned in the page.
+            If null, the default value will be used.
+            </param>   
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The page containing the topic subscriptions' options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetSubscriptionRuleAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified topic subscription rule.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="ruleName">The name of the subscription rule.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The subscription rule options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetSubscriptionRulesPageAsync(System.String,System.String,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Retrieves a page of the topic subscription rules available.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="continuationToken">The continuation token.</param>
+            <param name="maxCount">
+            The maximum number of topic subscription rules that should be returned in the page.
+            If null, the default value will be used.
+            </param>   
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The page containing the topic subscription rules' options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteTopicAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified topic.
+            </summary>
+            <param name="topicName">The name of the topic that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteTopicIfExistsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified topic if it exists.
+            </summary>
+            <param name="topicName">The name of the topic that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the topic was deleted.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteSubscriptionAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified topic subscription.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteSubscriptionIfExistsAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified topic subscription if it exists.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the topic subscription was deleted.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteSubscriptionRuleAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified topic subscription rule.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="ruleName">The name of the rule that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteSubscriptionRuleIfExistsAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified topic subscription rule if it exists.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="ruleName">The name of the rule that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the topic subscription rule was deleted.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.TopicExistsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Determines whether the specified topic exists.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            <c>true</c> if the specified topic exists; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.SubscriptionExistsAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Determines whether a topic subscription exists.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            <c>true</c> if the specified topic subscription exists; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.SubscriptionRuleExistsAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Determines whether a topic subscription rule exists.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="ruleName">The name of the rule.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            <c>true</c> if the specified topic subscription rule exists; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateQueueAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified queue.
+            </summary>
+            <param name="queueName">The name of the queue that should be created.</param>
+            <param name="configureOptions">An optional delegate to configure the queue options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.CreateQueueIfNotExistsAsync(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueOptions},System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified queue if it does not exist.
+            </summary>
+            <param name="queueName">The name of the queue that should be created.</param>
+            <param name="configureOptions">An optional delegate to configure the queue options.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the queue was created.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetQueueAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the specified queue.
+            </summary>
+            <param name="queueName">The name of the queue.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The queue options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.GetQueuesPageAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Retrieves a page of the queues available.
+            </summary>
+            <param name="continuationToken">The continuation token.</param>
+            <param name="maxCount">
+            The maximum number of queue options that should be returned in the page.
+            If null, the default value will be used.
+            </param>   
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The page containing the queues' options.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteQueueAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified queue.
+            </summary>
+            <param name="queueName">The name of the queue that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.DeleteQueueIfExistsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the specified queue if it exists.
+            </summary>
+            <param name="queueName">The name of the queue that should be deleted.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A value indicating whether the queue was deleted.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementService.QueueExistsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Determines whether the specified queue exists.
+            </summary>
+            <param name="queueName">The name of the queue.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            <c>true</c> if the specified queue exists; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory">
+            <summary>
+            Defines the message bus management service factory, which allows resolving
+            named <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> instances.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory.GetService(System.String)">
+            <summary>
+            Retrieves the service previously registered with the specified name.
+            </summary>
+            <param name="name">The service name.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the specified named service was not previously
+            registered.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusManagementServiceFactory.GetServiceOrDefault(System.String)">
+            <summary>
+            Retrieves the service previously registered with the specified name or the default
+            service if no service with that name has been registered.
+            </summary>
+            <param name="name">The service name.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IMessageBusService">
+            <summary>
+            Defines the message bus service.
+            The message bus provides a message broker with support for message queues
+            and publish-subscribe topics.
+            </summary>
+            <seealso cref="T:System.IAsyncDisposable" />
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageBusService.Name">
+            <summary>
+            Gets the name of the service.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusService.CreateTopicPublisher(System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions})">
+            <summary>
+            Creates a publisher for the specified topic in the message bus.
+            The publisher allows sending messages to the specified message bus topic.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="configureOptions">An optional delegate to configure the publisher options.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicPublisher"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusService.CreateTopicReceiver(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions})">
+            <summary>
+            Creates a receiver for the specified topic subscription in the message bus.
+            The receiver allows retrieving messages from the specified message bus topic subscription.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="configureOptions">An optional delegate to configure the receiver options.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicPublisher"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusService.CreateTopicSubscriber(System.String,System.String,System.Action{Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions})">
+            <summary>
+            Creates a subscriber for the specified subscription in the message bus.
+            The subscriber allows retrieving messages from the specified message bus topic subscription by
+            registering a processing handler that will be invoked every time a message is available.
+            </summary>
+            <param name="topicName">The name of the topic.</param>
+            <param name="subscriptionName">The name of the subscription.</param>
+            <param name="configureOptions">An optional delegate to configure the subscriber options.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicPublisher"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusService.CreateQueuePublisher(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions})">
+            <summary>
+            Creates a publisher for the specified queue in the message bus.
+            The publisher allows sending messages to the specified message bus queue.
+            </summary>
+            <param name="queueName">The name of the queue.</param>
+            <param name="configureOptions">An optional delegate to configure the publisher options.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueuePublisher"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusService.CreateQueueReceiver(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions})">
+            <summary>
+            Creates a receiver for the specified queue in the message bus.
+            The receiver allows retrieving messages from the specified message bus queue.
+            </summary>
+            <param name="queueName">The name of the queue.</param>
+            <param name="configureOptions">An optional delegate to configure the receiver options.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueReceiver"/> instance.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusService.CreateQueueSubscriber(System.String,System.Action{Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions})">
+            <summary>
+            Creates a subscriber for the specified queue in the message bus.
+            The subscriber allows retrieving messages from the specified message bus queue by
+            registering a processing handler that will be invoked every time a message is available.
+            </summary>
+            <param name="queueName">The name of the queue.</param>
+            <param name="configureOptions">An optional delegate to configure the subscriber options.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueSubscriber"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory">
+            <summary>
+            Defines the message bus service factory, which allows resolving
+            named <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> instances.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory.GetService(System.String)">
+            <summary>
+            Retrieves the service previously registered with the specified name.
+            </summary>
+            <param name="name">The service name.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> instance.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            Raised if the specified named service was not previously
+            registered.
+            </exception>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IMessageBusServiceFactory.GetServiceOrDefault(System.String)">
+            <summary>
+            Retrieves the service previously registered with the specified name or the default
+            service if no service with that name has been registered.
+            </summary>
+            <param name="name">The service name.</param>
+            <returns>
+            The <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> instance.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IMessageProperties">
+            <summary>
+            Defines a set of common properties of a message
+            conveyed by the message bus.
+            </summary>
+            <remarks>
+            This type allows storing also custom application properties.
+            </remarks>
+            <seealso cref="T:System.Collections.Generic.IDictionary`2" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.Id">
+            <summary>
+            Gets the message identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.TimeToLive">
+            <summary>
+            Gets or sets the message time to live (TTL).
+            </summary>
+            <remarks>
+            This value is the relative duration after which the message expires.
+            When not set explicitly, the assumed value is the default time to live for the respective queue or topic.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.PartitionKey">
+            <summary>
+            Gets or sets the partition key that should be used to send the
+            message to a partitioned entity.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.CorrelationId">
+            <summary>
+            Gets or sets the correlation identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.Subject">
+            <summary>
+            Gets or sets the subject.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.To">
+            <summary>
+            Gets or sets the to address.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.ContentType">
+            <summary>
+            Gets or sets the message content type.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.ReplyTo">
+            <summary>
+            Gets or sets the reply-to address.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.DeadLetterSource">
+            <summary>
+            Gets the message dead-letter source (the queue and/or subscription from where the message was received).
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.DeadLetterErrorDescription">
+            <summary>
+            Gets the message dead-letter error description.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.DeadLetterReason">
+            <summary>
+            Gets the message dead-letter reason.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.State">
+            <summary>
+            Gets the state of the message.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.ExpiresAt">
+            <summary>
+            Gets the date and time in UTC at which the message is set to expire.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.EnqueuedTime">
+            <summary>
+            Gets the date and time in UTC at which the message was enqueued.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.SequenceNumber">
+            <summary>
+            Gets the message sequence number.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.DeliveryCount">
+            <summary>
+            Gets the current delivery count.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IMessageProperties.LockToken">
+            <summary>
+            Gets the message lock token.
+            </summary>
+            <remarks>
+            This lock is used to explicitly settle the message.
+            </remarks>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs">
+            <summary>
+            Defines the interface of an event handler from processing incoming
+            messages.
+            </summary>
+            <remarks>
+            This handler is used by <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicSubscriber"/> and <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueSubscriber"/> to
+            receive incoming messages.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs.Message">
+            <summary>
+            Gets the message received.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs.CancellationToken">
+            <summary>
+            Gets the cancellation token that will be canceled if
+            <see cref="M:Primavera.Hydrogen.Messaging.ISubscriber.StopAsync(System.Threading.CancellationToken)"/> is called.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs.AbandonMessageAsync(System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.CancellationToken)">
+            <summary>
+            Abandons the incoming message, making it available again for processing.
+            </summary>
+            <param name="propertiesToModify">A dictionary containing the message properties that should be modified while abandoning it.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs.CompleteMessageAsync(System.Threading.CancellationToken)">
+            <summary>
+            Completes the incoming message and deletes it from the message bus.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs.DeadLetterMessageAsync(System.Collections.Generic.IDictionary{System.String,System.Object},System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Moves the incoming message to the dead-letter queue.
+            </summary>
+            <param name="propertiesToModify">A dictionary containing the message properties that should be modified while moving it.</param>
+            <param name="deadLetterReason">The reason for dead-lettering the message.</param>
+            <param name="deadLetterErrorDescription">The error description for dead-lettering the message.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IProcessIncomingMessageEventArgs.RenewMessageLockAsync(System.Threading.CancellationToken)">
+            <summary>
+            Renews the lock on the incoming message.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs">
+            <summary>
+            Defines the interface of an event handler from processing unhandled
+            exceptions while a subscriber is processing incoming messages.
+            </summary>
+            <remarks>
+            This handler is used by <see cref="T:Primavera.Hydrogen.Messaging.Topics.ITopicSubscriber"/> and <see cref="T:Primavera.Hydrogen.Messaging.Queues.IQueueSubscriber"/> to
+            receive incoming messages.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs.Exception">
+            <summary>
+            Gets the exception that triggered the call to the handler.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs.ErrorSource">
+            <summary>
+            Gets the source associated with the error.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs.Identifier">
+            <summary>
+            Gets the identifier of the subscriber that raised the error.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.IProcessUnhandledErrorEventArgs.CancellationToken">
+            <summary>
+            Gets the cancellation token that will be canceled if
+            <see cref="M:Primavera.Hydrogen.Messaging.ISubscriber.StopAsync(System.Threading.CancellationToken)"/> is called.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IPublisher">
+            <summary>
+            Defines a publisher.
+            A publisher is capable of publishing and scheduling
+            messages to a specific queue or topic in the message bus.
+            </summary>
+            <seealso cref="T:System.IAsyncDisposable" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.PublishMessageAsync(System.BinaryData,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <summary>
+            Publishes a message to the message bus.
+            </summary>
+            <param name="message">The message that should be published.</param>
+            <param name="configureMessage">An optional delegate that allows configuring properties of the message being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.PublishMessageAsync``1(``0,System.Text.Json.JsonSerializerOptions,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <summary>
+            Publishes a message to the message bus.
+            </summary>
+            <typeparam name="T">The type of the message.</typeparam>
+            <param name="message">The message that should be published.</param>
+            <param name="serializerOptions">The serializer options.</param>
+            <param name="configureMessage">An optional delegate that allows configuring properties of the message being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.PublishMessagesAsync(System.Collections.Generic.IEnumerable{System.BinaryData},System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <summary>
+            Publishes a set of messages to the message bus.
+            </summary>
+            <param name="messages">The messages that should be published.</param>
+            <param name="configureMessages">An optional delegate that allows configuring properties of the messages being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.PublishMessagesAsync``1(System.Collections.Generic.IEnumerable{``0},System.Text.Json.JsonSerializerOptions,System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <summary>
+            Publishes a set of messages to the message bus.
+            </summary>
+            <typeparam name="T">The type of the messages.</typeparam>
+            <param name="messages">The messages that should be published.</param>
+            <param name="serializerOptions">The serializer options.</param>
+            <param name="configureMessages">An optional delegate that allows configuring properties of the messages being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.ScheduleMessageAsync(System.BinaryData,System.DateTimeOffset,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <summary>
+            Schedules a message to be published to the message bus.
+            </summary>
+            <param name="message">The message that should be published.</param>
+            <param name="scheduledTime">The moment in time when the message should be published.</param>
+            <param name="configureMessage">An optional delegate that allows configuring properties of the message being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The sequence number of the scheduled message.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.ScheduleMessageAsync``1(``0,System.Text.Json.JsonSerializerOptions,System.DateTimeOffset,System.Action{Primavera.Hydrogen.Messaging.IMessageProperties},System.Threading.CancellationToken)">
+            <summary>
+            Schedules a message to be published to the message bus.
+            </summary>
+            <typeparam name="T">The type of the message.</typeparam>
+            <param name="message">The message that should be published.</param>
+            <param name="serializerOptions">The serializer options.</param>
+            <param name="scheduledTime">The moment in time when the message should be published.</param>
+            <param name="configureMessage">An optional delegate that allows configuring properties of the message being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The sequence number of the scheduled message.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.ScheduleMessagesAsync(System.Collections.Generic.IEnumerable{System.BinaryData},System.DateTimeOffset,System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <summary>
+            Schedules a set of messages to be published to the message bus.
+            </summary>
+            <param name="messages">The messages that should be published.</param>
+            <param name="scheduledTime">The moment in time when the messages should be published.</param>
+            <param name="configureMessages">An optional delegate that allows configuring properties of the messages being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A list containing the sequence numbers of the scheduled messages.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IPublisher.ScheduleMessagesAsync``1(System.Collections.Generic.IEnumerable{``0},System.Text.Json.JsonSerializerOptions,System.DateTimeOffset,System.Action{System.Collections.Generic.IReadOnlyList{Primavera.Hydrogen.Messaging.IMessageProperties}},System.Threading.CancellationToken)">
+            <summary>
+            Schedules a set of messages to be published to the message bus.
+            </summary>
+            <typeparam name="T">The type of the messages.</typeparam>
+            <param name="messages">The messages that should be published.</param>
+            <param name="serializerOptions">The serializer options.</param>
+            <param name="scheduledTime">The moment in time when the messages should be published.</param>
+            <param name="configureMessages">An optional delegate that allows configuring properties of the messages being published.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A list containing the sequence numbers of the scheduled messages.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.IReceiver">
+            <summary>
+            Defines a receiver.
+            A receiver is capable of receiving messages from a specific
+            queue or topic in the message bus.
+            </summary>
+            <seealso cref="T:System.IAsyncDisposable" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.PeekMessageAsync(System.Nullable{System.Int64},System.Threading.CancellationToken)">
+            <summary>
+            Fetches the next available message from the message bus
+            without changing its state.
+            </summary>
+            <param name="fromSequence">An optional sequence number from where to peek the message.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The message. Null if no message is available.
+            </returns>
+            <remarks>
+            A peeked message, unlike a received message, cannot be completed/abandoned/deferred/dead-lettered/renewed.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.PeekMessagesAsync(System.Int32,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+            <summary>
+            Fetches the next available messages from the message bus
+            without changing their state.
+            </summary>
+            <param name="maxMessages">The maximum number of messages to return.</param>
+            <param name="fromSequence">An optional sequence number from where to peek the message.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A list containing the messages fetched.
+            </returns>
+            <remarks>
+            A peeked message, unlike a received message, cannot be completed/abandoned/deferred/dead-lettered/renewed.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.ReceiveMessageAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Receives the next available message from the message bus.
+            </summary>
+            <param name="maxWaitTime">A optional <see cref="T:System.TimeSpan"/> specifying the maximum time to wait for a message.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            The message. Null if no message is available.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.ReceiveMessagesAsync(System.Int32,System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Receives the next available messages from the message bus.
+            </summary>
+            <param name="maxMessages">The maximum number of messages to return.</param>
+            <param name="maxWaitTime">A optional <see cref="T:System.TimeSpan"/> specifying the maximum time to wait for a message.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation.
+            A list containing the messages received.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.CompleteMessageAsync(Primavera.Hydrogen.Messaging.IMessage,System.Threading.CancellationToken)">
+            <summary>
+            Completes the specified message and deletes it from the message bus.
+            </summary>
+            <param name="message">The message that should be completed.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.AbandonMessageAsync(Primavera.Hydrogen.Messaging.IMessage,System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.CancellationToken)">
+            <summary>
+            Abandons the specified message, making it available again for processing.
+            </summary>
+            <param name="message">The message that should be abandoned.</param>
+            <param name="propertiesToModify">A dictionary containing the message properties that should be modified while abandoning it.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.DeadLetterMessageAsync(Primavera.Hydrogen.Messaging.IMessage,System.Collections.Generic.IDictionary{System.String,System.Object},System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Moves the specified message to the dead-letter queue.
+            </summary>
+            <param name="message">The message that should be dead-lettered.</param>
+            <param name="propertiesToModify">A dictionary containing the message properties that should be modified while moving it.</param>
+            <param name="deadLetterReason">The reason for dead-lettering the message.</param>
+            <param name="deadLetterErrorDescription">The error description for dead-lettering the message.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.IReceiver.RenewMessageLockAsync(Primavera.Hydrogen.Messaging.IMessage,System.Threading.CancellationToken)">
+            <summary>
+            Renews the lock on the specified message.
+            </summary>
+            <param name="message">The message whose lock should be renewed.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.ISubscriber">
+            <summary>
+            Defines a subscriber.
+            A subscriber is capable of subscribing to a specific
+            queue or topic in the message bus and process the incoming messages.
+            </summary>
+            <seealso cref="T:System.IAsyncDisposable" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.ISubscriber.IsStarted">
+            <summary>
+            Gets a value indicating whether the subscriber is processing
+            messages.
+            </summary>
+        </member>
+        <member name="E:Primavera.Hydrogen.Messaging.ISubscriber.ProcessMessageAsync">
+            <summary>
+            The handler that is responsible for processing incoming messages.
+            This handler will be automatically invoked when a new message becomes available
+            in the message bus.
+            </summary>
+        </member>
+        <member name="E:Primavera.Hydrogen.Messaging.ISubscriber.ProcessErrorAsync">
+            <summary>
+            The handler that is responsible for processing unhandled exceptions
+            raised while the subscriber is processing messages.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.ISubscriber.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Signals the subscriber to start processing incoming messages.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.ISubscriber.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Signals the subscriber to stop processing incoming messages.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.MessageBusErrorSource">
+            <summary>
+            Defines the source of an unhandled error raised by a message bus subscriber.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusErrorSource.Abandon">
+            <summary>
+            The error was raised during an abandon operation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusErrorSource.Complete">
+            <summary>
+            The error was raised during a complete operation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusErrorSource.Receive">
+            <summary>
+            The error was raised during a receive operation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusErrorSource.RenewLock">
+            <summary>
+            The error was raised during a renew lock operation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusErrorSource.ProcessMessageHandler">
+            <summary>
+            The error was raised in the process message handler.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusErrorSource.Other">
+            <summary>
+            The error was raised by other operations.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.MessageBusReceiveMode">
+            <summary>
+            Defines the mode used to receive messages from the message bus.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusReceiveMode.PeekLock">
+            <summary>
+            The receiver will hold a lock on the message for a particular duration.
+            If the message is not settled withing this period, it will become
+            available for the next receive operation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusReceiveMode.ReceiveAndDelete">
+            <summary>
+            The message will be deleted as soon as it is delivered.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.MessageBusServiceError">
+            <summary>
+            Indicates the error code in a <see cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException"/>.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.Unspecified">
+            <summary>
+            The error code was not specified when the exception was raised.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.Unexpected">
+            <summary>
+            An unexpected error.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.ServerUnavailable">
+            <summary>
+            Could not connect to the server.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.TopicNotFound">
+            <summary>
+            The specified topic does not exist.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.TopicAlreadyExists">
+            <summary>
+            The specified topic already exists.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.TopicDisabled">
+            <summary>
+            The specified topic is disabled.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SubscriptionNotFound">
+            <summary>
+            The specified topic subscription does not exist.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SubscriptionAlreadyExists">
+            <summary>
+            The specified topic subscription already exists.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SubscriptionDisabled">
+            <summary>
+            The specified topic subscription is disabled.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SubscriptionRuleNotFound">
+            <summary>
+            The specified topic subscription rule does not exist.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SubscriptionRuleAlreadyExists">
+            <summary>
+            The topic specified subscription rule already exists.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SubscriptionRuleDisabled">
+            <summary>
+            The topic specified subscription rule is disabled.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.QueueNotFound">
+            <summary>
+            The specified queue does not exist.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.QueueAlreadyExists">
+            <summary>
+            The specified queue already exists.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.QueueDisabled">
+            <summary>
+            The specified queue is disabled.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.MessageLockLost">
+            <summary>
+            The message lock has expired.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.MessageNotFound">
+            <summary>
+            The specified message does not exist.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.MessageSizeExceeded">
+            <summary>
+            The maximum message size was exceeded.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.MaximumCapacityExceeded">
+            <summary>
+            The service resource has exceeded the maximum capacity.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.ServiceBusy">
+            <summary>
+            The service is busy and cannot perform the requested operation.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.ServiceTimeout">
+            <summary>
+            The operation timed out while interacting with the service.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SessionNotLocked">
+            <summary>
+            The session cannot be locked.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SessionLockLost">
+            <summary>
+            The session lock has expired.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.OperationTimeout">
+            <summary>
+            An operation timed out.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.OperationCanceled">
+            <summary>
+            An operation was canceled.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.InvalidApplicationIdentity">
+            <summary>
+            The application identity is invalid.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.Unauthorized">
+            <summary>
+            Access to the service is unauthorized.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.TransactionFailure">
+            <summary>
+            There was an error with the transaction.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.SocketFailure">
+            <summary>
+            There was an error in the underlying socket.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusServiceError.UnhandledException">
+            <summary>
+            There was an unhandled exception while processing an event.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.MessageBusServiceException">
+            <summary>
+            Represents errors raised by the <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusService"/> and
+            <see cref="T:Primavera.Hydrogen.Messaging.IMessageBusManagementService"/> services.
+            </summary>
+            <seealso cref="T:System.Exception"/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.MessageBusServiceException.ErrorCode">
+            <summary>
+            Gets the code of the error that caused the exception.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.MessageBusServiceException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.MessageBusServiceException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.MessageBusServiceException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.MessageBusServiceException.#ctor(Primavera.Hydrogen.Messaging.MessageBusServiceError)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException"/> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.MessageBusServiceException.#ctor(Primavera.Hydrogen.Messaging.MessageBusServiceError,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException"/> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.MessageBusServiceException.#ctor(Primavera.Hydrogen.Messaging.MessageBusServiceError,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.MessageBusServiceException"/> class.
+            </summary>
+            <param name="error">The code of the error that caused the exception.</param>
+            <param name="message">The message that describes the error.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.MessageBusSubQueue">
+            <summary>
+            Defines a system sub-queue from where messages can be received.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusSubQueue.DeadLetter">
+            <summary>
+            The dead-letter sub-queue contains messages that have been explicitly
+            dead-lettered.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageBusSubQueue.TransferDeadLetter">
+            <summary>
+            The transfer dead-letter sub-queue contains messages that have been
+            dead-lettered on transfer (e.g. due to limitations imposed by the
+            message broker).
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.MessageState">
+            <summary>
+            Describes the state of a message in the message bus.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageState.Active">
+            <summary>
+            The message is active.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageState.Deferred">
+            <summary>
+            The message is deferred.
+            </summary>
+        </member>
+        <member name="F:Primavera.Hydrogen.Messaging.MessageState.Scheduled">
+            <summary>
+            The message is scheduled.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.PublisherOptions">
+            <summary>
+            Describes configuration options for a publisher.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.PublisherOptions.Id">
+            <summary>
+            Gets or sets the publisher identifier.
+            </summary>
+            <remarks>
+            This identifier can be used to correlate logs and exceptions.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.PublisherOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.PublisherOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Queues.IQueuePublisher">
+            <summary>
+            Defines a queue publisher.
+            A queue publisher is capable of publishing and scheduling
+            messages to a specific queue in the message bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IPublisher" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.IQueuePublisher.QueueName">
+            <summary>
+            Gets the name of the queue.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Queues.IQueueReceiver">
+            <summary>
+            Defines a queue receiver.
+            A queue receiver is capable of receiving messages from a specific
+            queue in the message bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IReceiver" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.IQueueReceiver.QueueName">
+            <summary>
+            Gets the name of the queue.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Queues.IQueueSubscriber">
+            <summary>
+            Defines a queue subscriber.
+            A queue subscriber is capable of subscribing to a specific
+            queue in the message bus and process the incoming messages.
+            </summary>
+            <seealso cref="T:System.IAsyncDisposable" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.IQueueSubscriber.QueueName">
+            <summary>
+            Gets the name of the queue.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Queues.QueueOptions">
+            <summary>
+            Describes the configuration options for a queue.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.QueueName">
+            <summary>
+            Gets the queue name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.DefaultMessageTimeToLive">
+            <summary>
+            Gets or sets the default message time to live for messages.
+            </summary>
+            <remarks>
+            This value applies only to messages that do not have the time to live set.
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.AutoDeleteOnIdle">
+            <summary>
+            Gets or sets the time after which the queue will be automatically deleted
+            if idle.
+            </summary>
+            <remarks>
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.MaxSizeInMegabytes">
+            <summary>
+            Gets or sets the maximum size in megabytes of the memory allocated to the queue.
+            The default value is 1024 MB.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.RequiresDuplicateDetection">
+            <summary>
+            Gets or sets a value indicating whether the queue detects duplicate messages.
+            The default value is true.
+            </summary>
+            <remarks>
+            Messages having the same <see cref="P:Primavera.Hydrogen.Messaging.IMessageProperties.Id"/> and sent to the queue within the
+            duration specified by <see cref="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.DuplicateDetectionHistoryTimeWindow"/> will be considered
+            duplicate and discarded.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.DuplicateDetectionHistoryTimeWindow">
+            <summary>
+            Gets or sets the duration used for duplicate message detection.
+            </summary>
+            <remarks>
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.MaxMessageSizeInKilobytes">
+            <summary>
+            Gets or sets the maximum message size in kilobytes.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.MaxDeliveryCount">
+            <summary>
+            Gets or sets the maximum delivery count before a message is dead-lettered.
+            The default value is 10.
+            </summary>
+            <remarks>
+            The delivery count is increased when a message is received in <see cref="F:Primavera.Hydrogen.Messaging.MessageBusReceiveMode.PeekLock"/> mode
+            and didn't complete the message before the message lock expired.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Queues.QueueOptions.LockDuration">
+            <summary>
+            Gets or sets the duration of a peek lock receive.
+            The amount of time that the message is locked by a given receiver so that
+            no other receiver receives the same message.
+            </summary>
+            <remarks>
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Queues.QueueOptions.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueOptions" /> class.
+            </summary>
+            <param name="queueName">The queue name.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions">
+            <summary>
+            Describes configuration options for a queue publisher.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.PublisherOptions" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueuePublisherOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions">
+            <summary>
+            Describes configuration options for a queue receiver.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.ReceiverOptions" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueReceiverOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions">
+            <summary>
+            Describes configuration options for a queue subscriber.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.SubscriberOptions" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Queues.QueueSubscriberOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.ReceiverOptions">
+            <summary>
+            Describes configuration options for a receiver.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.ReceiverOptions.Id">
+            <summary>
+            Gets or sets the receiver identifier.
+            </summary>
+            <remarks>
+            This identifier can be used to correlate logs and exceptions.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.ReceiverOptions.ReceiveMode">
+            <summary>
+            Gets or sets the receive mode.
+            The default value is <see cref="F:Primavera.Hydrogen.Messaging.MessageBusReceiveMode.PeekLock"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.ReceiverOptions.SubQueue">
+            <summary>
+            Gets or sets the sub-queue from where the receiver should receive messages.
+            </summary>
+            <remarks>
+            If not set, messages will be received from the queue itself.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.ReceiverOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.ReceiverOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.SubscriberOptions">
+            <summary>
+            Describes configuration options for a subscriber.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.SubscriberOptions.Id">
+            <summary>
+            Gets or sets the subscriber identifier.
+            </summary>
+            <remarks>
+            This identifier can be used to correlate logs and exceptions.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.SubscriberOptions.ReceiveMode">
+            <summary>
+            Gets or sets the receive mode.
+            The default value is <see cref="F:Primavera.Hydrogen.Messaging.MessageBusReceiveMode.PeekLock"/>.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.SubscriberOptions.AutoCompleteMessages">
+            <summary>
+            Gets or sets a value indicating whether the subscriber should automatically complete
+            messages after the <see cref="E:Primavera.Hydrogen.Messaging.ISubscriber.ProcessMessageAsync"/> has completed
+            processing.
+            The default value is true.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.SubscriberOptions.MaxAutoLockRenewalDuration">
+            <summary>
+            Gets or sets the maximum duration within which the lock will be renewed automatically.
+            </summary>
+            <remarks>
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.SubscriberOptions.MaxConcurrentCalls">
+            <summary>
+            Gets or sets the maximum number of concurrent calls to the
+            message handler the subscriber should initiate.
+            The default value is 1.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.SubscriberOptions.SubQueue">
+            <summary>
+            Gets or sets the sub-queue from where the subscriber should receive messages.
+            </summary>
+            <remarks>
+            If not set, messages will be received from the queue itself.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.SubscriberOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.SubscriberOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter">
+            <summary>
+            Defines a correlation filter associated with a topic subscription rule.
+            Correlation filters allow topic subscriptions to accept only the messages
+            that match the filter.
+            </summary>
+            <remarks>
+            This type also allows storing custom application properties.
+            </remarks>
+            <example>
+            <code>
+            <![CDATA[
+            CorrelationSubscriptionRuleFilter filter = new CorrelationSubscriptionRuleFilter()
+            {
+                CorrelationId = "MyCorrelationId"
+            };
+            
+            filter["CustomProperty"] = "Value";
+            ]]>
+            </code></example>
+            <seealso cref="T:System.Collections.Generic.IDictionary`2" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.CorrelationId">
+            <summary>
+            Gets or sets the correlation identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.MessageId">
+            <summary>
+            Gets or sets the message identifier.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.To">
+            <summary>
+            Gets or sets to address.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.ReplyTo">
+            <summary>
+            Gets or sets reply-to address.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Subject">
+            <summary>
+            Gets or sets the subject.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.ContentType">
+            <summary>
+            Gets or sets the type of the content.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Keys">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Values">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.IsReadOnly">
+            <inheritdoc/>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Item(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter"/> class.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Add(System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.ContainsKey(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Remove(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.TryGetValue(System.String,System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Add(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Contains(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.CorrelationSubscriptionRuleFilter.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Object}[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.ITopicPublisher">
+            <summary>
+            Defines a topic publisher.
+            A topic publisher is capable of publishing and scheduling
+            messages to a specific topic in the message bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IPublisher" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.ITopicPublisher.TopicName">
+            <summary>
+            Gets the name of the topic.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.ITopicReceiver">
+            <summary>
+            Defines a topic receiver.
+            A topic receiver is capable of receiving messages from a specific
+            topic subscription in the message bus.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.IReceiver" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.ITopicReceiver.TopicName">
+            <summary>
+            Gets the name of the topic.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.ITopicReceiver.SubscriptionName">
+            <summary>
+            Gets the name of the subscription.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.ITopicSubscriber">
+            <summary>
+            Defines a topic subscriber.
+            A topic subscriber is capable of subscribing to a specific
+            topic in the message bus and process the incoming messages.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.ISubscriber" />
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.ITopicSubscriber.TopicName">
+            <summary>
+            Gets the name of the topic.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.ITopicSubscriber.SubscriptionName">
+            <summary>
+            Gets the name of the subscription.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions">
+            <summary>
+            Describes the configuration options for a topic subscription.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.TopicName">
+            <summary>
+            Gets the topic name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.SubscriptionName">
+            <summary>
+            Gets the topic subscription name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.LockDuration">
+            <summary>
+            Gets or sets the duration of the <see cref="F:Primavera.Hydrogen.Messaging.MessageBusReceiveMode.PeekLock"/> receive
+            operation.
+            </summary>
+            <remarks>
+            This is the amount of time that a message remains locked for a receiver so that no
+            other receiver can receive it.
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.DefaultMessageTimeToLive">
+            <summary>
+            Gets or sets the default message time to live for messages.
+            The default value is <see cref="F:System.TimeSpan.MaxValue"/>.
+            </summary>
+            <remarks>
+            This value applies only to messages that do not have the time to live set.
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.AutoDeleteOnIdle">
+            <summary>
+            Gets or sets the time after which the topic subscription will be automatically deleted
+            if idle.
+            </summary>
+            <remarks>
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.DeadLetteringOnMessageExpiration">
+            <summary>
+            Gets or sets a value indicating whether the topic subscription will support 
+            dead-letter when a message expires.
+            The default value is false.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.EnableDeadLetteringOnFilterEvaluationExceptions">
+            <summary>
+            Gets or sets a value indicating whether messages should be dead-lettered when
+            the evaluation of subscription rules fails.
+            The default value is true.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.MaxDeliveryCount">
+            <summary>
+            Gets or sets the maximum number of times a message will be delivered to
+            this topic subscription without being settled before being dead-lettered.
+            The default value is 10.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionOptions"/> class.
+            </summary>
+            <param name="topicName">The topic name.</param>
+            <param name="subscriptionName">The topic subscription name.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions">
+            <summary>
+            Describes the configuration options for a topic subscription rule.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions.TopicName">
+            <summary>
+            Gets the topic name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions.SubscriptionName">
+            <summary>
+            Gets the topic subscription name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions.RuleName">
+            <summary>
+            Gets the topic subscription rule name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions.DeleteDefaultRule">
+            <summary>
+            Gets or sets a value indicating whether the default rule should be deleted if it exists.
+            </summary>
+            <remarks>
+            When a new topic subscription is created, a default rule (that matches any message) is automatically
+            created.
+            </remarks>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Topics.SubscriptionRuleOptions"/> class.
+            </summary>
+            <param name="topicName">The topic name.</param>
+            <param name="subscriptionName">The topic subscription name.</param>
+            <param name="ruleName">The topic subscription rule name.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions">
+            <summary>
+            Describes the configuration options for a topic.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.TopicName">
+            <summary>
+            Gets the topic name.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.DefaultMessageTimeToLive">
+            <summary>
+            Gets or sets the default message time to live for messages.
+            </summary>
+            <remarks>
+            This value applies only to messages that do not have the time to live set.
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.AutoDeleteOnIdle">
+            <summary>
+            Gets or sets the time after which the topic will be automatically deleted
+            if idle.
+            </summary>
+            <remarks>
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.MaxSizeInMegabytes">
+            <summary>
+            Gets or sets the maximum size in megabytes of the memory allocated to the topic.
+            The default value is 1024 MB.
+            </summary>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.RequiresDuplicateDetection">
+            <summary>
+            Gets or sets a value indicating whether the topic detects duplicate messages.
+            The default value is true.
+            </summary>
+            <remarks>
+            Messages having the same <see cref="P:Primavera.Hydrogen.Messaging.IMessageProperties.Id"/> and sent to the topic within the
+            duration specified by <see cref="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.DuplicateDetectionHistoryTimeWindow"/> will be considered
+            duplicate and discarded.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.DuplicateDetectionHistoryTimeWindow">
+            <summary>
+            Gets or sets the duration used for duplicate message detection.
+            </summary>
+            <remarks>
+            If not set, the default value will be enforced by the message bus service implementation.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.SupportOrdering">
+            <summary>
+            Gets or sets a value indicating whether message order will be maintained.
+            The default value is true.
+            </summary>
+            <remarks>
+            When true, messages sent to the topic will be forwarded to the each subscription in order.
+            </remarks>
+        </member>
+        <member name="P:Primavera.Hydrogen.Messaging.Topics.TopicOptions.MaxMessageSizeInKilobytes">
+            <summary>
+            Gets or sets the maximum message size in kilobytes.
+            </summary>
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.TopicOptions.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicOptions"/> class.
+            </summary>
+            <param name="topicName">The topic name.</param>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions">
+            <summary>
+            Describes configuration options for a topic publisher.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.PublisherOptions" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicPublisherOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions">
+            <summary>
+            Describes configuration options for a topic receiver.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.ReceiverOptions" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicReceiverOptions"/> class.
+            </summary>
+        </member>
+        <member name="T:Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions">
+            <summary>
+            Describes configuration options for a topic subscriber.
+            </summary>
+            <seealso cref="T:Primavera.Hydrogen.Messaging.SubscriberOptions" />
+        </member>
+        <member name="M:Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Primavera.Hydrogen.Messaging.Topics.TopicSubscriberOptions"/> class.
+            </summary>
+        </member>
+    </members>
+</doc>

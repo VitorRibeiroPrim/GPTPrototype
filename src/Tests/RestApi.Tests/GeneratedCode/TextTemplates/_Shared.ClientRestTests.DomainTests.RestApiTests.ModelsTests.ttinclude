@@ -1,0 +1,53 @@
+﻿<#+
+
+public void ModelsTestsTransformations(string project)
+{
+    // Build the transformations
+
+    ServiceModelTransformations<CSharpFileModel> transformations = new ServiceModelTransformations<CSharpFileModel>(
+        this.ServiceModel);
+
+    transformations.Add(
+        new SerializerContextTransformation(project));
+
+    // Transform
+
+    CSharpFileModel targetModel = new CSharpFileModel(this.ServiceModel, false);
+    transformations.TransformTo(targetModel);
+
+    // Create controller
+
+    ModelWriterController controller = new ModelWriterController(this.GenerationEnvironment);
+
+    // Add writers
+
+    controller.AddModelWriter<MethodBodyModel>(
+        (w, m) =>
+        {
+            MethodModel method = m.ParentModelAs<MethodModel>();
+            return method.Name.StartsWith("SerializerContext_") && method.Name.EndsWith("_Serialization");
+        }, 
+        this.WriteSerializerContextSerializationTest);
+
+    controller.AddModelWriter<MethodBodyModel>(
+        (w, m) =>
+        {
+            MethodModel method = m.ParentModelAs<MethodModel>();
+            return method.Name.StartsWith("CreateDefault");
+        }, 
+        this.WriteCreateDefaultInstance);
+
+    controller.AddModelWriter<MethodBodyModel>(
+        (w, m) =>
+        {
+            MethodModel method = m.ParentModelAs<MethodModel>();
+            return method.Name.EqualsNoCase("GetJsonSerializerOptions");
+        }, 
+        this.WriteGetJsonSerializerOptions);
+
+    // Generate code
+
+    controller.Write(targetModel);
+}
+
+#>

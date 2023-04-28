@@ -1,0 +1,75 @@
+﻿<#+
+
+// *** TransformServiceModel
+
+public void TransformServiceModel(DomainModelElement sourceElement, CSharpFileModel targetModel)
+{
+    ServiceModel sourceModel = sourceElement as ServiceModel;
+    if (sourceModel == null)
+    {
+        return;
+    }
+
+    targetModel.Namespace = new NamespaceModel(sourceModel.Namespace + ".Client.Rest");
+
+    // Base class
+
+    ClassModel baseClassModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("{0}ClientOptionsBase".Format(sourceModel.Name))
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Abstract | ClassModifiers.Partial,
+                Inheritance = "Primavera.Hydrogen.Rest.Client.RestServiceClientOptions",
+                Documentation = new DocumentationModel("Defines the base class for the service client options.")
+            })
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Protected,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ClientOptionsBase\" /> class.".Format(sourceModel.Name))
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("InitializeSerialization")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Initializes the serialization options.")
+                })
+                .ParentModelAs<ClassModel>()
+            .AddMethod(
+                new MethodModel("SetDefaultValues")
+                {
+                    Modifiers = MethodModifiers.Protected | MethodModifiers.Virtual,
+                    Documentation = new DocumentationModel("Sets the default values.")
+                    {
+                        Remarks = "This method should be overridden to set the default values of properties."
+                    }
+                })
+                .ParentModelAs<ClassModel>();
+
+    // Class
+
+    ClassModel classModel = targetModel.Namespace
+        .AddClass(
+            new ClassModel("{0}ClientOptions".Format(sourceModel.Name))
+            {
+                Modifiers = ClassModifiers.Public | ClassModifiers.Partial,
+                Inheritance = "{0}ClientOptionsBase".Format(sourceModel.Name),
+                Documentation = new DocumentationModel("Defines the service client options.")
+            })
+            .WithAttribute(
+                new AttributeModel("System.Diagnostics.CodeAnalysis.SuppressMessage(\"Maintainability Rules\", \"SA1402:FileMayOnlyContainASingleType\", Justification = \"Because of code generation design.\")"))
+            .AddConstructor(
+                new ConstructorModel()
+                {
+                    Modifiers = ConstructorModifiers.Public,
+                    Inheritance = "base()",
+                    Documentation = new DocumentationModel("Initializes a new instance of the <see cref=\"{0}ClientOptions\" /> class.".Format(sourceModel.Name))
+                })
+            .ParentModelAs<ClassModel>();
+}
+
+#>

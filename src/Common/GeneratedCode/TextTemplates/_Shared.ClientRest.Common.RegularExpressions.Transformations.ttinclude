@@ -1,0 +1,76 @@
+﻿<#+
+
+internal class RegularExpressionsTransformation : ServiceModelTransformation<CSharpFileModel>
+{
+    #region Public Properties
+
+    // NOTES:
+    // This property indicates that the transformation is being used to generate client-side code
+    // Otherwise it is server-side
+
+    public bool ClientSide
+    {
+        get;
+    }
+
+    #endregion
+
+    #region Constructors
+
+    public RegularExpressionsTransformation(bool clientSide)
+    {
+        this.ClientSide = clientSide;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override bool CanTransform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        return sourceElement is RegularExpression;
+    }
+
+    public override void Transform(DomainModelElement sourceElement, CSharpFileModel targetModel)
+    {
+        if (targetModel == null)
+        {
+            return;
+        }
+
+        if (sourceElement is RegularExpression regularExpression)
+        {
+            ClassModel classModel = targetModel.Namespace.Classes[0];
+            
+            classModel
+                .WithConstant(
+                    new ConstantModel($"{regularExpression.Name}Value", "string", "@\"{0}\"".Format(regularExpression.Value))
+                    {
+                        Modifiers = ConstantModifiers.Public,
+                        Documentation = new DocumentationModel("The '{0}' regular expression value.".Format(regularExpression.Name))
+                    });
+
+            if (!this.ClientSide)
+            {
+                classModel
+                    .AddMethod(
+                        new MethodModel(regularExpression.Name, "System.Text.RegularExpressions.Regex")
+                        {
+                            Body = null,
+                            Modifiers = MethodModifiers.Public | MethodModifiers.Partial | MethodModifiers.Static,
+                            Documentation = new DocumentationModel("Returns a <see cref=\"System.Text.RegularExpressions.Regex\"/> that allows evaluating the '{0}' regular expression.")
+                            {
+                                Returns = "The <see cref=\"System.Text.RegularExpressions.Regex\"/> instance.",
+                                Remarks = "This improves performance by using source code generation"
+                            }
+                        })
+                        .WithAttribute(
+                            new AttributeModel($"System.Text.RegularExpressions.GeneratedRegex(RegularExpressions.{regularExpression.Name}Value, System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.Compiled)"));
+            }
+        }
+    }
+
+    #endregion
+}
+
+#>

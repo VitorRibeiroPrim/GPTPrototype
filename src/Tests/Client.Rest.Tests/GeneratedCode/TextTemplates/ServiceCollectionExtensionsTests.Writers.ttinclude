@@ -1,0 +1,223 @@
+﻿<#+
+
+// *** WriteAddDefault
+
+public void WriteAddDefault(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.TestAdd<#= serviceModel.Name #>Default();
+<#+
+
+}
+
+// *** WriteTestAddDefault
+
+public void WriteTestAddDefault(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Microsoft.Extensions.DependencyInjection.ServiceCollection services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+        services
+            .Add<#= serviceModel.Name #>Client(
+                (provider, clientOptions) =>
+                {
+                    return new Client.Rest.<#= serviceModel.Name #>Client(
+                        new System.Uri("https://localhost"),
+                        new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+                        clientOptions);
+                });
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+
+        Client.Rest.I<#= serviceModel.Name #>Client client1 = provider.GetRequiredService<Client.Rest.I<#= serviceModel.Name #>Client>();
+        Client.Rest.I<#= serviceModel.Name #>Client client2 = provider.GetRequiredService<Client.Rest.I<#= serviceModel.Name #>Client>();
+
+        client1.Should().NotBeNull();
+        client1.Should().Be(client2);
+<#+
+
+}
+
+// *** WriteAddDefaultWithOptionsFactory
+
+public void WriteAddDefaultWithOptionsFactory(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.TestAdd<#= serviceModel.Name #>DefaultWithOptionsFactory();
+<#+
+
+}
+
+// *** WriteTestAddDefaultWithOptionsFactory
+
+public void WriteTestAddDefaultWithOptionsFactory(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Microsoft.Extensions.DependencyInjection.ServiceCollection services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+        services
+            .Add<#= serviceModel.Name #>Client(
+                (provider) =>
+                {
+                    return new <#= serviceModel.Name #>ClientOptions();
+                },
+                (provider, clientOptions) =>
+                {
+                    return new Client.Rest.<#= serviceModel.Name #>Client(
+                        new System.Uri("https://localhost"),
+                        new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+                        clientOptions);
+                });
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+
+        Client.Rest.I<#= serviceModel.Name #>Client client1 = provider.GetRequiredService<Client.Rest.I<#= serviceModel.Name #>Client>();
+        Client.Rest.I<#= serviceModel.Name #>Client client2 = provider.GetRequiredService<Client.Rest.I<#= serviceModel.Name #>Client>();
+
+        client1.Should().NotBeNull();
+        client1.Should().Be(client2);
+<#+
+
+}
+
+// *** WriteAddNamed
+
+public void WriteAddNamed(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.TestAdd<#= serviceModel.Name #>Named();
+<#+
+
+}
+
+// *** WriteTestAddNamed
+
+public void WriteTestAddNamed(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Microsoft.Extensions.DependencyInjection.ServiceCollection services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+        services
+            .Add<#= serviceModel.Name #>Client(
+                "Service1",
+                (provider, clientOptions) =>
+                {
+                    return new Client.Rest.<#= serviceModel.Name #>Client(
+                        new System.Uri("https://localhost"),
+                        new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+                        clientOptions);
+                })
+            .Add<#= serviceModel.Name #>Client(
+                "Service2",
+                (provider, clientOptions) =>
+                {
+                    return new Client.Rest.<#= serviceModel.Name #>Client(
+                        new System.Uri("https://localhost"),
+                        new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+                        clientOptions);
+                });
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+
+        provider.GetService<Client.Rest.I<#= serviceModel.Name #>Client>().Should().BeNull();
+        
+        Client.Rest.<#= serviceModel.Name #>ClientFactory factory = provider.GetRequiredService<Client.Rest.<#= serviceModel.Name #>ClientFactory>();
+        
+        Client.Rest.I<#= serviceModel.Name #>Client client1 = factory.GetClient("Service1");
+        Client.Rest.I<#= serviceModel.Name #>Client client2 = factory.GetClient("Service1");
+        Client.Rest.I<#= serviceModel.Name #>Client client3 = factory.GetClient("Service2");
+
+        client1.Should().NotBeNull();
+        client1.Should().Be(client2);
+        client1.Should().NotBe(client3);
+<#+
+
+}
+
+// *** WriteAddNamedWithOptionsFactory
+
+public void WriteAddNamedWithOptionsFactory(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        this.TestAdd<#= serviceModel.Name #>NamedWithOptionsFactory();
+<#+
+
+}
+
+// *** WriteTestAddNamedWithOptionsFactory
+
+public void WriteTestAddNamedWithOptionsFactory(ModelWriter modelWriter, MethodBodyModel model)
+{
+    CSharpFileModel rootModel = model.RootModelAs<CSharpFileModel>();
+    ServiceModel serviceModel = rootModel.SourceModel as ServiceModel;
+
+#>
+        Microsoft.Extensions.DependencyInjection.ServiceCollection services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+        services
+            .Add<#= serviceModel.Name #>Client(
+                "Service1",
+                (provider) =>
+                {
+                    return new <#= serviceModel.Name #>ClientOptions();
+                },
+                (provider, clientOptions) =>
+                {
+                    return new Client.Rest.<#= serviceModel.Name #>Client(
+                        new System.Uri("https://localhost"),
+                        new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+                        clientOptions);
+                })
+            .Add<#= serviceModel.Name #>Client(
+                "Service2",
+                (provider) =>
+                {
+                    return new <#= serviceModel.Name #>ClientOptions();
+                },
+                (provider, clientOptions) =>
+                {
+                    return new Client.Rest.<#= serviceModel.Name #>Client(
+                        new System.Uri("https://localhost"),
+                        new Primavera.Hydrogen.Rest.Client.Authentication.NoCredential(),
+                        clientOptions);
+                });
+
+        System.IServiceProvider provider = services.BuildServiceProvider();
+
+        provider.GetService<Client.Rest.I<#= serviceModel.Name #>Client>().Should().BeNull();
+        
+        Client.Rest.<#= serviceModel.Name #>ClientFactory factory = provider.GetRequiredService<Client.Rest.<#= serviceModel.Name #>ClientFactory>();
+        
+        Client.Rest.I<#= serviceModel.Name #>Client client1 = factory.GetClient("Service1");
+        Client.Rest.I<#= serviceModel.Name #>Client client2 = factory.GetClient("Service1");
+        Client.Rest.I<#= serviceModel.Name #>Client client3 = factory.GetClient("Service2");
+
+        client1.Should().NotBeNull();
+        client1.Should().Be(client2);
+        client1.Should().NotBe(client3);
+<#+
+
+}
+
+#>

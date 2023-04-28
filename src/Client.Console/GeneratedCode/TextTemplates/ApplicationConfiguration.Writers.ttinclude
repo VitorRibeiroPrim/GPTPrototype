@@ -1,0 +1,16 @@
+﻿<#+
+
+// *** WriteConstructor
+
+public void WriteConstructor(ModelWriter modelWriter, ConstructorBodyModel model)
+{
+
+#>
+        this.Environments = new System.Collections.Generic.Dictionary<string, EnvironmentConfiguration>(System.StringComparer.OrdinalIgnoreCase);
+
+        this.SetDefaultValues();
+<#+
+
+}
+
+#>

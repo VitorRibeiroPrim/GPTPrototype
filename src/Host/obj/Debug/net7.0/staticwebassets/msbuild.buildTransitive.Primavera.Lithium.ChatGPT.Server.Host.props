@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\Primavera.Lithium.ChatGPT.Server.Host.props" />
+</Project>

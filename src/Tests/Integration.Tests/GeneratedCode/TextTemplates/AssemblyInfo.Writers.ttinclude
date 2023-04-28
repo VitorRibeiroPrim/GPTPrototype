@@ -1,0 +1,12 @@
+﻿<#+
+
+public void WriteAttributes(ModelWriter modelWriter, ServiceModel model)
+{
+    this.WriteAssemblyInfoShared(
+        modelWriter, 
+        model,
+        $"{model.Product} {model.DisplayName} Integration Tests",
+        "Class library that provides integration tests.");
+}
+
+#>
